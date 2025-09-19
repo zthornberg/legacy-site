@@ -1,14 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import teamContent from '../../content/company/team.json';
-
-interface TeamMember {
-  id: string;
-  name: string;
-  title: string;
-  photo: string;
-  shortBio: string;
-}
+import { team } from '../../data/team';
 
 const OurTeam: React.FC = () => {
   return (
@@ -28,8 +20,8 @@ const OurTeam: React.FC = () => {
           </div>
 
           {/* Team Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {teamContent.members.map((member: TeamMember) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+            {team.map((member) => (
               <Link
                 key={member.id}
                 to={`/company/team/${member.id}`}
@@ -47,8 +39,8 @@ const OurTeam: React.FC = () => {
                   <p className="text-purple-600 font-medium mb-3">
                     {member.title}
                   </p>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    {member.shortBio}
+                  <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                    {member.sections[0]?.text.split('\n\n')[0]}
                   </p>
                 </div>
               </Link>

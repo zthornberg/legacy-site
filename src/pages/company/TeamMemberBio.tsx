@@ -1,23 +1,12 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Linkedin, Mail } from 'lucide-react';
-import teamBios from '../../content/team/bios.json';
-
-interface TeamBioData {
-  name: string;
-  title: string;
-  photo: string;
-  professionalBio: string;
-  personalBio: string;
-  education?: string;
-  linkedin?: string;
-  email?: string;
-}
+import { team } from '../../data/team';
 
 const TeamMemberBio: React.FC = () => {
   const { name } = useParams<{ name: string }>();
   
-  const member = teamBios[name as keyof typeof teamBios] as TeamBioData;
+  const member = team.find(m => m.id === name);
 
   if (!member) {
     return (
@@ -50,7 +39,7 @@ const TeamMemberBio: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-8 mb-12">
           <div className="flex-shrink-0">
             <img
-              src={member.photo}
+              src={member.photo || "/media/gene-w.png"}
               alt={member.name}
               className="w-48 h-48 rounded-2xl object-cover shadow-lg"
             />
@@ -66,71 +55,42 @@ const TeamMemberBio: React.FC = () => {
             
             {/* Contact Links */}
             <div className="flex items-center space-x-4">
-              {member.linkedin && (
-                <a
-                  href={member.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                   className="flex items-center text-gray-600 hover:text-accent transition-colors"
-                >
-                  <Linkedin className="h-5 w-5 mr-2" />
-                  LinkedIn
-                </a>
-              )}
-              {member.email && (
-                <a
-                  href={`mailto:${member.email}`}
-                   className="flex items-center text-gray-600 hover:text-accent transition-colors"
-                >
-                  <Mail className="h-5 w-5 mr-2" />
-                  Email
-                </a>
-              )}
+              <a
+                href="mailto:info@legacybrokers.com"
+                className="flex items-center text-gray-600 hover:text-accent transition-colors"
+              >
+                <Mail className="h-5 w-5 mr-2" />
+                Contact
+              </a>
             </div>
           </div>
         </div>
 
         {/* Bio Content */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
-            {/* Professional Bio */}
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Professional Background</h2>
-              <div className="prose prose-lg text-gray-600 leading-relaxed">
-                {member.professionalBio.split('\n').map((paragraph, index) => (
-                  <p key={index} className="mb-4">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </div>
-
-            {/* Personal Bio */}
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Outside of Work</h2>
-              <div className="prose prose-lg text-gray-600 leading-relaxed">
-                {member.personalBio.split('\n').map((paragraph, index) => (
-                  <p key={index} className="mb-4">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </div>
+        <div className="grid lg:grid-cols-4 gap-8">
+          <div className="lg:col-span-3 space-y-8">
+            {member.sections?.map((section, idx) => (
+              <section key={idx}>
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-purple-600 mb-4">
+                  {section.label}
+                </h3>
+                <div className="prose prose-lg text-gray-600 leading-relaxed">
+                  {section.text.split(/\n\n+/).map((para, i) => (
+                    <p key={i} className="mb-4">
+                      {para}
+                    </p>
+                  ))}
+                </div>
+              </section>
+            ))}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {member.education && (
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Education</h3>
-                <p className="text-gray-600">{member.education}</p>
-              </div>
-            )}
-
             <div className="bg-slate-50 rounded-xl p-6">
               <h3 className="text-lg font-semibold text-slate-900 mb-4">Get In Touch</h3>
               <p className="text-slate-700 text-sm mb-4">
-                Interested in working with {member.name.split(' ')[0]}? 
+                Interested in working with {member.name.split(' ')[0]}?
                 Reach out to discuss your business goals.
               </p>
               <Link
