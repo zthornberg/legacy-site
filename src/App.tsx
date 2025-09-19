@@ -17,10 +17,6 @@ import IndustryPage from './pages/industries/IndustryPage';
 import IndustriesOverview from './pages/industries/IndustriesOverview';
 import BrokerLogin from './pages/portal/BrokerLogin';
 import BrokerDashboard from './pages/portal/BrokerDashboard';
-import SectorsIndex from './pages/SectorsIndex';
-import SectorDetail from './pages/SectorDetail';
-import ProcessSell from './pages/ProcessSell';
-import ProcessBuy from './pages/ProcessBuy';
 import DocumentLibrary from './pages/portal/DocumentLibrary';
 import ListingSubmission from './pages/portal/ListingSubmission';
 import BuyerNetworkSearch from './pages/portal/BuyerNetworkSearch';
@@ -65,14 +61,6 @@ function App() {
               {/* Industries */}
               <Route path="/industries" element={<IndustriesOverview />} />
               <Route path="/industries/:industry" element={<IndustryPage />} />
-              
-              {/* Sectors */}
-              <Route path="/sectors" element={<SectorsIndex />} />
-              <Route path="/sectors/:slug" element={<SectorDetail />} />
-              
-              {/* Process */}
-              <Route path="/process/sell" element={<ProcessSell />} />
-              <Route path="/process/buy" element={<ProcessBuy />} />
               
               {/* Portal */}
               <Route path="/portal/login" element={<BrokerLogin />} />
