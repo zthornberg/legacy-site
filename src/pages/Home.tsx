@@ -3,21 +3,70 @@ import { Link } from 'react-router-dom';
 import { Users, Award, TrendingUp, DollarSign, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import VideoHero from '../components/ui/VideoHero';
-import AnimatedCounter from '../components/ui/AnimatedCounter';
 import QuickNavBubbles from '../components/home/QuickNavBubbles';
 import GlassCard from '../components/ui/GlassCard';
 import CaseShowcase from '../components/ui/CaseShowcase';
+import MetricStrip from '../components/ui/MetricStrip';
+import CaseStudySpotlight, { CaseStudy } from '../components/ui/CaseStudySpotlight';
+import LogoTicker from '../components/ui/LogoTicker';
+import CTAHeadband from '../components/ui/CTAHeadband';
 import homeContent from '../content/home.json';
 
 const Home: React.FC = () => {
-  const stats = [
-    { icon: Users, value: '2,417+', label: 'Buyer Profiles', color: 'text-blue-600' },
-    { icon: Award, value: '30+', label: 'Licensed Brokers Nationwide', color: 'text-green-600' },
-    { icon: TrendingUp, value: '97%+', label: 'Client Satisfaction', color: 'text-purple-600' },
-    { icon: Clock, value: '35+ Years', label: 'Combined Team Experience', color: 'text-orange-600' },
-    { icon: DollarSign, value: '$60M+', label: 'Transaction Value Closed', color: 'text-emerald-600' }
+  const metrics = [
+    { label: "Buyer Profiles", value: 2417, suffix: "+" },
+    { label: "Licensed Brokers", value: 30, suffix: "+" },
+    { label: "Client Satisfaction", value: 97, suffix: "%" },
+    { label: "Transaction Value Closed", value: 60, suffix: "M+" },
   ];
 
+  const cases: CaseStudy[] = [
+    {
+      id: "construction",
+      title: "Construction Co.",
+      headline: "Home-Builder Construction Company",
+      bullets: [
+        "$40M annual revenue, $5.5M EBITDA",
+        "Multiple above-ask offers generated",
+        "Strong asset base and scale efficiencies highlighted"
+      ],
+      imageUrl: "/media/Home Builder Construction Case Study.png",
+      ctaHref: "/sell/case-studies",
+      ctaLabel: "View Case Studies"
+    },
+    {
+      id: "elevator",
+      title: "Manufacturing Co.",
+      headline: "Elevator Manufacturing Company",
+      bullets: [
+        "$3M+ annual revenue, $700K EBITDA",
+        "Strategic buyer demand from installed base",
+        "Recurring parts/service revenue stream"
+      ],
+      imageUrl: "/media/Elevator Manufacturing Pic.png",
+      ctaHref: "/sell/case-studies",
+      ctaLabel: "View Case Studies"
+    },
+    {
+      id: "flooring",
+      title: "Distribution Co.",
+      headline: "Flooring Distribution Company",
+      bullets: [
+        "$6.5M+ annual revenue, $950K EBITDA",
+        "Lean operations with strong supplier terms",
+        "Fast diligence from clear documentation"
+      ],
+      imageUrl: "/media/Flooring Distributor Pic.png",
+      ctaHref: "/sell/case-studies",
+      ctaLabel: "View Case Studies"
+    }
+  ];
+
+  const logos = [
+    { src: "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg", alt: "Partner 1" },
+    { src: "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg", alt: "Partner 2" },
+    { src: "https://images.pexels.com/photos/3184293/pexels-photo-3184293.jpeg", alt: "Partner 3" },
+  ];
   return (
     <div>
       {/* Video Hero Section */}
@@ -66,21 +115,19 @@ const Home: React.FC = () => {
 
       </VideoHero>
 
-      {/* Animated Stats Banner - Moved outside hero */}
+      {/* Trusted Partners */}
       <section className="relative -mt-24 z-20 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="hidden md:grid grid-cols-5 gap-4">
-            {stats.map((stat, index) => (
-              <AnimatedCounter
-                key={index}
-                value={stat.value}
-                label={stat.label}
-                icon={stat.icon}
-                delay={index * 0.1}
-              />
-            ))}
+          <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-6 shadow-lg">
+            <p className="text-center text-sm text-slate-600 mb-4">Trusted by industry leaders</p>
+            <LogoTicker logos={logos} />
           </div>
         </div>
+      </section>
+
+      {/* Metrics Section */}
+      <section className="section section-wide">
+        <MetricStrip items={metrics} />
       </section>
 
       {/* Services Overview */}
@@ -151,10 +198,21 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Case Studies Showcase */}
-      <section className="relative bg-white">
-        <CaseShowcase />
+      {/* Case Study Spotlight */}
+      <section className="section section-wide">
+        <div className="text-center mb-12">
+          <h2 className="text-h2 font-bold text-ink mb-4 font-space-grotesk">
+            Success Stories
+          </h2>
+          <p className="text-xl text-slate-700 max-w-3xl mx-auto">
+            Real outcomes from real transactions across diverse industries.
+          </p>
+        </div>
+        <CaseStudySpotlight items={cases} />
       </section>
+
+      {/* CTA Headband */}
+      <CTAHeadband />
 
       {/* Final CTA */}
       <section className="relative py-24 bg-gradient-to-br from-ink via-slate-900 to-ink text-white" style={{ zIndex: 1 }}>
