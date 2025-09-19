@@ -181,7 +181,7 @@ const Header: React.FC = () => {
   return (
     <motion.header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isSticky ? 'glass-panel m-4' : isHome ? 'bg-black/20 backdrop-blur-sm' : 'bg-white/95 backdrop-blur-xl border border-white/40 shadow-glass rounded-2xl ring-1 ring-black/5 m-4'
+        isSticky ? 'glass-panel m-4' : isHome ? 'bg-black/20 backdrop-blur-sm' : 'bg-black/80 backdrop-blur-sm m-4 rounded-2xl'
       }`}
       initial={{ y: -100 }}
       animate={{ 
@@ -203,7 +203,7 @@ const Header: React.FC = () => {
               className={`transition-all duration-300 ${
                 isSticky ? 'h-10 lg:h-12' : 'h-14 lg:h-16'
               } ${
-                isSticky ? 'brightness-100' : 'brightness-0 invert'
+                isSticky ? 'brightness-100' : isHome ? 'brightness-0 invert' : 'brightness-0 invert'
               } w-auto`}
             />
           </Link>
@@ -223,7 +223,7 @@ const Header: React.FC = () => {
                     className={`font-medium flex items-center motion-safe hover-lift ${
                       isSticky 
                         ? 'text-ink hover:text-accent' 
-                        : isHome ? 'text-white hover:text-white/80' : 'text-ink hover:text-accent'
+                        : 'text-white hover:text-white/80'
                     } ${location.pathname.startsWith(item.href) ? 'text-accent' : ''}`}
                   >
                     {item.name}
@@ -235,7 +235,7 @@ const Header: React.FC = () => {
                     className={`font-medium flex items-center motion-safe hover-lift ${
                       isSticky 
                         ? 'text-ink hover:text-accent' 
-                        : 'text-white hover:text-white/80'
+                        : isHome ? 'text-white hover:text-white/80' : 'text-white hover:text-white/80'
                     } ${location.pathname === item.href ? 'text-accent' : ''}`}
                   >
                     {item.name}
@@ -269,7 +269,7 @@ const Header: React.FC = () => {
               className={`px-4 lg:px-6 py-2 rounded-xl font-medium motion-safe hover-lift hover-press shrink-0 ${
                 isSticky
                   ? 'bg-accent text-white hover:bg-accent/90'
-                  : isHome ? 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm' : 'bg-accent text-white hover:bg-accent/90'
+                  : 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm'
               }`}
             >
               Broker Login
@@ -282,7 +282,7 @@ const Header: React.FC = () => {
             className={`lg:hidden p-2 rounded-md motion-safe hover-lift ${
               isSticky 
                 ? 'text-slate-700 hover:text-ink hover:bg-slate-100' 
-                : isHome ? 'text-white hover:text-white/80 hover:bg-white/10' : 'text-slate-700 hover:text-ink hover:bg-slate-100'
+               : 'text-white hover:text-white/80 hover:bg-white/10'
             }`}
             aria-label="Open menu"
           >
