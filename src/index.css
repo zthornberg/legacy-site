@@ -52,6 +52,21 @@
   .hover-press:active {
     transform: translateY(0);
   }
+  
+  /* Smooth page transitions */
+  .page-transition {
+    transition: opacity 150ms ease-out, transform 150ms ease-out;
+  }
+  
+  .page-enter {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  
+  .page-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -64,4 +79,27 @@
   .animate-count-up {
     animation: none;
   }
+}
+
+/* Prevent flash of unstyled content */
+html {
+  background-color: #ffffff;
+}
+
+/* Smooth route transitions */
+#root {
+  transition: opacity 100ms ease-out;
+}
+
+/* Preload critical fonts */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-display: swap;
+  src: url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-display: swap;
+  src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import Home from './pages/Home';
@@ -31,83 +32,123 @@ import BlogPost from './pages/BlogPost';
 import GeneralCaseStudies from './pages/CaseStudies';
 import Representation from './pages/buy/Representation';
 
+// Page transition variants
+const pageVariants = {
+  initial: { opacity: 0, y: 8 },
+  in: { opacity: 1, y: 0 },
+  out: { opacity: 0, y: -8 }
+};
+
+const pageTransition = {
+  type: 'tween',
+  ease: 'anticipate',
+  duration: 0.15
+};
+
+// Wrapper component for page transitions
+const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <motion.div
+    initial="initial"
+    animate="in"
+    exit="out"
+    variants={pageVariants}
+    transition={pageTransition}
+  >
+    {children}
+  </motion.div>
+);
+
 function App() {
   return (
     <AuthProvider>
       <Router>
         <div className="min-h-screen bg-white">
           <Header />
-          <main>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<Home />} />
-              
-              {/* Buy Section */}
-              <Route path="/buy/listings" element={<BusinessListings />} />
-              <Route path="/buy/representation" element={<Representation />} />
-              <Route path="/buy/registration" element={<BuyerRegistration />} />
-              
-              {/* Sell Section */}
-              <Route path="/sell/brokerage" element={<BrokerageServices />} />
-              <Route path="/sell/ma-services" element={<MAServices />} />
-              <Route path="/sell/case-studies" element={<CaseStudies />} />
-              
-              {/* Case Studies */}
-              <Route path="/case-studies" element={<GeneralCaseStudies />} />
-              
-              {/* Licensing Program */}
-              <Route path="/licensing/program" element={<ProgramSummary />} />
-              <Route path="/licensing/pricing" element={<Pricing />} />
-              <Route path="/licensing/testimonials" element={<Testimonials />} />
-              
-              {/* Company */}
-              <Route path="/company/team" element={<OurTeam />} />
-              <Route path="/company/team/:name" element={<TeamMemberBio />} />
-              
-              {/* Contact */}
-              <Route path="/contact" element={<Contact />} />
-              
-              {/* Industries */}
-              <Route path="/industries" element={<IndustriesOverview />} />
-              <Route path="/industries/:industry" element={<IndustryPage />} />
-              
-              {/* Blog */}
-              <Route path="/company/blog" element={<BlogIndex />} />
-              <Route path="/company/blog/:slug" element={<BlogPost />} />
-              
-              {/* Portal */}
-              <Route path="/portal/login" element={<BrokerLogin />} />
-              <Route path="/portal" element={
-                <ProtectedRoute>
-                  <BrokerDashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/portal/documents" element={
-                <ProtectedRoute>
-                  <DocumentLibrary />
-                </ProtectedRoute>
-              } />
-              <Route path="/portal/listing-submission" element={
-                <ProtectedRoute>
-                  <ListingSubmission />
-                </ProtectedRoute>
-              } />
-              <Route path="/portal/buyer-search" element={
-                <ProtectedRoute>
-                  <BuyerNetworkSearch />
-                </ProtectedRoute>
-              } />
-              <Route path="/portal/pe-request" element={
-                <ProtectedRoute>
-                  <PrivateEquityRequest />
-                </ProtectedRoute>
-              } />
-              <Route path="/portal/market-research" element={
-                <ProtectedRoute>
-                  <MarketResearchRequest />
-                </ProtectedRoute>
-              } />
-            </Routes>
+          <main className="relative">
+            <AnimatePresence mode="wait">
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+                
+                {/* Buy Section */}
+                <Route path="/buy/listings" element={<PageWrapper><BusinessListings /></PageWrapper>} />
+                <Route path="/buy/representation" element={<PageWrapper><Representation /></PageWrapper>} />
+                <Route path="/buy/registration" element={<PageWrapper><BuyerRegistration /></PageWrapper>} />
+                
+                {/* Sell Section */}
+                <Route path="/sell/brokerage" element={<PageWrapper><BrokerageServices /></PageWrapper>} />
+                <Route path="/sell/ma-services" element={<PageWrapper><MAServices /></PageWrapper>} />
+                <Route path="/sell/case-studies" element={<PageWrapper><CaseStudies /></PageWrapper>} />
+                
+                {/* Case Studies */}
+                <Route path="/case-studies" element={<PageWrapper><GeneralCaseStudies /></PageWrapper>} />
+                
+                {/* Licensing Program */}
+                <Route path="/licensing/program" element={<PageWrapper><ProgramSummary /></PageWrapper>} />
+                <Route path="/licensing/pricing" element={<PageWrapper><Pricing /></PageWrapper>} />
+                <Route path="/licensing/testimonials" element={<PageWrapper><Testimonials /></PageWrapper>} />
+                
+                {/* Company */}
+                <Route path="/company/team" element={<PageWrapper><OurTeam /></PageWrapper>} />
+                <Route path="/company/team/:name" element={<PageWrapper><TeamMemberBio /></PageWrapper>} />
+                
+                {/* Contact */}
+                <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
+                
+                {/* Industries */}
+                <Route path="/industries" element={<PageWrapper><IndustriesOverview /></PageWrapper>} />
+                <Route path="/industries/:industry" element={<PageWrapper><IndustryPage /></PageWrapper>} />
+                
+                {/* Blog */}
+                <Route path="/company/blog" element={<PageWrapper><BlogIndex /></PageWrapper>} />
+                <Route path="/company/blog/:slug" element={<PageWrapper><BlogPost /></PageWrapper>} />
+                
+                {/* Portal */}
+                <Route path="/portal/login" element={<PageWrapper><BrokerLogin /></PageWrapper>} />
+                <Route path="/portal" element={
+                  <PageWrapper>
+                    <ProtectedRoute>
+                      <BrokerDashboard />
+                    </ProtectedRoute>
+                  </PageWrapper>
+                } />
+                <Route path="/portal/documents" element={
+                  <PageWrapper>
+                    <ProtectedRoute>
+                      <DocumentLibrary />
+                    </ProtectedRoute>
+                  </PageWrapper>
+                } />
+                <Route path="/portal/listing-submission" element={
+                  <PageWrapper>
+                    <ProtectedRoute>
+                      <ListingSubmission />
+                    </ProtectedRoute>
+                  </PageWrapper>
+                } />
+                <Route path="/portal/buyer-search" element={
+                  <PageWrapper>
+                    <ProtectedRoute>
+                      <BuyerNetworkSearch />
+                    </ProtectedRoute>
+                  </PageWrapper>
+                } />
+                <Route path="/portal/pe-request" element={
+                  <PageWrapper>
+                    <ProtectedRoute>
+                      <PrivateEquityRequest />
+                    </ProtectedRoute>
+                  </PageWrapper>
+                } />
+                <Route path="/portal/market-research" element={
+                  <PageWrapper>
+                    <ProtectedRoute>
+                      <MarketResearchRequest />
+                    </ProtectedRoute>
+                  </PageWrapper>
+                } />
+              </Routes>
+            </AnimatePresence>
             {/* Append contextual industry section below the page content */}
             <AutoIndustryInjector />
           </main>

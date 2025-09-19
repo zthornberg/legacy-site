@@ -22,6 +22,14 @@ const useDebounce = (value: boolean, delay: number) => {
   return debouncedValue;
 };
 
+// Preload critical images
+const preloadImages = () => {
+  const images = ['/media/Horizontal Logo High Res.png'];
+  images.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+};
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -33,6 +41,11 @@ const Header: React.FC = () => {
   
   // Debounce the scroll state to prevent jitter - apply to ALL pages
   const isSticky = useDebounce(scrolled, 50);
+
+  // Preload images on mount
+  useEffect(() => {
+    preloadImages();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
