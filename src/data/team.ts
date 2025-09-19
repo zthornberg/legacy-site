@@ -104,7 +104,7 @@ export const team: TeamMember[] = [
     id: "brady-smith",
     name: "Brady Smith",
     title: "Senior Software Engineer / IT Support",
-    photo: "/media/gene-w.png",
+    photo: "/media/Brady Smith Headshot.png",
     sections: [
       {
         label: "About",
