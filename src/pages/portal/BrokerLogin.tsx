@@ -92,11 +92,6 @@ const BrokerLogin: React.FC = () => {
             </a>
           </div>
 
-          <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-600 text-center">
-              Demo credentials: broker@legacy.com / password
-            </p>
-          </div>
         </div>
       </div>
     </div>
