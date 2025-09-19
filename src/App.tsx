@@ -26,6 +26,8 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import Contact from './pages/Contact';
 import AutoIndustryInjector from './components/AutoIndustryInjector';
+import BlogIndex from './pages/BlogIndex';
+import BlogPost from './pages/BlogPost';
 
 function App() {
   return (
@@ -62,6 +64,10 @@ function App() {
               {/* Industries */}
               <Route path="/industries" element={<IndustriesOverview />} />
               <Route path="/industries/:industry" element={<IndustryPage />} />
+              
+              {/* Blog */}
+              <Route path="/company/blog" element={<BlogIndex />} />
+              <Route path="/company/blog/:slug" element={<BlogPost />} />
               
               {/* Portal */}
               <Route path="/portal/login" element={<BrokerLogin />} />

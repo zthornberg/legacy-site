@@ -7,6 +7,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   Factory, PackageSearch, LineChart, Users, ShieldAlert, Building2, ChevronRight,
 } from "lucide-react";
+import TypeformEmbed from "./TypeformEmbed";
 
 type Props = { slug: string };
 
@@ -135,12 +136,19 @@ function CTAIndustry({
           </p>
         </div>
         <div className="mt-4 md:mt-0 flex items-center gap-3">
-          <a
-            href={href}
-            className="inline-flex items-center justify-center rounded-lg bg-white text-slate-900 px-4 py-2.5 font-medium shadow hover:bg-slate-100 transition"
-          >
-            Schedule a call
-          </a>
+          {import.meta.env.VITE_TYPEFORM_FORM_ID ? (
+            <TypeformEmbed
+              mode="popup"
+              hidden={{ industry: slug, source: pathname }}
+            />
+          ) : (
+            <a
+              href={href}
+              className="inline-flex items-center justify-center rounded-lg bg-white text-slate-900 px-4 py-2.5 font-medium shadow hover:bg-slate-100 transition"
+            >
+              Schedule a call
+            </a>
+          )}
           <Link
             to="/buy"
             className="inline-flex items-center justify-center rounded-lg bg-white/10 text-white px-4 py-2.5 font-medium ring-1 ring-white/30 hover:bg-white/15 transition"
