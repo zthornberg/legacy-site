@@ -25,6 +25,7 @@ import MarketResearchRequest from './pages/portal/MarketResearchRequest';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import Contact from './pages/Contact';
+import AutoIndustryInjector from './components/AutoIndustryInjector';
 
 function App() {
   return (
@@ -95,6 +96,8 @@ function App() {
                 </ProtectedRoute>
               } />
             </Routes>
+            {/* Append contextual industry section below the page content */}
+            <AutoIndustryInjector />
           </main>
           <Footer />
         </div>
