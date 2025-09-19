@@ -121,9 +121,14 @@ const ProgramSummary: React.FC = () => {
                   <span className="text-gray-700">100% money-back guarantee</span>
                 </div>
               </div>
+              <div className="text-4xl font-bold mb-2">$500K+*</div>
+              <div className="text-sm opacity-75">Annual earning potential can exceed</div>
             </div>
           </div>
         </div>
+        <p className="text-center text-sm opacity-60 mt-4">
+          *From IBBA and M&A Source Reported 2024 Data
+        </p>
       </section>
 
       {/* Program Features */}

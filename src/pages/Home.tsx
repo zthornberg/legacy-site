@@ -4,6 +4,7 @@ import { Users, Award, TrendingUp, DollarSign, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import VideoHero from '../components/ui/VideoHero';
 import AnimatedCounter from '../components/ui/AnimatedCounter';
+import StatsCarousel from '../components/home/StatsCarousel';
 import QuickNavBubbles from '../components/home/QuickNavBubbles';
 import GlassCard from '../components/ui/GlassCard';
 import CaseShowcase from '../components/ui/CaseShowcase';
@@ -69,6 +70,7 @@ const Home: React.FC = () => {
       {/* Animated Stats Banner - Moved outside hero */}
       <section className="relative -mt-24 z-20 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Desktop Stats Grid */}
           <div className="hidden md:grid grid-cols-5 gap-4">
             {stats.map((stat, index) => (
               <AnimatedCounter
@@ -79,6 +81,16 @@ const Home: React.FC = () => {
                 delay={index * 0.1}
               />
             ))}
+          </div>
+          
+          {/* Mobile Stats Carousel - Portrait Mode */}
+          <div className="md:hidden">
+            <StatsCarousel stats={stats.map(stat => ({
+              icon: stat.icon,
+              value: stat.value,
+              label: stat.label,
+              color: stat.color
+            }))} />
           </div>
         </div>
       </section>

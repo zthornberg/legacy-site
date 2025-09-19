@@ -311,10 +311,10 @@ const Header: React.FC = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:hidden glass-panel mt-4 overflow-hidden"
+              className="lg:hidden glass-panel mt-4 overflow-hidden max-h-[70vh]"
               data-testid="mobile-drawer"
             >
-              <div className="px-4 py-4 space-y-4">
+              <div className="px-4 py-4 space-y-4 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
                 {navigation.map((item) => (
                   <div key={item.name}>
                     <Link

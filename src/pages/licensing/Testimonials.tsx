@@ -130,6 +130,9 @@ const Testimonials: React.FC = () => {
             </div>
           </div>
         </div>
+        <p className="text-center text-sm text-gray-500 mt-4">
+          *From IBBA and M&A Source Reported 2024 Data
+        </p>
       </section>
 
       {/* Final CTA */}
