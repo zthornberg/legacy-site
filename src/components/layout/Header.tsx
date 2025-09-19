@@ -269,7 +269,7 @@ const Header: React.FC = () => {
               className={`px-4 lg:px-6 py-2 rounded-xl font-medium motion-safe hover-lift hover-press shrink-0 ${
                 isSticky
                   ? 'bg-accent text-white hover:bg-accent/90'
-                 : isHome ? 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm' : 'bg-accent text-white hover:bg-accent/90'
+                  : isHome ? 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm' : 'bg-accent text-white hover:bg-accent/90'
               }`}
             >
               Broker Login
@@ -283,7 +283,7 @@ const Header: React.FC = () => {
               isSticky 
                 ? 'text-slate-700 hover:text-ink hover:bg-slate-100' 
                 : isHome ? 'text-white hover:text-white/80 hover:bg-white/10' : 'text-slate-700 hover:text-ink hover:bg-slate-100'
-                : isHome ? 'text-white hover:text-white/80' : 'text-ink hover:text-accent'
+            }`}
             aria-label="Open menu"
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
