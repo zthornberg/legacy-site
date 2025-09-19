@@ -28,7 +28,7 @@ import Contact from './pages/Contact';
 import AutoIndustryInjector from './components/AutoIndustryInjector';
 import BlogIndex from './pages/BlogIndex';
 import BlogPost from './pages/BlogPost';
-import CaseStudies from './pages/CaseStudies';
+import GeneralCaseStudies from './pages/CaseStudies';
 import Representation from './pages/buy/Representation';
 
 function App() {
@@ -53,7 +53,7 @@ function App() {
               <Route path="/sell/case-studies" element={<CaseStudies />} />
               
               {/* Case Studies */}
-              <Route path="/case-studies" element={<CaseStudies />} />
+              <Route path="/case-studies" element={<GeneralCaseStudies />} />
               
               {/* Licensing Program */}
               <Route path="/licensing/program" element={<ProgramSummary />} />
