@@ -81,7 +81,7 @@ export const team: TeamMember[] = [
     id: "gene-wright",
     name: "Gene Wright",
     title: "Senior Advisor / Mentor Broker",
-    photo: "/media/gene-w.png",
+    photo: "/media/Gene Headshot Full Sized.png",
     sections: [
       {
         label: "About",
