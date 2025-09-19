@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Users, CheckCircle } from 'lucide-react';
 import industryContent from '../../content/industries/industries.json';
 import IndustrySection from '../../components/IndustrySection';
+import IndustrySection from '../../components/IndustrySection';
 
 interface IndustryData {
   name: string;
@@ -102,6 +103,7 @@ const IndustryPage: React.FC = () => {
         </div>
 
         {/* Enhanced Industry Content */}
+        <IndustrySection slug={industry || ''} />
         <IndustrySection slug={industry || ''} />
 
         {/* CTA Section */}

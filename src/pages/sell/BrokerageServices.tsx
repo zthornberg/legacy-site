@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { TrendingUp, Users, FileText, Handshake, Shield, CheckCircle } from 'lucide-react';
+import ProcessSection from '../../components/ProcessSection';
 
 const BrokerageServices: React.FC = () => {
   const processSteps = [
@@ -142,6 +143,9 @@ const BrokerageServices: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Process Section */}
+      <ProcessSection mode="sell" />
     </div>
   );
 };

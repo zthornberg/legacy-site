@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Filter, MapPin, DollarSign, TrendingUp, Eye } from 'lucide-react';
+import ProcessSection from '../../components/ProcessSection';
 
 interface BusinessListing {
   id: string;
@@ -195,6 +196,9 @@ const BusinessListings: React.FC = () => {
           </a>
         </div>
       </div>
+
+      {/* Process Section */}
+      <ProcessSection mode="buy" />
     </div>
   );
 };
