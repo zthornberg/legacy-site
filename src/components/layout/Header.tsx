@@ -28,6 +28,7 @@ const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const { user, logout } = useAuth();
   const location = useLocation();
+  const isHome = location.pathname === '/';
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   // Debounce the scroll state to prevent jitter - apply to ALL pages
@@ -107,6 +108,8 @@ const Header: React.FC = () => {
       href: '/buy/listings',
       dropdown: [
         { name: 'Business Listings', href: '/buy/listings' },
+        { name: 'Buyer Representation', href: '/buy/representation' },
+        { name: 'Case Studies', href: '/case-studies' },
         { name: 'Buyer Registration', href: '/buy/registration' }
       ]
     },
@@ -116,6 +119,7 @@ const Header: React.FC = () => {
       dropdown: [
         { name: 'Brokerage Services', href: '/sell/brokerage' },
         { name: 'M&A Services', href: '/sell/ma-services' },
+        { name: 'Case Studies', href: '/case-studies' },
         { name: 'Case Studies', href: '/sell/case-studies' }
       ]
     },
@@ -177,7 +181,7 @@ const Header: React.FC = () => {
   return (
     <motion.header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isSticky ? 'glass-panel m-4' : 'bg-black/20 backdrop-blur-sm'
+        isSticky ? 'glass-panel m-4' : isHome ? 'bg-black/20 backdrop-blur-sm' : 'glass-panel m-4'
       }`}
       initial={{ y: -100 }}
       animate={{ 

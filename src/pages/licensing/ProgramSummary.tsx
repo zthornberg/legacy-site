@@ -57,8 +57,7 @@ const ProgramSummary: React.FC = () => {
               Legacy Broker Licensing Program
             </h1>
             <p className="text-xl lg:text-2xl opacity-90 mb-12 leading-relaxed">
-              Start a high‑income brokerage firm with Legacy's full support. 
-              Join an exclusive network of elite professionals earning $500K+ annually.
+              Build a real M&A practice faster—without going it alone. Legacy licenses give you the tools, data, and senior mentorship to serve owners well and earn like a top-5% advisor.
             </p>
             <Link
               to="/licensing/pricing"
@@ -182,16 +181,25 @@ const ProgramSummary: React.FC = () => {
       {/* Guarantee Section */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-12 text-white text-center">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-12 text-white text-center">
             <div className="bg-white/20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
               <Shield className="h-10 w-10" />
             </div>
-            <h2 className="text-3xl font-bold mb-6">100% Money-Back Guarantee</h2>
+            <h2 className="text-3xl font-bold mb-6">Our Assurance (Deliverable-Based)</h2>
             <p className="text-xl opacity-90 max-w-3xl mx-auto leading-relaxed">
-              We are so confident in our program that if you follow our system and don't 
-              recoup your initial license fee within 12 months, we'll pay you the difference. 
-              Your success is literally guaranteed.
+              If you complete onboarding and meet the activity requirements, we guarantee delivery of the defined program assets: warm introductions to highly interested sellers, tailored market data packs, platform access, and hands-on deal coaching. If we fail to deliver these program assets within the stated windows, we'll make it right through additional delivery or fee credit. (This is not an earnings guarantee.)
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Disclaimers */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-2 text-xs text-gray-500">
+            <p>Legacy is a licensing program—not a franchise. Licensees operate independent businesses and are solely responsible for their services.</p>
+            <p>Legacy does not provide or disclose client financial statements. All examples are illustrative.</p>
+            <p>Any revenue examples reflect unique circumstances and are not promises of future results.</p>
           </div>
         </div>
       </section>

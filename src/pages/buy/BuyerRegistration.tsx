@@ -327,6 +327,9 @@ const BuyerRegistration: React.FC = () => {
                         regarding any business information shared with you by Legacy 
                         Business Brokers and its clients.
                       </p>
+                      <p className="text-xs text-slate-500 mt-2">
+                        *A Legacy M&A advisor will contact you to complete onboarding and countersign an NDA before sharing confidential materials.
+                      </p>
                     </div>
                   </div>
                 </div>

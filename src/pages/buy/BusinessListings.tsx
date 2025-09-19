@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Filter, MapPin, DollarSign, TrendingUp, Eye } from 'lucide-react';
+import { Search, Filter, MapPin, DollarSign, TrendingUp, Eye, Mail, Lock } from 'lucide-react';
 import ProcessSection from '../../components/ProcessSection';
 
 interface BusinessListing {
@@ -14,10 +14,10 @@ interface BusinessListing {
 }
 
 const BusinessListings: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedIndustry, setSelectedIndustry] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const [priceRange, setPriceRange] = useState('');
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: ''
+  });
 
   const mockListings: BusinessListing[] = [
     {
@@ -52,9 +52,17 @@ const BusinessListings: React.FC = () => {
     }
   ];
 
-  const industries = ['All', 'Manufacturing', 'Technology', 'Healthcare', 'Home Services', 'Construction', 'Retail'];
-  const locations = ['All', 'Arizona', 'Texas', 'California', 'Florida', 'Colorado'];
-  const priceRanges = ['All', 'Under $500K', '$500K - $1M', '$1M - $2M', '$2M - $5M', '$5M+'];
+  const handleInputChange = (field: string, value: string) => {
+    setLoginData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Login attempt:', loginData);
+  };
 
   return (
     <div className="pt-20 bg-gray-50 min-h-screen">
@@ -62,138 +70,141 @@ const BusinessListings: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Business Listings
+            Acquisition Opportunities
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Explore our curated marketplace of businesses. Each listing is pre-vetted, 
-            so you can invest with confidence. Don't see what you're looking for? 
-            Our extensive off-market network can help you find the right opportunity.
+            Acquisition opportunities are available to approved buyers. This keeps sellers 
+            confidential and ensures serious, well-prepared counterparties. Log in or register to request access.
           </p>
         </div>
 
-        {/* Filters */}
-        <div className="bg-white rounded-xl p-6 shadow-lg mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {/* Search */}
-            <div className="lg:col-span-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <input
-                  type="text"
-                  placeholder="Search businesses..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                />
+        {/* Login Card with Blurred Background */}
+        <div className="relative">
+          {/* Blurred Listings Background */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="blur-xl opacity-30">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {mockListings.map((listing) => (
+                  <div key={listing.id} className="bg-white rounded-xl overflow-hidden shadow-lg">
+                    <div className="relative">
+                      <img
+                        src={listing.image}
+                        alt={listing.title}
+                        className="w-full h-48 object-cover"
+                      />
+                      {listing.isConfidential && (
+                        <div className="absolute top-4 right-4 bg-purple-900 text-white px-3 py-1 rounded-full text-sm font-medium">
+                          Confidential
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-3">
+                        {listing.title}
+                      </h3>
+                      
+                      <div className="space-y-2 mb-6">
+                        <div className="flex items-center text-gray-600">
+                          <Filter className="h-4 w-4 mr-2 text-accent" />
+                          <span className="text-sm">{listing.industry}</span>
+                        </div>
+                        <div className="flex items-center text-gray-600">
+                          <MapPin className="h-4 w-4 mr-2 text-accent" />
+                          <span className="text-sm">{listing.location}</span>
+                        </div>
+                        <div className="flex items-center text-gray-600">
+                          <TrendingUp className="h-4 w-4 mr-2 text-green-600" />
+                          <span className="text-sm">Cash Flow: {listing.cashFlow}</span>
+                        </div>
+                        <div className="flex items-center text-gray-600">
+                          <DollarSign className="h-4 w-4 mr-2 text-blue-600" />
+                          <span className="text-sm font-semibold">Asking: {listing.askingPrice}</span>
+                        </div>
+                      </div>
+
+                      <button className="w-full bg-accent text-white py-3 rounded-xl hover:bg-accentAlt motion-safe font-semibold flex items-center justify-center">
+                        <Eye className="h-4 w-4 mr-2" />
+                        View Details
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-
-            {/* Industry Filter */}
-            <select
-              value={selectedIndustry}
-              onChange={(e) => setSelectedIndustry(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-            >
-              {industries.map((industry) => (
-                <option key={industry} value={industry === 'All' ? '' : industry}>
-                  {industry}
-                </option>
-              ))}
-            </select>
-
-            {/* Location Filter */}
-            <select
-              value={selectedLocation}
-              onChange={(e) => setSelectedLocation(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-            >
-              {locations.map((location) => (
-                <option key={location} value={location === 'All' ? '' : location}>
-                  {location}
-                </option>
-              ))}
-            </select>
-
-            {/* Price Range Filter */}
-            <select
-              value={priceRange}
-              onChange={(e) => setPriceRange(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-            >
-              {priceRanges.map((range) => (
-                <option key={range} value={range === 'All' ? '' : range}>
-                  {range}
-                </option>
-              ))}
-            </select>
           </div>
-        </div>
 
-        {/* Listings Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {mockListings.map((listing) => (
-            <div 
-              key={listing.id} 
-              className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
-            >
-              <div className="relative">
-                <img
-                  src={listing.image}
-                  alt={listing.title}
-                  className="w-full h-48 object-cover"
-                />
-                {listing.isConfidential && (
-                  <div className="absolute top-4 right-4 bg-purple-900 text-white px-3 py-1 rounded-full text-sm font-medium">
-                    Confidential
-                  </div>
-                )}
+          {/* Login Form */}
+          <div className="relative z-10 flex justify-center">
+            <div className="bg-white rounded-xl p-8 shadow-xl max-w-md w-full">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  Access Portal
+                </h2>
+                <p className="text-gray-600">
+                  Log in to view confidential opportunities
+                </p>
               </div>
-              
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  {listing.title}
-                </h3>
-                
-                <div className="space-y-2 mb-6">
-                  <div className="flex items-center text-gray-600">
-                    <Filter className="h-4 w-4 mr-2 text-accent" />
-                    <span className="text-sm">{listing.industry}</span>
-                  </div>
-                  <div className="flex items-center text-gray-600">
-                    <MapPin className="h-4 w-4 mr-2 text-accent" />
-                    <span className="text-sm">{listing.location}</span>
-                  </div>
-                  <div className="flex items-center text-gray-600">
-                    <TrendingUp className="h-4 w-4 mr-2 text-green-600" />
-                    <span className="text-sm">Cash Flow: {listing.cashFlow}</span>
-                  </div>
-                  <div className="flex items-center text-gray-600">
-                    <DollarSign className="h-4 w-4 mr-2 text-blue-600" />
-                    <span className="text-sm font-semibold">Asking: {listing.askingPrice}</span>
+
+              <form onSubmit={handleLogin} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                    <input
+                      type="email"
+                      required
+                      value={loginData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                      placeholder="Enter your email"
+                      aria-label="Email address"
+                    />
                   </div>
                 </div>
 
-                <button className="w-full bg-accent text-white py-3 rounded-xl hover:bg-accentAlt motion-safe font-semibold flex items-center justify-center">
-                  <Eye className="h-4 w-4 mr-2" />
-                  View Details
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                    <input
+                      type="password"
+                      required
+                      value={loginData.password}
+                      onChange={(e) => handleInputChange('password', e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                      placeholder="Enter your password"
+                      aria-label="Password"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-accent text-white py-3 rounded-xl hover:bg-accentAlt motion-safe font-semibold"
+                  aria-label="Log in to access listings"
+                >
+                  Log In
                 </button>
+              </form>
+
+              <div className="mt-6 text-center space-y-3">
+                <a href="/forgot-password" className="text-accent hover:text-accentAlt text-sm">
+                  Forgot password?
+                </a>
+                <div className="text-gray-500 text-sm">
+                  Don't have an account?{' '}
+                  <a href="/buy/registration" className="text-accent hover:text-accentAlt font-medium">
+                    Register as a Buyer
+                  </a>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
-
-        {/* No listings message for empty state */}
-        <div className="text-center mt-12">
-          <p className="text-gray-600 mb-6">
-            Don't see the perfect opportunity? Our off-market network has exclusive deals 
-            not listed publicly.
-          </p>
-          <a
-            href="/buy/registration"
-            className="inline-flex items-center bg-accent text-white px-6 py-3 rounded-xl hover:bg-accentAlt motion-safe font-semibold"
-          >
-            Register for Exclusive Access
-          </a>
+          </div>
         </div>
       </div>
 

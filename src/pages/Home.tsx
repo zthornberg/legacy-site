@@ -94,11 +94,10 @@ const Home: React.FC = () => {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             <h2 className="text-h2 font-bold text-ink mb-4 font-space-grotesk">
-              Your Success Is Our Mission
+              Outcomes in Focus
             </h2>
-            <p className="text-xl text-slate-700 max-w-3xl mx-auto">
-              Whether you're looking to buy, sell, or build an elite advisory practice, 
-              Legacy provides the tools and expertise to achieve your goals.
+            <p className="text-sm text-slate-500 mt-1">
+              Real examples of the businesses our brokers serve every day. <em>Company details anonymized; confidential info redacted.</em>
             </p>
           </motion.div>
 
@@ -137,15 +136,8 @@ const Home: React.FC = () => {
             <h2 className="text-h2 font-bold text-ink mb-8 font-space-grotesk">
               About Legacy
             </h2>
-            <p className="text-xl text-slate-700 leading-relaxed mb-8">
-              Legacy combines cutting-edge AI analytics with seasoned M&A advisory to provide 
-              a modern, client-focused experience. Our team's humble, driven culture means we 
-              put your goals first, executing every deal with integrity and excellence.
-            </p>
-            <p className="text-lg text-slate-700 leading-relaxed">
-              We believe success is a byproduct of putting others first. Our advisors serve 
-              clients with empathy and professionalism, fostering a collaborative network where 
-              continuous learning and improvement drive outstanding results.
+            <p className="text-xl text-slate-700 leading-relaxed">
+              We help owners, operators, and advisors turn hard work into lasting value. Our team blends AI-assisted research with seasoned, human deal craft—so every conversation, comp, and counterparty is prepared with care. We serve with humility, compete with excellence, and default to doing the right thing—even when nobody's looking.
             </p>
           </motion.div>
         </div>
@@ -167,8 +159,7 @@ const Home: React.FC = () => {
           >
             <h2 className="text-h2 font-bold mb-8 font-space-grotesk">Ready to Start Your Legacy?</h2>
             <p className="text-xl mb-12 max-w-2xl mx-auto opacity-90">
-              Join thousands of successful business owners and brokers who trust Legacy 
-              for their most important transactions.
+              If you're selling your life's work, buying your next platform, or building an elite advisory practice, we'll meet you where you are and move with urgency. Quiet, competent, and accountable. Let's make the next chapter your best.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link

@@ -10,15 +10,11 @@ const Pricing: React.FC = () => {
       color: 'border-accent',
       buttonColor: 'bg-accent hover:bg-accentAlt',
       features: [
-        '3-day Training Conference',
-        'Full branding & website package',
-        'Complete document library',
-        '6 months exclusive leads (6+/month)',
-        '6 months 1:1 coaching',
-        '6 months IT support',
-        'Standard territory (one metro area)',
-        'Broker Portal access',
-        '100% Money-Back Guarantee'
+        '6 guaranteed hot seller leads/mo (≥$1M revenue)',
+        '20+ targeted warm local leads in your preferred industries',
+        'Backend portal & research suite access (core level)',
+        'Hands-on listing prep playbooks & deal coaching',
+        'Royalty: 20%'
       ],
       description: 'Perfect for self-starters who can leverage Legacy\'s tools quickly',
       highlight: false
@@ -30,15 +26,11 @@ const Pricing: React.FC = () => {
       color: 'border-accent',
       buttonColor: 'bg-accent hover:bg-accentAlt',
       features: [
-        'Everything in Associate Package',
-        '12 months exclusive leads (6+/month)',
-        '12 months 1:1 coaching',
-        '12 months priority IT support',
-        'Larger territory or dual regions',
-        'Second person training included',
-        'Advanced marketing materials',
-        'Quarterly strategy sessions',
-        '100% Money-Back Guarantee'
+        '10 guaranteed hot seller leads/mo',
+        '30+ targeted warm local leads (high-fit for nurturing)',
+        'Backend portal & research suite access (expanded level)',
+        'Dedicated campaign reviews + comp pack per mandate',
+        'Royalty: 15%'
       ],
       description: 'Most popular - comprehensive launchpad for scaling fast',
       highlight: true
@@ -50,15 +42,11 @@ const Pricing: React.FC = () => {
       color: 'border-yellow-500',
       buttonColor: 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600',
       features: [
-        'Everything in Professional Package',
-        '18 months exclusive leads (6+/month)',
-        '18 months dedicated mentorship',
-        'State/regional territory exclusivity',
-        'VIP support & custom marketing',
-        'Second advanced training conference',
-        'Co-funded marketing campaigns',
-        'Executive strategy sessions',
-        '100% Money-Back Guarantee'
+        '15 guaranteed hot seller leads/mo',
+        '50+ targeted warm local leads',
+        'Backend portal & research suite access (advanced level)',
+        'Priority data requests (PE lists, buyer maps, industry briefs)',
+        'Royalty: 10%'
       ],
       description: 'Elite package for building a multi-agent brokerage firm',
       highlight: false
@@ -128,7 +116,7 @@ const Pricing: React.FC = () => {
         </div>
 
         {/* Financing Note */}
-        <div className="bg-white rounded-xl p-8 shadow-lg text-center">
+        <div className="bg-white rounded-xl p-8 shadow-lg text-center mb-8">
           <h3 className="text-2xl font-bold text-gray-900 mb-4">
             Financing Available*
           </h3>
@@ -138,6 +126,13 @@ const Pricing: React.FC = () => {
           </p>
           <p className="text-sm text-gray-500">
             *For qualified candidates. Financing options discussed during interview process.
+          </p>
+        </div>
+
+        {/* Data Access Caption */}
+        <div className="text-center mb-16">
+          <p className="text-sm text-gray-500">
+            All tiers include ~$60k/yr equivalent access to premium M&A data tools; access level expands with tier.
           </p>
         </div>
 

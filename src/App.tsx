@@ -28,6 +28,8 @@ import Contact from './pages/Contact';
 import AutoIndustryInjector from './components/AutoIndustryInjector';
 import BlogIndex from './pages/BlogIndex';
 import BlogPost from './pages/BlogPost';
+import CaseStudies from './pages/CaseStudies';
+import Representation from './pages/buy/Representation';
 
 function App() {
   return (
@@ -42,12 +44,16 @@ function App() {
               
               {/* Buy Section */}
               <Route path="/buy/listings" element={<BusinessListings />} />
+              <Route path="/buy/representation" element={<Representation />} />
               <Route path="/buy/registration" element={<BuyerRegistration />} />
               
               {/* Sell Section */}
               <Route path="/sell/brokerage" element={<BrokerageServices />} />
               <Route path="/sell/ma-services" element={<MAServices />} />
               <Route path="/sell/case-studies" element={<CaseStudies />} />
+              
+              {/* Case Studies */}
+              <Route path="/case-studies" element={<CaseStudies />} />
               
               {/* Licensing Program */}
               <Route path="/licensing/program" element={<ProgramSummary />} />
