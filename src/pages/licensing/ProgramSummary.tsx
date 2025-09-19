@@ -40,17 +40,17 @@ const ProgramSummary: React.FC = () => {
     <div className="pt-20 bg-white">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-ink via-slate-900 to-ink text-white overflow-hidden">
-        {/* Background Image */}
+        {/* Team Photo Background */}
         <div className="absolute inset-0 z-0">
           <img
             src="/media/team-photo.jpg"
-            alt=""
-            className="w-full h-full object-cover opacity-20"
+            alt="Legacy Team"
+            className="w-full h-full object-cover opacity-30"
           />
-          {/* Additional gradient overlay for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-br from-ink/80 via-slate-900/70 to-ink/80" />
+          {/* Dark gradient overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-ink/85 via-slate-900/75 to-ink/85" />
         </div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <div className="max-w-4xl relative z-10">
             <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-8">
