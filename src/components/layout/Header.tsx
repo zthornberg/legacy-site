@@ -47,6 +47,19 @@ const Header: React.FC = () => {
     preloadImages();
   }, []);
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -306,15 +319,33 @@ const Header: React.FC = () => {
         {/* Mobile Navigation */}
         <AnimatePresence>
           {isMenuOpen && (
+            <>
+              {/* Backdrop to prevent background scroll */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+                onClick={() => setIsMenuOpen(false)}
+              />
+              
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:hidden glass-panel mt-4 overflow-hidden max-h-[70vh]"
+              className="lg:hidden glass-panel mt-4 overflow-hidden max-h-[70vh] relative z-50"
               data-testid="mobile-drawer"
             >
-              <div className="px-4 py-4 space-y-4 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <div 
+                className="px-4 py-4 space-y-4 overflow-y-auto overscroll-contain max-h-[60vh]" 
+                style={{ 
+                  WebkitOverflowScrolling: 'touch',
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: 'rgba(0,0,0,0.3) transparent'
+                }}
+                onTouchMove={(e) => e.stopPropagation()}
+              >
                 {navigation.map((item) => (
                   <div key={item.name}>
                     <Link
@@ -362,6 +393,7 @@ const Header: React.FC = () => {
                 </div>
               </div>
             </motion.div>
+            </>
           )}
         </AnimatePresence>
       </div>
