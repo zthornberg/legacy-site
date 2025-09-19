@@ -145,6 +145,14 @@ const Header: React.FC = () => {
       ]
     },
     { 
+      name: 'Process', 
+      href: '/process/sell',
+      dropdown: [
+        { name: 'Sell-Side Process', href: '/process/sell' },
+        { name: 'Buy-Side Process', href: '/process/buy' }
+      ]
+    },
+    { 
       name: 'Company', 
       href: '/company/team',
       dropdown: [

@@ -25,6 +25,8 @@ import MarketResearchRequest from './pages/portal/MarketResearchRequest';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import Contact from './pages/Contact';
+import ProcessSell from './pages/ProcessSell';
+import ProcessBuy from './pages/ProcessBuy';
 
 function App() {
   return (
@@ -57,6 +59,10 @@ function App() {
               
               {/* Contact */}
               <Route path="/contact" element={<Contact />} />
+              
+              {/* Process */}
+              <Route path="/process/sell" element={<ProcessSell />} />
+              <Route path="/process/buy" element={<ProcessBuy />} />
               
               {/* Industries */}
               <Route path="/industries" element={<IndustriesOverview />} />

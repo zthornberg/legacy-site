@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Users, CheckCircle } from 'lucide-react';
 import industryContent from '../../content/industries/industries.json';
+import IndustrySection from '../../components/IndustrySection';
 
 interface IndustryData {
   name: string;
@@ -99,6 +100,9 @@ const IndustryPage: React.FC = () => {
             </p>
           </section>
         </div>
+
+        {/* Enhanced Industry Content */}
+        <IndustrySection slug={industry || ''} />
 
         {/* CTA Section */}
         <div className="mt-16 bg-slate-50 rounded-2xl p-8 text-center">
