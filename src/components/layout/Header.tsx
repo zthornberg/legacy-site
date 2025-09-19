@@ -181,7 +181,7 @@ const Header: React.FC = () => {
   return (
     <motion.header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isSticky ? 'glass-panel m-4' : isHome ? 'bg-black/20 backdrop-blur-sm' : 'bg-black/80 backdrop-blur-sm m-4 rounded-2xl'
+        isSticky ? 'glass-panel m-4' : isHome ? 'bg-black/20 backdrop-blur-sm' : 'bg-black/80 backdrop-blur-sm'
       }`}
       initial={{ y: -100 }}
       animate={{ 
