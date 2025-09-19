@@ -39,9 +39,20 @@ const ProgramSummary: React.FC = () => {
   return (
     <div className="pt-20 bg-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-ink via-slate-900 to-ink text-white">
+      <section className="relative bg-gradient-to-br from-ink via-slate-900 to-ink text-white overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/media/team-photo.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-20"
+          />
+          {/* Additional gradient overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-ink/80 via-slate-900/70 to-ink/80" />
+        </div>
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
-          <div className="max-w-4xl">
+          <div className="max-w-4xl relative z-10">
             <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-8">
               Legacy Broker Licensing Program
             </h1>
