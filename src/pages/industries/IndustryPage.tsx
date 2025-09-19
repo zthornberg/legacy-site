@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Users, CheckCircle } from 'lucide-react';
+import IndustrySection from '../../components/IndustrySection';
 import industryContent from '../../content/industries/industries.json';
 
 interface IndustryData {
@@ -99,6 +100,13 @@ const IndustryPage: React.FC = () => {
             </p>
           </section>
         </div>
+
+        {/* Legacy Industry Section */}
+        <section className="py-16 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <IndustrySection slug={industry || ''} />
+          </div>
+        </section>
 
         {/* CTA Section */}
         <div className="mt-16 bg-slate-50 rounded-2xl p-8 text-center">
