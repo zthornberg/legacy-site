@@ -1,0 +1,53 @@
+{
+  "members": [
+    {
+      "id": "zackary-thornberg",
+      "name": "Zackary Thornberg",
+      "title": "CEO & Advisor",
+      "photo": "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg",
+      "shortBio": "Seasoned entrepreneur with 20+ years in M&A and real estate investment"
+    },
+    {
+      "id": "farrukh-shaki",
+      "name": "Farrukh Shaki",
+      "title": "Chief Marketing Officer",
+      "photo": "https://images.pexels.com/photos/2182975/pexels-photo-2182975.jpeg",
+      "shortBio": "Digital marketing expert specializing in lead generation and brand strategy"
+    },
+    {
+      "id": "david-tucker",
+      "name": "David Tucker",
+      "title": "Chief Operations Officer",
+      "photo": "https://images.pexels.com/photos/2182976/pexels-photo-2182976.jpeg",
+      "shortBio": "Six Sigma certified operations expert with 15+ years in finance and tech"
+    },
+    {
+      "id": "carson-confer",
+      "name": "Carson Confer",
+      "title": "Sr. Account Executive",
+      "photo": "https://images.pexels.com/photos/2182977/pexels-photo-2182977.jpeg",
+      "shortBio": "Former analyst at Infinity Capital Partners, Johns Hopkins alum, VGC World Champion"
+    },
+    {
+      "id": "mitchell-yinger",
+      "name": "Mitchell Yinger",
+      "title": "Strategic Relations Manager",
+      "photo": "https://images.pexels.com/photos/2182978/pexels-photo-2182978.jpeg",
+      "shortBio": "Former top-performing Legacy broker with 7+ years in sales and business development"
+    },
+    {
+      "id": "cameron-bloniarz",
+      "name": "Cameron Bloniarz",
+      "title": "Media Director",
+      "photo": "https://images.pexels.com/photos/2182979/pexels-photo-2182979.jpeg",
+      "shortBio": "Creative force behind Legacy's brand with multimedia production expertise"
+    },
+    {
+      "id": "brady-smith",
+      "name": "Brady Smith",
+      "title": "Software Developer",
+      "photo": "/media/gene-w.png",
+      "shortBio": "Full-stack developer behind Legacy's technology platform and Broker Portal"
+    }
+  ]
+}

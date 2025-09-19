@@ -1,0 +1,35 @@
+{
+  "hero": {
+    "headline": "Whether you're selling your life's work, acquiring your next opportunity, or building an elite advisory practice, Legacy provides the AI‑augmented tools and expert human counsel to maximize value at every step.",
+    "subtext": "We serve with humility and execute with a relentless commitment to excellence.",
+    "cta_primary": "Sell My Business",
+    "cta_secondary": "Buy a Business"
+  },
+  "stats": [
+    { "value": "2,417+", "label": "Buyer Profiles" },
+    { "value": "30+", "label": "Licensed Brokers Nationwide" },
+    { "value": "97%+", "label": "Client Satisfaction" },
+    { "value": "35+ Years", "label": "Combined Team Experience" },
+    { "value": "$60M+", "label": "Transaction Value Closed" }
+  ],
+  "services": [
+    {
+      "title": "Selling a Business",
+      "description": "Ready to sell? We'll help you maximize your company's value and find the right buyer with our comprehensive brokerage services.",
+      "link_text": "Learn About Selling",
+      "link_url": "/sell/brokerage"
+    },
+    {
+      "title": "Buying a Business",
+      "description": "Explore curated listings and let our team guide your next acquisition from search to close with expert representation.",
+      "link_text": "Browse Listings",
+      "link_url": "/buy/listings"
+    },
+    {
+      "title": "Join Our Network",
+      "description": "Become a Legacy-licensed broker and launch your own M&A practice with our comprehensive support and training.",
+      "link_text": "Legacy Licensing Program",
+      "link_url": "/licensing/program"
+    }
+  ]
+}
