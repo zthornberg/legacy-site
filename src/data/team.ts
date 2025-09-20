@@ -12,7 +12,7 @@ export const team: TeamMember[] = [
     id: "zackary-thornberg",
     name: "Zackary Thornberg",
     title: "Chief Executive Officer",
-    headshot: "/team/zackary-thornberg.jpg",
+    headshot: "/media/Zack_Thornberg_Feb2021-26859.jpeg",
     sections: [
       {
         label: "About",
@@ -35,7 +35,7 @@ export const team: TeamMember[] = [
     id: "david-tucker",
     name: "David Tucker",
     title: "Chief Operations Officer",
-    headshot: "/team/david-tucker.jpg",
+    headshot: "/media/David_Tucker_Headshot.png",
     sections: [
       {
         label: "About",
@@ -58,7 +58,7 @@ export const team: TeamMember[] = [
     id: "cameron-bloniarz",
     name: "Cameron Bloniarz",
     title: "Chief Marketing Officer",
-    headshot: "/team/cameron-bloniarz.jpg",
+    headshot: "/media/Cameron_Bloniarz_Headshot.png",
     sections: [
       {
         label: "About",
@@ -81,7 +81,7 @@ export const team: TeamMember[] = [
     id: "gene-wright",
     name: "Gene Wright",
     title: "Senior Advisor / Mentor Broker",
-    headshot: "/team/gene-wright.jpg",
+    headshot: "/media/gene-w.png",
     sections: [
       {
         label: "About",
@@ -104,7 +104,7 @@ export const team: TeamMember[] = [
     id: "brady-smith",
     name: "Brady Smith",
     title: "Senior Software Engineer / IT Support",
-    headshot: "/team/brady-smith.jpg",
+    headshot: "/media/Brady Smith Headshot.png",
     sections: [
       {
         label: "About",
