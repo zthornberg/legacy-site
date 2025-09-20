@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { team } from '../../data/team';
+import TeamAvatar from '../../components/team/TeamAvatar';
 
 const OurTeam: React.FC = () => {
   return (
@@ -28,11 +29,14 @@ const OurTeam: React.FC = () => {
                 className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 group"
               >
                 <div className="text-center">
-                  <img
-                    src={member.photo}
-                    alt={member.name}
-                    className="w-32 h-32 rounded-full mx-auto mb-4 object-cover group-hover:scale-105 transition-transform"
-                  />
+                  <div className="mx-auto mb-4 group-hover:scale-105 transition-transform">
+                    <TeamAvatar
+                      name={member.name}
+                      src={member.headshot}
+                      className="w-32 h-32"
+                      logKey={`team-grid-${member.id}`}
+                    />
+                  </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
                     {member.name}
                   </h3>

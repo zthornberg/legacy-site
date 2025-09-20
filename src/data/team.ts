@@ -3,7 +3,7 @@ export type TeamMember = {
   id: string;
   name: string;
   title: string;
-  photo?: string;
+  headshot?: string;
   sections: TeamSection[];
 };
 
@@ -12,7 +12,7 @@ export const team: TeamMember[] = [
     id: "zackary-thornberg",
     name: "Zackary Thornberg",
     title: "Chief Executive Officer",
-    photo: "/media/Zack_Thornberg_Feb2021-26859.jpeg",
+    headshot: "/team/zackary-thornberg.jpg",
     sections: [
       {
         label: "About",
@@ -35,7 +35,7 @@ export const team: TeamMember[] = [
     id: "david-tucker",
     name: "David Tucker",
     title: "Chief Operations Officer",
-    photo: "/media/David_Tucker_Headshot.png",
+    headshot: "/team/david-tucker.jpg",
     sections: [
       {
         label: "About",
@@ -58,7 +58,7 @@ export const team: TeamMember[] = [
     id: "cameron-bloniarz",
     name: "Cameron Bloniarz",
     title: "Chief Marketing Officer",
-    photo: "/media/Cameron_Bloniarz_Headshot.png",
+    headshot: "/team/cameron-bloniarz.jpg",
     sections: [
       {
         label: "About",
@@ -81,7 +81,7 @@ export const team: TeamMember[] = [
     id: "gene-wright",
     name: "Gene Wright",
     title: "Senior Advisor / Mentor Broker",
-    photo: "/media/Gene Headshot Full Sized.png",
+    headshot: "/team/gene-wright.jpg",
     sections: [
       {
         label: "About",
@@ -104,7 +104,7 @@ export const team: TeamMember[] = [
     id: "brady-smith",
     name: "Brady Smith",
     title: "Senior Software Engineer / IT Support",
-    photo: "/media/Brady Smith Headshot.png",
+    headshot: "/team/brady-smith.jpg",
     sections: [
       {
         label: "About",

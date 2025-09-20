@@ -102,4 +102,8 @@ html {
   font-family: 'Inter';
   font-display: swap;
   src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-}
+
+/* Layout consistency utilities */
+.section    { @apply pt-10 md:pt-16 pb-10 md:pb-16; }
+.section-sm { @apply pt-6 md:pt-8 pb-6 md:pb-8; }
+.section-lg { @apply pt-16 md:pt-20 pb-16 md:pb-20; }

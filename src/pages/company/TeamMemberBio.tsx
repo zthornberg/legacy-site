@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Linkedin, Mail } from 'lucide-react';
 import { team } from '../../data/team';
+import TeamAvatar from '../../components/team/TeamAvatar';
 
 const TeamMemberBio: React.FC = () => {
   const { name } = useParams<{ name: string }>();
@@ -38,10 +39,11 @@ const TeamMemberBio: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col lg:flex-row gap-8 mb-12">
           <div className="flex-shrink-0">
-            <img
-              src={member.photo || "/media/gene-w.png"}
-              alt={member.name}
-              className="w-48 h-48 rounded-2xl object-cover shadow-lg"
+            <TeamAvatar
+              name={member.name}
+              src={member.headshot}
+              className="w-48 h-48 rounded-2xl"
+              logKey={`team-detail-${member.id}`}
             />
           </div>
           
