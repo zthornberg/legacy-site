@@ -58,7 +58,7 @@ export const team: TeamMember[] = [
     id: "cameron-bloniarz",
     name: "Cameron Bloniarz",
     title: "Chief Marketing Officer",
-    headshot: "/media/Cameron_Bloniarz_Headshot.png",
+    headshot: "/media/Gemini Generated Image (2).png",
     sections: [
       {
         label: "About",
