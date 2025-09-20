@@ -35,7 +35,7 @@ export const team: TeamMember[] = [
     id: "david-tucker",
     name: "David Tucker",
     title: "Chief Operations Officer",
-    headshot: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=400",
+    headshot: "/media/David Tucker.png",
     sections: [
       {
         label: "About",
@@ -58,7 +58,7 @@ export const team: TeamMember[] = [
     id: "cameron-bloniarz",
     name: "Cameron Bloniarz",
     title: "Chief Marketing Officer",
-    headshot: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400",
+    headshot: "/media/Cameron Bloniarz.png",
     sections: [
       {
         label: "About",
