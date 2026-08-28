@@ -9,28 +9,28 @@ const Testimonials: React.FC = () => {
       author: "Tana & Seth B.",
       role: "Legacy Brokers",
       achievement: "Achieved their first business sale within their first year and are on track for even greater success by year two.",
-      image: "https://images.pexels.com/photos/3184296/pexels-photo-3184296.jpeg"
+      image: "/media/seth-tana-blackburn.png"
     },
     {
       quote: "There are unlimited opportunities for those who can put deals together... your income potential is limitless. Legacy really invests in their brokers – they continuously add training programs to ensure we're competitive in the marketplace.",
       author: "Binh T.",
       role: "Legacy Broker",
       achievement: "Consistently closes multiple deals per year and mentors new brokers in the network.",
-      image: "https://images.pexels.com/photos/3184297/pexels-photo-3184297.jpeg"
+      image: "/media/binh-tran.png"
     },
     {
       quote: "I've been with Legacy for 9 months and they have under-promised and over-delivered on my expectations. The biggest advantage is the high-quality leads they provide every week. I've already had multiple closings... Great investment for someone who wants to manage their own schedule and earn a great income.",
       author: "Mitchell Y.",
       role: "Former Legacy Broker, Now Strategic Relations Manager",
       achievement: "Rose from broker to corporate team member due to exceptional performance.",
-      image: "https://images.pexels.com/photos/3184298/pexels-photo-3184298.jpeg"
+      image: "/media/mitchell-yinger.png"
     },
     {
       quote: "Legacy's commitment to excellence is rooted in making every broker successful. With an excellent training program and ongoing support, Legacy brokers continue to improve their skills as new opportunities come month after month.",
       author: "Gene W.",
       role: "Northstar Advisory Group",
       achievement: "Built a successful regional brokerage practice using Legacy's system and support.",
-      image: "/media/gene-w.jpg"
+      image: "/media/gene-wright.png"
     }
   ];
 
