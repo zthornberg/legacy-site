@@ -1,404 +1,395 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, Home } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
-import GlassMenuPanel from '../ui/GlassMenuPanel';
+import { cn } from '../../lib/utils';
+import { EASE } from '../../lib/motion';
+import Button from '../ui/Button';
 
-// Debounce utility for smooth scroll handling
-const useDebounce = (value: boolean, delay: number) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
+type NavItem = { label: string; href: string; desc?: string };
+type NavGroup = {
+  label: string;
+  href: string;
+  items: NavItem[];
+  columns?: 1 | 2;
+  footer?: NavItem;
 };
 
-// Preload critical images
-const preloadImages = () => {
-  const images = ['/media/Horizontal Logo High Res.png'];
-  images.forEach(src => {
-    const img = new Image();
-    img.src = src;
-  });
-};
-const Header: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [scrolled, setScrolled] = useState(false);
-  const { user, logout } = useAuth();
+const NAV: NavGroup[] = [
+  {
+    label: 'Sell',
+    href: '/sell/brokerage',
+    items: [
+      { label: 'Brokerage services', href: '/sell/brokerage', desc: 'A confidential, competitive sale process for $1M–$25M companies' },
+      { label: 'M&A advisory', href: '/sell/ma-services', desc: 'Sell-side advisory for larger and more complex mandates' },
+      { label: 'Closed transactions', href: '/sell/case-studies', desc: 'Representative outcomes across industries' },
+    ],
+  },
+  {
+    label: 'Buy',
+    href: '/buy/listings',
+    items: [
+      { label: 'Current listings', href: '/buy/listings', desc: 'Businesses currently on the market with Legacy' },
+      { label: 'Buyer representation', href: '/buy/representation', desc: 'Buy-side search, underwriting and negotiation' },
+      { label: 'Register as a buyer', href: '/buy/registration', desc: 'Join the buyer network and see deals first' },
+    ],
+  },
+  {
+    label: 'Licensing',
+    href: '/licensing/program',
+    items: [
+      { label: 'Program overview', href: '/licensing/program', desc: 'Build an M&A practice on the Legacy platform' },
+      { label: 'Pricing', href: '/licensing/pricing', desc: 'Two license tiers, one standard of support' },
+      { label: 'Broker stories', href: '/licensing/testimonials', desc: 'What licensed brokers say about the program' },
+    ],
+  },
+  {
+    label: 'Industries',
+    href: '/industries',
+    columns: 2,
+    items: [
+      { label: 'Manufacturing & Distribution', href: '/industries/manufacturing-distribution' },
+      { label: 'Construction', href: '/industries/construction' },
+      { label: 'Home Services', href: '/industries/home-services' },
+      { label: 'Business Services', href: '/industries/business-services' },
+      { label: 'Healthcare', href: '/industries/healthcare' },
+      { label: 'Technology', href: '/industries/technology' },
+      { label: 'Energy & Sustainability', href: '/industries/energy-sustainability' },
+      { label: 'Retail & Consumer', href: '/industries/retail-consumer' },
+      { label: 'Hospitality', href: '/industries/hospitality' },
+      { label: 'Startup Funding', href: '/industries/startup-funding' },
+    ],
+    footer: { label: 'All industries', href: '/industries' },
+  },
+  {
+    label: 'Company',
+    href: '/company/team',
+    items: [
+      { label: 'Our team', href: '/company/team', desc: 'The advisors and operators behind Legacy' },
+      { label: 'Insights', href: '/company/blog', desc: 'Playbooks and market notes from the team' },
+      { label: 'Contact', href: '/contact', desc: 'Start a confidential conversation' },
+    ],
+  },
+];
+
+const LOGO = '/media/Horizontal Logo High Res.png';
+
+function Logo({ className, inverse = false }: { className?: string; inverse?: boolean }) {
+  return (
+    <Link to="/" className={cn('inline-flex items-center shrink-0', className)} aria-label="Legacy Business Brokers — home">
+      <img src={LOGO} alt="Legacy Business Brokers" className={cn('h-8 w-auto', inverse && 'invert')} draggable={false} />
+    </Link>
+  );
+}
+
+/* ----------------------------------------------------------------- desktop */
+
+function DesktopGroup({ group, open, onOpen, onClose }: { group: NavGroup; open: boolean; onOpen: () => void; onClose: () => void }) {
   const location = useLocation();
-  const isHome = location.pathname === '/';
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
-  // Debounce the scroll state to prevent jitter - apply to ALL pages
-  const isSticky = useDebounce(scrolled, 50);
+  const active = location.pathname.startsWith(group.href.split('/').slice(0, 2).join('/'));
+  const reduce = useReducedMotion();
+  const timer = useRef<number | null>(null);
 
-  // Preload images on mount
-  useEffect(() => {
-    preloadImages();
-  }, []);
-
-  // Prevent body scroll when mobile menu is open
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isMenuOpen]);
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setScrolled(scrollY > 50);
-    };
-
-    // Use passive listener for better performance
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Show simplified portal header only on portal routes
-  if (location.pathname.startsWith('/portal')) {
-    return (
-      <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isSticky ? 'bg-white/95 backdrop-blur-xl border border-white/40 shadow-glass rounded-2xl ring-1 ring-black/5 m-4' : 'bg-black/20 backdrop-blur-sm'
-        }`}
-        initial={{ y: -100 }}
-        animate={{ 
-          y: 0,
-          scaleY: isSticky ? 0.95 : 1,
-        }}
-        transition={{ 
-          duration: 0.6, 
-          ease: [0.22, 1, 0.36, 1]
-        }}
-      >
-        <div
-          className={`max-w-8xl mx-auto px-6 lg:px-8 xl:px-12 origin-left transition-all duration-300 ease-out ${
-            isSticky ? 'scale-y-95' : 'scale-y-100'
-          }`}
-        >
-          <div className={`flex items-center justify-between transition-all duration-300 ${
-            isSticky ? 'h-16' : 'h-20'
-          }`}>
-            <Link to="/" className="flex items-center text-slate-600 hover:text-ink motion-safe">
-              <Home className="h-5 w-5 mr-2" />
-              <span className="text-sm">Home</span>
-            </Link>
-            <div className="w-px h-6 bg-hairline"></div>
-            <Link to="/portal" className="flex items-center shrink-0">
-              <img 
-                src="/media/Horizontal Logo High Res.png" 
-                alt="Legacy" 
-                className={`transition-all duration-300 ${
-                  isSticky ? 'h-10 lg:h-12' : 'h-14 lg:h-16'
-                } ${
-                  isSticky ? 'brightness-100' : 'brightness-0 invert'
-                } w-auto`}
-              />
-              <span className="ml-2 text-sm text-slate-700">Broker Portal</span>
-            </Link>
-            {user && (
-              <button
-                onClick={logout}
-                className="text-slate-700 hover:text-ink motion-safe hover-lift px-4 py-2 rounded-lg hover:bg-slate-50"
-              >
-                Logout
-              </button>
-            )}
-          </div>
-        </div>
-      </motion.header>
-    );
-  }
-
-  const navigation = [
-    { name: 'Home', href: '/' },
-    { 
-      name: 'Buy', 
-      href: '/buy/listings',
-      dropdown: [
-        { name: 'Business Listings', href: '/buy/listings' },
-        { name: 'Buyer Representation', href: '/buy/representation' },
-        { name: 'Case Studies', href: '/case-studies' },
-        { name: 'Buyer Registration', href: '/buy/registration' }
-      ]
-    },
-    { 
-      name: 'Sell', 
-      href: '/sell/brokerage',
-      dropdown: [
-        { name: 'Brokerage Services', href: '/sell/brokerage' },
-        { name: 'M&A Services', href: '/sell/ma-services' },
-        { name: 'Case Studies', href: '/case-studies' },
-        { name: 'Case Studies', href: '/sell/case-studies' }
-      ]
-    },
-    { 
-      name: 'Licensing Program', 
-      href: '/licensing/program',
-      dropdown: [
-        { name: 'Program Summary', href: '/licensing/program' },
-        { name: 'Pricing', href: '/licensing/pricing' },
-        { name: 'Testimonials', href: '/licensing/testimonials' }
-      ]
-    },
-    { 
-      name: 'Industries', 
-      href: '/industries',
-      dropdown: [
-        { name: 'Manufacturing & Distribution', href: '/industries/manufacturing-distribution' },
-        { name: 'Retail & Consumer', href: '/industries/retail-consumer' },
-        { name: 'Technology', href: '/industries/technology' },
-        { name: 'Healthcare', href: '/industries/healthcare' },
-        { name: 'Business Services', href: '/industries/business-services' },
-        { name: 'Home Services', href: '/industries/home-services' },
-        { name: 'Construction', href: '/industries/construction' },
-        { name: 'Energy & Sustainability', href: '/industries/energy-sustainability' },
-        { name: 'Hospitality', href: '/industries/hospitality' },
-        { name: 'Startup Funding', href: '/industries/startup-funding' }
-      ]
-    },
-    { 
-      name: 'Company', 
-      href: '/company/team',
-      dropdown: [
-        { name: 'Our Team', href: '/company/team' },
-        { name: 'Blog', href: '/company/blog' }
-      ]
-    }
-  ];
-
-  const handleDropdownEnter = (name: string) => {
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-      hoverTimeoutRef.current = null;
-    }
-    setActiveDropdown(name);
+  const enter = () => {
+    if (timer.current) window.clearTimeout(timer.current);
+    onOpen();
   };
-
-  const handleDropdownLeave = () => {
-    hoverTimeoutRef.current = setTimeout(() => {
-      setActiveDropdown(null);
-    }, 350);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      setActiveDropdown(null);
-    }
+  const leave = () => {
+    timer.current = window.setTimeout(onClose, 140);
   };
 
   return (
-    <motion.header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isSticky ? 'glass-panel m-4' : isHome ? 'bg-black/20 backdrop-blur-sm' : 'bg-black/80 backdrop-blur-sm'
-      }`}
-      initial={{ y: -100 }}
-      animate={{ 
-        y: 0,
-        scaleY: isSticky ? 0.95 : 1,
-      }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      onKeyDown={handleKeyDown}
-    >
-      <div className="max-w-8xl mx-auto px-6 lg:px-8 xl:px-12">
-        <div className={`flex justify-between items-center transition-all duration-300 ${
-          isSticky ? 'h-16' : 'h-20'
-        }`}>
-          {/* Logo */}
-          <Link to="/" className="flex items-center shrink-0">
-            <img
-              src="/media/Horizontal Logo High Res.png"
-              alt="Legacy"
-              className={`transition-all duration-300 ${
-                isSticky ? 'h-10 lg:h-12' : 'h-14 lg:h-16'
-              } ${
-                isSticky ? 'brightness-100' : isHome ? 'brightness-0 invert' : 'brightness-0 invert'
-              } w-auto`}
-            />
-          </Link>
+    <div className="relative" onMouseEnter={enter} onMouseLeave={leave}>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        onClick={() => (open ? onClose() : onOpen())}
+        className={cn(
+          'inline-flex h-9 items-center gap-1 rounded-md px-3 text-sm font-medium transition-colors duration-200',
+          active || open ? 'text-ink' : 'text-mute-strong hover:text-ink'
+        )}
+      >
+        {group.label}
+        <ChevronDown className={cn('h-3.5 w-3.5 opacity-60 transition-transform duration-200', open && 'rotate-180')} aria-hidden />
+      </button>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8 flex-1 justify-center">
-            {navigation.map((item) => (
-              <div
-                key={item.name}
-                className="relative whitespace-nowrap"
-                onMouseEnter={() => item.dropdown && handleDropdownEnter(item.name)}
-                onMouseLeave={() => item.dropdown && handleDropdownLeave()}
-              >
-                {item.dropdown ? (
-                  <Link
-                    to={item.href}
-                    className={`font-medium flex items-center motion-safe hover-lift ${
-                      isSticky 
-                        ? 'text-ink hover:text-accent' 
-                        : 'text-white hover:text-white/80'
-                    } ${location.pathname.startsWith(item.href) ? 'text-accent' : ''}`}
-                  >
-                    {item.name}
-                    <ChevronDown className="ml-1 h-4 w-4" />
-                  </Link>
-                ) : (
-                  <Link
-                    to={item.href}
-                    className={`font-medium flex items-center motion-safe hover-lift ${
-                      isSticky 
-                        ? 'text-ink hover:text-accent' 
-                        : isHome ? 'text-white hover:text-white/80' : 'text-white hover:text-white/80'
-                    } ${location.pathname === item.href ? 'text-accent' : ''}`}
-                  >
-                    {item.name}
-                  </Link>
-                )}
-
-                {/* Dropdown Menu */}
-                <GlassMenuPanel 
-                  isOpen={!!(item.dropdown && activeDropdown === item.name)}
-                  className="w-64 py-2"
-                  onMouseEnter={() => item.dropdown && handleDropdownEnter(item.name)}
-                  onMouseLeave={() => item.dropdown && handleDropdownLeave()}
-                  data-testid={`menu-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
-                >
-                  {item.dropdown?.map((dropdownItem) => (
-                    <Link
-                      key={dropdownItem.name}
-                      to={dropdownItem.href}
-                      className="block px-4 py-3 text-slate-700 hover:text-accent hover:bg-slate-50/50 motion-safe rounded-lg text-left"
-                    >
-                      {dropdownItem.name}
-                    </Link>
-                  ))}
-                </GlassMenuPanel>
-              </div>
-            ))}
-
-            {/* Broker Login Button */}
-            <Link
-              to="/portal/login"
-              className={`px-4 lg:px-6 py-2 rounded-xl font-medium motion-safe hover-lift hover-press shrink-0 ${
-                isSticky
-                  ? 'bg-accent text-white hover:bg-accent/90'
-                  : 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm'
-              }`}
-            >
-              Broker Login
-            </Link>
-          </nav>
-
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`lg:hidden p-2 rounded-md motion-safe hover-lift ${
-              isSticky 
-                ? 'text-slate-700 hover:text-ink hover:bg-slate-100' 
-               : 'text-white hover:text-white/80 hover:bg-white/10'
-            }`}
-            aria-label="Open menu"
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            role="menu"
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6, scale: 0.985 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: 4, scale: 0.985 }}
+            transition={{ duration: 0.18, ease: EASE }}
+            className={cn(
+              'absolute left-0 top-full pt-2',
+              group.columns === 2 ? 'w-[34rem]' : 'w-80'
+            )}
           >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <>
-              {/* Backdrop to prevent background scroll */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
-                onClick={() => setIsMenuOpen(false)}
-              />
-              
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:hidden glass-panel mt-4 overflow-hidden max-h-[70vh] relative z-50"
-              data-testid="mobile-drawer"
-            >
-              <div 
-                className="px-4 py-4 space-y-4 overflow-y-auto overscroll-contain max-h-[60vh]" 
-                style={{ 
-                  WebkitOverflowScrolling: 'touch',
-                  scrollbarWidth: 'thin',
-                  scrollbarColor: 'rgba(0,0,0,0.3) transparent'
-                }}
-                onTouchMove={(e) => e.stopPropagation()}
-              >
-                {navigation.map((item) => (
-                  <div key={item.name}>
-                    <Link
-                      to={item.href}
-                      className="block text-ink hover:text-accent font-medium motion-safe"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {item.name}
-                    </Link>
-                    {item.dropdown && (
-                      <div className="ml-4 mt-2 space-y-2">
-                        {item.dropdown.map((dropdownItem) => (
-                          <Link
-                            key={dropdownItem.name}
-                            to={dropdownItem.href}
-                            className="block text-slate-700 hover:text-accent text-sm motion-safe"
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            {dropdownItem.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-                
-                {/* Mobile CTAs */}
-                <div className="pt-4 border-t border-hairline space-y-3">
+            <div className="rounded-xl border border-line bg-white p-2 shadow-lift">
+              <div className={cn('grid gap-0.5', group.columns === 2 && 'grid-cols-2')}>
+                {group.items.map((item) => (
                   <Link
-                    to="/contact"
-                    className="block bg-accent text-white px-6 py-3 rounded-xl hover:bg-accent/90 motion-safe font-medium text-center"
-                    onClick={() => setIsMenuOpen(false)}
-                    data-testid="drawer-cta-advisor"
+                    key={item.href}
+                    to={item.href}
+                    role="menuitem"
+                    onClick={onClose}
+                    className="group/item block rounded-lg px-3 py-2.5 transition-colors duration-150 hover:bg-paper-deep"
                   >
-                    Meet Advisor
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-[14px] font-medium text-ink">{item.label}</span>
+                      {!item.desc && (
+                        <ArrowRight className="h-3.5 w-3.5 text-mute-soft opacity-0 -translate-x-1 transition-all duration-200 group-hover/item:opacity-100 group-hover/item:translate-x-0" aria-hidden />
+                      )}
+                    </div>
+                    {item.desc && <div className="mt-0.5 text-[13px] leading-snug text-mute">{item.desc}</div>}
                   </Link>
+                ))}
+              </div>
+              {group.footer && (
+                <div className="mt-1 border-t border-line pt-1">
                   <Link
-                    to="/licensing/program"
-                    className="block border-2 border-accent text-accent px-6 py-3 rounded-xl hover:bg-accent hover:text-white motion-safe font-medium text-center"
-                    onClick={() => setIsMenuOpen(false)}
-                    data-testid="drawer-cta-apply"
+                    to={group.footer.href}
+                    role="menuitem"
+                    onClick={onClose}
+                    className="flex items-center justify-between rounded-lg px-3 py-2.5 text-[13px] font-medium text-brass-deep transition-colors hover:bg-paper-deep"
                   >
-                    Apply License
+                    {group.footer.label}
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden />
                   </Link>
                 </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ mobile */
+
+function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const reduce = useReducedMotion();
+
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          key="sheet"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 z-[60] bg-paper lg:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site navigation"
+        >
+          <div className="flex h-16 items-center justify-between border-b border-line px-5">
+            <Logo />
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close menu"
+              className="-mr-2 inline-flex h-10 w-10 items-center justify-center rounded-md text-ink hover:bg-paper-deep"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          <motion.nav
+            initial={reduce ? {} : { y: 8, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.3, ease: EASE, delay: 0.05 }}
+            className="flex h-[calc(100dvh-4rem)] flex-col overflow-y-auto px-5 pb-8"
+          >
+            <ul className="divide-y divide-line">
+              {NAV.map((group) => {
+                const isOpen = expanded === group.label;
+                return (
+                  <li key={group.label}>
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      onClick={() => setExpanded(isOpen ? null : group.label)}
+                      className="flex w-full items-center justify-between py-4 text-left font-display text-2xl text-ink"
+                    >
+                      {group.label}
+                      <ChevronDown className={cn('h-5 w-5 text-mute transition-transform duration-200', isOpen && 'rotate-180')} aria-hidden />
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.25, ease: EASE }}
+                          className="overflow-hidden"
+                        >
+                          <ul className={cn('pb-4', group.columns === 2 && 'grid grid-cols-2 gap-x-4')}>
+                            {group.items.map((item) => (
+                              <li key={item.href}>
+                                <Link to={item.href} onClick={onClose} className="block py-2 text-[15px] text-mute-strong hover:text-ink">
+                                  {item.label}
+                                </Link>
+                              </li>
+                            ))}
+                            {group.footer && (
+                              <li className={cn(group.columns === 2 && 'col-span-2')}>
+                                <Link to={group.footer.href} onClick={onClose} className="inline-flex items-center gap-1.5 py-2 text-[15px] font-medium text-brass-deep">
+                                  {group.footer.label} <ArrowRight className="h-3.5 w-3.5" />
+                                </Link>
+                              </li>
+                            )}
+                          </ul>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </li>
+                );
+              })}
+            </ul>
+            <div className="mt-auto space-y-3 pt-8">
+              <Button to="/contact" full size="lg" onClick={onClose} arrow>
+                Request a confidential valuation
+              </Button>
+              <Button to="/licensing/program" variant="secondary" full size="lg" onClick={onClose}>
+                Explore the licensing program
+              </Button>
+              <Link to="/portal/login" onClick={onClose} className="block pt-2 text-center text-sm text-mute hover:text-ink">
+                Broker login
+              </Link>
+            </div>
+          </motion.nav>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ------------------------------------------------------------------ header */
+
+export default function Header() {
+  const location = useLocation();
+  const { user, logout } = useAuth();
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const rootRef = useRef<HTMLElement>(null);
+
+  const isPortal = location.pathname.startsWith('/portal');
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Close menus on route change
+  useEffect(() => {
+    setOpenGroup(null);
+    setMobileOpen(false);
+  }, [location.pathname]);
+
+  // Escape / outside click
+  const closeAll = useCallback(() => setOpenGroup(null), []);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeAll();
+        setMobileOpen(false);
+      }
+    };
+    const onClick = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) closeAll();
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('mousedown', onClick);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('mousedown', onClick);
+    };
+  }, [closeAll]);
+
+  return (
+    <>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
+      >
+        Skip to content
+      </a>
+      <header
+        ref={rootRef}
+        className={cn(
+          'sticky top-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-300',
+          scrolled ? 'border-line bg-paper/85 backdrop-blur-md' : 'border-transparent bg-paper'
+        )}
+      >
+        <div className="mx-auto flex h-16 w-full max-w-wide items-center gap-6 px-5 sm:px-6 lg:px-8">
+          <Logo />
+
+          {isPortal ? (
+            <div className="ml-auto flex items-center gap-4">
+              <span className="hidden text-sm text-mute sm:inline">Broker portal</span>
+              <NavLink to="/" className="text-sm text-mute-strong hover:text-ink">
+                Public site
+              </NavLink>
+              {user && (
+                <Button size="sm" variant="secondary" onClick={logout}>
+                  Sign out
+                </Button>
+              )}
+            </div>
+          ) : (
+            <>
+              <nav className="ml-2 hidden items-center gap-0.5 lg:flex" aria-label="Primary">
+                {NAV.map((group) => (
+                  <DesktopGroup
+                    key={group.label}
+                    group={group}
+                    open={openGroup === group.label}
+                    onOpen={() => setOpenGroup(group.label)}
+                    onClose={() => setOpenGroup((g) => (g === group.label ? null : g))}
+                  />
+                ))}
+              </nav>
+
+              <div className="ml-auto hidden items-center gap-2 lg:flex">
+                <Link to="/portal/login" className="px-3 text-sm font-medium text-mute-strong transition-colors hover:text-ink">
+                  Broker login
+                </Link>
+                <Button to="/contact" size="sm" arrow>
+                  Get a valuation
+                </Button>
               </div>
-            </motion.div>
+
+              <button
+                type="button"
+                onClick={() => setMobileOpen(true)}
+                aria-label="Open menu"
+                className="-mr-2 ml-auto inline-flex h-10 w-10 items-center justify-center rounded-md text-ink hover:bg-paper-deep lg:hidden"
+              >
+                <Menu className="h-5 w-5" />
+              </button>
             </>
           )}
-        </AnimatePresence>
-      </div>
-    </motion.header>
+        </div>
+      </header>
+      {!isPortal && <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />}
+    </>
   );
-};
-
-export default Header;
+}

@@ -28,7 +28,7 @@ function computeReadingTime(text: string) {
 }
 
 // Eagerly import markdown as raw strings:
-const files = import.meta.glob("/src/content/blog/**/*.md", { as: "raw", eager: true });
+const files = import.meta.glob("/src/content/blog/**/*.md", { query: "?raw", import: "default", eager: true });
 
 function normalizeSlug(path: string) {
   // /src/content/blog/2025-08-30-my-post.md -> 2025-08-30-my-post
@@ -38,7 +38,7 @@ function normalizeSlug(path: string) {
 export const allPosts: BlogPost[] = Object.entries(files)
   .map(([path, raw]) => {
     const { data, content } = matter(raw as string);
-    const html = marked.parse(content);
+    const html = marked.parse(content, { async: false }) as string;
     const slug = (data.slug as string) || normalizeSlug(path);
     const meta: BlogPostMeta = {
       slug,

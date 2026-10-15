@@ -1,110 +1,231 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------
+   Legacy design system — base
+   Type: Instrument Serif (display) + Inter (UI/body), loaded in index.html
+   Color: ink / paper / brass, defined in tailwind.config.js
+------------------------------------------------------------------- */
+
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+
   html {
-    font-display: swap;
+    -webkit-text-size-adjust: 100%;
+    background-color: #faf9f6;
+    scroll-behavior: smooth;
   }
-  
+
   body {
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
+    @apply bg-paper text-ink font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01', 'ss03', 'calt';
+    text-rendering: optimizeLegibility;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', sans-serif;
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-normal;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  strong,
+  b {
     font-weight: 600;
   }
-  
-  h1 {
-    font-size: clamp(36px, 5vw, 64px);
-    font-weight: 700;
-    line-height: 1.1;
+
+  ::selection {
+    background: #e7dcc4;
+    color: #0b0b0c;
   }
-  
-  h2 {
-    font-size: clamp(28px, 3.5vw, 40px);
-    font-weight: 600;
-    line-height: 1.2;
+
+  :focus-visible {
+    outline: 2px solid #a98451;
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  button,
+  [role='button'] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input,
+  select,
+  textarea {
+    font-feature-settings: 'tnum';
+  }
+}
+
+@layer components {
+  /* Section rhythm */
+  .section {
+    @apply py-20 md:py-28;
+  }
+  .section-sm {
+    @apply py-12 md:py-16;
+  }
+  .section-lg {
+    @apply py-24 md:py-36;
+  }
+
+  /* Eyebrow label */
+  .eyebrow {
+    @apply font-sans text-eyebrow uppercase font-medium text-brass-deep;
+  }
+
+  /* Form fields */
+  .field {
+    @apply w-full h-11 rounded-lg border border-line-strong bg-white px-3.5 text-[15px] text-ink placeholder:text-mute-soft transition-colors duration-200;
+  }
+  .field:hover {
+    @apply border-ink/30;
+  }
+  .field:focus {
+    @apply outline-none border-ink ring-2 ring-ink/10;
+  }
+  textarea.field {
+    @apply h-auto py-3 leading-relaxed;
+  }
+  select.field {
+    @apply appearance-none pr-10 bg-no-repeat;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24' stroke='%236B6860' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-position: right 0.875rem center;
+  }
+  .label {
+    @apply block text-[13px] font-medium text-ink mb-1.5;
+  }
+  .hint {
+    @apply text-xs text-mute mt-1.5;
+  }
+
+  /* Rendered markdown (blog) */
+  .prose-legacy {
+    @apply text-[17px] leading-[1.75] text-ink/90;
+  }
+  .prose-legacy > * + * {
+    margin-top: 1.25em;
+  }
+  .prose-legacy h2 {
+    @apply font-display text-display-md mt-12 mb-4;
+  }
+  .prose-legacy h3 {
+    @apply font-display text-display-sm mt-10 mb-3;
+  }
+  .prose-legacy a {
+    @apply text-ink underline decoration-brass/60 underline-offset-4 hover:decoration-brass;
+  }
+  .prose-legacy ul,
+  .prose-legacy ol {
+    @apply pl-5 space-y-2;
+  }
+  .prose-legacy ul {
+    list-style: disc;
+  }
+  .prose-legacy ol {
+    list-style: decimal;
+  }
+  .prose-legacy blockquote {
+    @apply border-l-2 border-brass pl-5 font-display text-2xl leading-snug text-ink;
+  }
+  .prose-legacy hr {
+    @apply border-line my-10;
+  }
+  .prose-legacy img {
+    @apply rounded-xl border border-line;
+  }
+  .prose-legacy code {
+    @apply font-mono text-[0.9em] bg-paper-deep px-1.5 py-0.5 rounded;
+  }
+  .prose-legacy table {
+    @apply w-full text-[15px] border-collapse;
+  }
+  .prose-legacy th,
+  .prose-legacy td {
+    @apply border-b border-line py-2.5 pr-4 text-left align-top;
+  }
+  .prose-legacy th {
+    @apply text-xs uppercase tracking-wider text-mute font-medium;
   }
 }
 
 @layer utilities {
-  .glass-panel {
-    @apply bg-white/75 backdrop-blur-xl border border-white/40 shadow-glass rounded-2xl ring-1 ring-black/5;
+  .tabular {
+    font-variant-numeric: tabular-nums lining-nums;
   }
-  
-  .glass-card {
-    @apply bg-white/90 backdrop-blur-xl border border-white/40 shadow-glass rounded-2xl ring-1 ring-black/5;
+
+  .no-scrollbar {
+    scrollbar-width: none;
   }
-  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Subtle grid texture for ink bands */
+  .ink-grid {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 56px 56px;
+    background-position: center top;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 100%);
+  }
+
+  /* Warm brass glow for ink bands */
+  .ink-glow {
+    background: radial-gradient(60% 50% at 70% 0%, rgba(169, 132, 81, 0.22), transparent 70%),
+      radial-gradient(40% 40% at 10% 100%, rgba(169, 132, 81, 0.1), transparent 70%);
+  }
+
+  /* Paper grid texture for light sections */
+  .paper-grid {
+    background-image: linear-gradient(rgba(11, 11, 12, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(11, 11, 12, 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 20%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 20%, transparent 100%);
+  }
+
+  .hairline-t {
+    border-top: 1px solid rgba(11, 11, 12, 0.08);
+  }
+  .hairline-b {
+    border-bottom: 1px solid rgba(11, 11, 12, 0.08);
+  }
+
+  /* Legacy utilities retained so untouched pages keep working */
   .motion-safe {
     transition: all 240ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  
   .hover-lift:hover {
     transform: translateY(-1px);
-    box-shadow: 0 20px 60px -12px rgba(0,0,0,0.35);
   }
-  
   .hover-press:active {
     transform: translateY(0);
   }
-  
-  /* Smooth page transitions */
-  .page-transition {
-    transition: opacity 150ms ease-out, transform 150ms ease-out;
-  }
-  
-  .page-enter {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  
-  .page-enter-active {
-    opacity: 1;
-    transform: translateY(0);
+  .glass-panel,
+  .glass-card {
+    @apply bg-white border border-line rounded-xl shadow-card;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .motion-safe {
-    transition: none;
+  html {
+    scroll-behavior: auto;
   }
-  
-  .animate-fade-in,
-  .animate-slide-up,
-  .animate-count-up {
-    animation: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
-
-/* Prevent flash of unstyled content */
-html {
-  background-color: #ffffff;
-}
-
-/* Smooth route transitions */
-#root {
-  transition: opacity 100ms ease-out;
-}
-
-/* Preload critical fonts */
-@font-face {
-  font-family: 'Space Grotesk';
-  font-display: swap;
-  src: url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-display: swap;
-  src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-}
-
-/* Layout consistency utilities */
-.section    { @apply pt-10 md:pt-16 pb-10 md:pb-16; }
-.section-sm { @apply pt-6 md:pt-8 pb-6 md:pb-8; }
-.section-lg { @apply pt-16 md:pt-20 pb-16 md:pb-20; }
