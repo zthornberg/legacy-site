@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/layout/ScrollToTop';
+import PageMeta from './components/layout/PageMeta';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -40,6 +41,7 @@ function App() {
     <AuthProvider>
       <Router>
         <ScrollToTop />
+        <PageMeta />
         <div className="flex min-h-screen flex-col bg-paper">
           <Header />
           <main id="main" className="relative flex-1">
