@@ -45,7 +45,7 @@ export default function CtaBand({
             align === 'center' ? 'mx-auto max-w-3xl text-center' : 'grid gap-10 lg:grid-cols-12 lg:items-end'
           )}
         >
-          <div className={cn(align === 'left' && 'lg:col-span-8')}>
+          <div className={cn(align === 'left' && 'lg:col-span-7')}>
             {eyebrow && (
               <Eyebrow tone={inverse ? 'inverse' : 'brass'} className="mb-4">
                 {eyebrow}
@@ -60,7 +60,7 @@ export default function CtaBand({
             {align === 'center' && actions && <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">{actions}</div>}
           </div>
           {align === 'left' && actions && (
-            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3 lg:justify-end">{actions}</div>
+            <div className="lg:col-span-5 flex flex-col sm:flex-row sm:flex-wrap gap-3 lg:justify-end">{actions}</div>
           )}
         </Reveal>
         {footnote && (

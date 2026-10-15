@@ -108,7 +108,7 @@ export default function PageHero({
             </motion.h1>
             {lede && (
               <motion.p
-                className={cn('mt-6 text-lede md:text-lede-lg max-w-2xl', inverse ? 'text-paper/72' : 'text-mute', align === 'center' && 'mx-auto')}
+                className={cn('mt-6 text-lede md:text-lede-lg max-w-2xl', inverse ? 'text-paper/70' : 'text-mute', align === 'center' && 'mx-auto')}
                 {...anim(2)}
               >
                 {lede}

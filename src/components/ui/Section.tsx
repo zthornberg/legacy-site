@@ -31,6 +31,7 @@ export default function Section({
   className,
   id,
   'aria-labelledby': labelledBy,
+  'aria-label': ariaLabel,
 }: {
   children: React.ReactNode;
   tone?: SectionTone;
@@ -39,11 +40,13 @@ export default function Section({
   className?: string;
   id?: string;
   'aria-labelledby'?: string;
+  'aria-label'?: string;
 }) {
   return (
     <section
       id={id}
       aria-labelledby={labelledBy}
+      aria-label={ariaLabel}
       className={cn(
         'relative',
         tones[tone],

@@ -11,6 +11,8 @@ type NavItem = { label: string; href: string; desc?: string };
 type NavGroup = {
   label: string;
   href: string;
+  /** Extra path prefixes that count as "inside" this group for the active state. */
+  match?: string[];
   items: NavItem[];
   columns?: 1 | 2;
   footer?: NavItem;
@@ -20,6 +22,7 @@ const NAV: NavGroup[] = [
   {
     label: 'Sell',
     href: '/sell/brokerage',
+    match: ['/case-studies'],
     items: [
       { label: 'Brokerage services', href: '/sell/brokerage', desc: 'A confidential, competitive sale process for $1M–$25M companies' },
       { label: 'M&A advisory', href: '/sell/ma-services', desc: 'Sell-side advisory for larger and more complex mandates' },
@@ -65,6 +68,7 @@ const NAV: NavGroup[] = [
   {
     label: 'Company',
     href: '/company/team',
+    match: ['/contact', '/blog'],
     items: [
       { label: 'Our team', href: '/company/team', desc: 'The advisors and operators behind Legacy' },
       { label: 'Insights', href: '/company/blog', desc: 'Playbooks and market notes from the team' },
@@ -87,7 +91,8 @@ function Logo({ className, inverse = false }: { className?: string; inverse?: bo
 
 function DesktopGroup({ group, open, onOpen, onClose }: { group: NavGroup; open: boolean; onOpen: () => void; onClose: () => void }) {
   const location = useLocation();
-  const active = location.pathname.startsWith(group.href.split('/').slice(0, 2).join('/'));
+  const prefixes = [group.href.split('/').slice(0, 2).join('/'), ...(group.match ?? [])];
+  const active = prefixes.some((p) => location.pathname.startsWith(p));
   const reduce = useReducedMotion();
   const timer = useRef<number | null>(null);
 
