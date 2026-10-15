@@ -1,153 +1,183 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { TrendingUp, Users, FileText, Handshake, Shield, CheckCircle } from 'lucide-react';
+import { FileText, Handshake, Radar, ShieldCheck } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import ProcessSection from '../../components/ProcessSection';
+import ProofStrip from '../../components/sell/ProofStrip';
+import TeaserCard from '../../components/sell/TeaserCard';
+import CtaActions from '../../components/sell/CtaActions';
+import {
+  Button,
+  Card,
+  CheckList,
+  Container,
+  CtaBand,
+  Eyebrow,
+  PageHero,
+  Reveal,
+  Section,
+  SectionHeading,
+  TextLink,
+} from '../../components/ui';
 
-const BrokerageServices: React.FC = () => {
-  const processSteps = [
-    {
-      icon: TrendingUp,
-      title: 'Valuation & Packaging',
-      description: 'We conduct thorough valuations and prepare professional marketing packages to attract qualified buyers.'
-    },
-    {
-      icon: Users,
-      title: 'Marketing & Buyer Reach',
-      description: 'Your listing is confidentially marketed to our extensive network of 2,400+ buyers, maximizing exposure while protecting your privacy.'
-    },
-    {
-      icon: Handshake,
-      title: 'Negotiation & Closing',
-      description: 'Experienced advisors handle deal negotiation, due diligence guidance, and work with attorneys to ensure smooth closing.'
-    },
-    {
-      icon: Shield,
-      title: 'White-Glove Support',
-      description: 'Your Legacy broker guides you at every step – from initial strategy to closing documents – ensuring the best outcome.'
-    }
-  ];
+const SERVICES: { label: string; title: string; body: string; icon: LucideIcon }[] = [
+  {
+    label: 'Prepare',
+    title: 'Valuation & packaging',
+    body: 'A thorough valuation, recast financials and a professional marketing package (blind teaser and CIM) built to attract qualified buyers.',
+    icon: FileText,
+  },
+  {
+    label: 'Market',
+    title: 'Marketing & buyer reach',
+    body: 'Your company is marketed confidentially to a network of 2,400+ registered buyers, maximizing exposure while protecting your identity.',
+    icon: Radar,
+  },
+  {
+    label: 'Negotiate',
+    title: 'Negotiation & closing',
+    body: 'Experienced advisors negotiate terms, guide due diligence and work alongside your attorneys through to closing.',
+    icon: Handshake,
+  },
+  {
+    label: 'Support',
+    title: 'White-glove support',
+    body: 'Your Legacy broker is with you at every step, from initial strategy to closing documents, focused on the best outcome.',
+    icon: ShieldCheck,
+  },
+];
 
-  const benefits = [
-    'Comprehensive business valuation',
-    'Professional marketing materials',
-    'Access to 2,400+ qualified buyers',
-    'Confidential marketing process',
-    'Expert negotiation support',
-    'Due diligence guidance',
-    'Transaction coordination',
-    'Post-closing support'
-  ];
+const BENEFITS = [
+  'Comprehensive business valuation',
+  'Professional marketing materials',
+  'Access to 2,400+ qualified buyers',
+  'Confidential marketing process',
+  'Expert negotiation support',
+  'Due diligence guidance',
+  'Transaction coordination',
+  'Post-closing support',
+];
 
+// Column dividers for the 1 → 2 → 4 column services grid.
+const serviceCell = ['', 'sm:border-l sm:pl-8', 'lg:border-l lg:pl-8', 'sm:border-l sm:pl-8'];
+
+export default function BrokerageServices() {
   return (
-    <div className="pt-20 bg-white">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-ink via-slate-900 to-ink text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="max-w-4xl">
-            <h1 className="text-4xl lg:text-6xl font-bold mb-8">
-              Brokerage Services
-            </h1>
-            <p className="text-xl lg:text-2xl opacity-90 mb-12 leading-relaxed">
-              Legacy is honored to guide you through one of the biggest decisions of your life, 
-              and we take that responsibility seriously. Our comprehensive brokerage services 
-              help small to mid-sized business owners maximize value and achieve successful exits.
-            </p>
-            <Link
-              to="/contact"
-              className="bg-white text-ink px-8 py-4 rounded-xl hover:bg-white/90 motion-safe hover-lift hover-press font-semibold inline-block"
-            >
-              Get Free Valuation
-            </Link>
-          </div>
-        </div>
-      </section>
+    <>
+      <PageHero
+        tone="paper"
+        crumbs={[{ label: 'Sell', to: '/sell/brokerage' }, { label: 'Brokerage services' }]}
+        eyebrow="Sell · Brokerage services"
+        title="A confidential, competitive sale for your company."
+        lede={
+          <>
+            Selling your company is one of the biggest decisions of your life, and we treat it that way. For owners of{' '}
+            <span className="whitespace-nowrap">$1M–$25M</span> businesses, we handle valuation, packaging, buyer
+            outreach, negotiation and closing.
+          </>
+        }
+        actions={
+          <>
+            <Button to="/contact?intent=sell" size="lg" arrow>
+              Request a confidential valuation
+            </Button>
+            <Button to="/sell/case-studies" size="lg" variant="secondary">
+              See closed transactions
+            </Button>
+          </>
+        }
+        aside={<TeaserCard />}
+      >
+        <ProofStrip className="mt-16 md:mt-24" />
+      </PageHero>
 
-      {/* Process Section */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Our Proven Process
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              From valuation to closing, we handle every aspect of your business sale 
-              with expertise and care.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {processSteps.map((step, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 shadow-lg text-center">
-                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <step.icon className="h-8 w-8 text-accent" />
+      {/* What we do */}
+      <Section tone="white" aria-labelledby="bk-services">
+        <Container>
+          <SectionHeading
+            split
+            id="bk-services"
+            eyebrow="What we do"
+            title="One advisor, every part of the sale."
+            lede="From valuation to closing, we handle each step of your sale with expertise and care, and keep the process confidential throughout."
+          />
+          <div className="mt-14 grid sm:grid-cols-2 md:mt-20 lg:grid-cols-4">
+            {SERVICES.map((s, i) => (
+              <Reveal
+                key={s.title}
+                delay={i * 0.06}
+                className={`border-t border-line pb-10 pt-7 sm:pr-8 lg:pb-2 ${serviceCell[i]}`}
+              >
+                <div className="flex items-center justify-between">
+                  <Eyebrow index={i + 1} tone="mute">
+                    {s.label}
+                  </Eyebrow>
+                  <s.icon className="h-[18px] w-[18px] text-ink/70" strokeWidth={1.75} aria-hidden />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  {step.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {step.description}
-                </p>
-              </div>
+                <h3 className="mt-6 font-display text-display-sm text-ink lg:mt-10">{s.title}</h3>
+                <p className="mt-3 text-[15px] leading-relaxed text-mute">{s.body}</p>
+              </Reveal>
             ))}
           </div>
-        </div>
-      </section>
+        </Container>
+      </Section>
 
-      {/* Benefits Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-8">
-                Why Choose Legacy?
-              </h2>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                We combine traditional business brokerage expertise with modern technology 
-                and a client-first approach that sets us apart in the industry.
-              </p>
-              
-              <div className="grid grid-cols-1 gap-4">
-                {benefits.map((benefit, index) => (
-                  <div key={index} className="flex items-center">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">{benefit}</span>
+      {/* Why Legacy */}
+      <Section tone="paper" divider aria-labelledby="bk-why">
+        <Container>
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
+            <div className="lg:col-span-7">
+              <SectionHeading
+                id="bk-why"
+                eyebrow="Why Legacy"
+                title="Why owners choose Legacy"
+                lede="Traditional brokerage discipline, modern tools and a client-first standard of service, from the first call to the last signature."
+              />
+              <Reveal delay={0.08} className="mt-10 border-t border-line pt-10">
+                <CheckList items={BENEFITS} columns={2} />
+              </Reveal>
+            </div>
+
+            <Reveal delay={0.12} className="lg:col-span-4 lg:col-start-9 lg:pt-2">
+              <Card tone="brass" padding="lg">
+                <Eyebrow>Complimentary</Eyebrow>
+                <h3 className="mt-4 font-display text-display-md text-ink">Start with a valuation</h3>
+                <p className="mt-4 text-[15px] leading-relaxed text-mute-strong">
+                  A complimentary business valuation and consultation with one of our experienced advisors. Confidential
+                  from the first conversation.
+                </p>
+                <div className="mt-8 space-y-5">
+                  <Button to="/contact?intent=sell" arrow full>
+                    Request a valuation
+                  </Button>
+                  <div className="text-center">
+                    <TextLink to="/sell/case-studies" tone="mute">
+                      See closed transactions
+                    </TextLink>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-slate-50 rounded-2xl p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                Ready to Sell Your Business?
-              </h3>
-              <p className="text-gray-600 mb-8">
-                Get started with a complimentary business valuation and consultation 
-                with one of our experienced advisors.
-              </p>
-              
-              <div className="space-y-4">
-                <Link
-                  to="/contact"
-                  className="block w-full bg-accent text-white py-4 rounded-xl hover:bg-accentAlt motion-safe font-semibold text-center"
-                >
-                  Schedule Free Consultation
-                </Link>
-                <Link
-                  to="/sell/case-studies"
-                  className="block w-full border-2 border-accent text-accent py-4 rounded-xl hover:bg-accent hover:text-white motion-safe font-semibold text-center"
-                >
-                  View Success Stories
-                </Link>
-              </div>
-            </div>
+                </div>
+              </Card>
+            </Reveal>
           </div>
-        </div>
-      </section>
+        </Container>
+      </Section>
 
-      {/* Process Section */}
-      <ProcessSection mode="sell" />
-    </div>
+      <ProcessSection mode="sell" tone="white" />
+
+      <CtaBand
+        tone="brass"
+        eyebrow="Confidential valuation"
+        title="Start with a confidential conversation."
+        body="Tell us about your company and your timing. One of our advisors will walk you through value, buyer demand and what a sale would involve."
+        actions={
+          <CtaActions>
+            <Button to="/contact?intent=sell" size="lg" arrow>
+              Request a confidential valuation
+            </Button>
+            <Button to="/sell/ma-services" size="lg" variant="secondary">
+              M&amp;A advisory
+            </Button>
+          </CtaActions>
+        }
+      />
+    </>
   );
-};
-
-export default BrokerageServices;
+}
