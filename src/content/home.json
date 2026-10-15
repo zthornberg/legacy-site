@@ -85,7 +85,7 @@
         "id": "construction",
         "title": "Home-builder construction company",
         "region": "Southwest US",
-        "image": "/media/Home Builder Construction Case Study.png",
+        "image": "/media/Home Builder Construction Case Study.webp",
         "alt": "Framed houses under construction on a residential development site",
         "summary": "Multiple above-ask offers; strong asset base and scale efficiencies.",
         "facts": [
@@ -111,7 +111,7 @@
         "id": "elevator",
         "title": "Elevator manufacturing company",
         "region": "Midwest US",
-        "image": "/media/Elevator Manufacturing Pic.png",
+        "image": "/media/Elevator Manufacturing Pic.webp",
         "alt": "Technicians on a steel elevator test tower inside a manufacturing plant",
         "summary": "Strategic buyer demand from the installed base and recurring parts and service.",
         "facts": [
@@ -137,7 +137,7 @@
         "id": "flooring",
         "title": "Flooring distribution company",
         "region": "Southwest US",
-        "image": "/media/Flooring Distributor Pic.png",
+        "image": "/media/Flooring Distributor Pic.webp",
         "alt": "Flooring showroom with sample racks and a front counter",
         "summary": "Lean operations and strong supplier terms; fast diligence from clear documentation.",
         "facts": [
@@ -159,7 +159,7 @@
         "id": "oil",
         "title": "Oil pressure pumping company",
         "region": "Midwest US",
-        "image": "/media/Oil Pressure Pumping Company.png",
+        "image": "/media/Oil Pressure Pumping Company.webp",
         "alt": "Pressure pumping trucks and crew at a well site at dusk",
         "summary": "Process tailored to commodity cycles; generated sponsor competition.",
         "facts": [
@@ -181,7 +181,7 @@
         "id": "electrical",
         "title": "Commercial electrical contractor",
         "region": "Southeast US",
-        "image": "/media/Commercial Electrical Contractor pic.png",
+        "image": "/media/Commercial Electrical Contractor pic.webp",
         "alt": "Electricians wiring a panel on a commercial construction site",
         "summary": "Backlog and safety record highlighted; culture-fit buyer prioritized.",
         "facts": [

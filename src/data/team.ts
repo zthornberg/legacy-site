@@ -45,7 +45,7 @@ export const team: TeamMember[] = [
     id: "david-tucker",
     name: "David Tucker",
     title: "Chief Operations Officer",
-    headshot: "/media/David Tucker.png",
+    headshot: "/media/David Tucker.webp",
     portrait: { position: "50% 0%" },
     sections: [
       {
@@ -69,7 +69,7 @@ export const team: TeamMember[] = [
     id: "cameron-bloniarz",
     name: "Cameron Bloniarz",
     title: "Chief Marketing Officer",
-    headshot: "/media/Cameron Bloniarz.png",
+    headshot: "/media/Cameron Bloniarz.webp",
     portrait: { position: "50% 0%", origin: "49% 11%", zoom: 2.2 },
     sections: [
       {
@@ -93,7 +93,7 @@ export const team: TeamMember[] = [
     id: "gene-wright",
     name: "Gene Wright",
     title: "Senior Advisor / Mentor Broker",
-    headshot: "/media/Gene Headshot Full Sized copy.png",
+    headshot: "/media/Gene Headshot Full Sized copy.webp",
     portrait: { position: "52% 0%", origin: "50% 0%", zoom: 1.15 },
     sections: [
       {
@@ -117,7 +117,7 @@ export const team: TeamMember[] = [
     id: "brady-smith",
     name: "Brady Smith",
     title: "Senior Software Engineer / IT Support",
-    headshot: "/media/Brady Smith Headshot.png",
+    headshot: "/media/Brady Smith Headshot.webp",
     portrait: { position: "47% 0%", origin: "50% 0%", zoom: 1.1 },
     sections: [
       {

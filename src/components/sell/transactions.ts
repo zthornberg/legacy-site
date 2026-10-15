@@ -32,7 +32,7 @@ export const TRANSACTIONS: Transaction[] = [
       'The owners of a family-owned construction company were ready to retire. Targeted outreach surfaced three serious buyers within 90 days, and competing offers closed the sale 15% above the asking price.',
     approach:
       'We led with the asset base, scale efficiencies and project pipeline, and addressed backlog visibility and bonding capacity before buyers asked.',
-    image: '/media/Home Builder Construction Case Study.png',
+    image: '/media/Home Builder Construction Case Study.webp',
     alt: 'Wood-framed homes under construction in a new residential development',
     facts: [
       { label: 'Revenue', value: '$40M' },
@@ -52,7 +52,7 @@ export const TRANSACTIONS: Transaction[] = [
       'A founder-led elevator components manufacturer was acquired by a larger industry player. The structure rewarded decades of work, secured the founder’s retirement and kept every job in place.',
     approach:
       'Strategic buyers valued the installed base and recurring parts and service revenue. A transition plan addressed owner dependence, and the deal closed at target with earn-out protections.',
-    image: '/media/Elevator Manufacturing Pic.png',
+    image: '/media/Elevator Manufacturing Pic.webp',
     alt: 'Steel elevator test tower inside a manufacturing facility',
     facts: [
       { label: 'Revenue', value: '$3M+' },
@@ -72,7 +72,7 @@ export const TRANSACTIONS: Transaction[] = [
       'A three-region flooring distributor was prepared for sale and acquired by a private equity group that brought growth capital. The original owners kept a minority stake for upside.',
     approach:
       'SKU rationalization, rebate hygiene and MAP discipline, with the QoE prepared early. Gross margin improved 220 bps and working capital improved by $450K before buyers saw the numbers.',
-    image: '/media/Flooring Distributor Pic.png',
+    image: '/media/Flooring Distributor Pic.webp',
     alt: 'Flooring showroom with sample racks and display tables',
     facts: [
       { label: 'Revenue', value: '$6.5M+' },
@@ -92,7 +92,7 @@ export const TRANSACTIONS: Transaction[] = [
       'Amid oil market volatility, we sold an oilfield pressure pumping company to an investor group. A process tailored to commodity cycles created competition among sponsors.',
     approach:
       'Service-line margin analysis, parts inventory controls and forward coverage gave buyers a cleaner working-capital profile and a credible plan, which drew stronger IOIs.',
-    image: '/media/Oil Pressure Pumping Company.png',
+    image: '/media/Oil Pressure Pumping Company.webp',
     alt: 'Pressure pumping equipment at an oil field at sunset',
     facts: [
       { label: 'Revenue', value: '$15M+' },
@@ -112,7 +112,7 @@ export const TRANSACTIONS: Transaction[] = [
       'A longstanding commercial electrical contractor moved to new ownership through the Legacy buyer network. We vetted for a buyer who valued the company’s reputation, protecting continuity for employees and clients.',
     approach:
       'Backlog and safety record were front and center in the marketing materials, and cultural fit weighed as heavily as price in buyer selection.',
-    image: '/media/Commercial Electrical Contractor pic.png',
+    image: '/media/Commercial Electrical Contractor pic.webp',
     alt: 'Electricians working from a scissor lift on a commercial construction site',
     facts: [
       { label: 'Revenue', value: '$3.5M+' },
