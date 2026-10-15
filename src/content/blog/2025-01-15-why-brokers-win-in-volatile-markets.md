@@ -1,25 +1,24 @@
 ---
-title: Why Brokers Win in a Volatile Market
+title: Why brokers win in a volatile market
 date: 2025-01-15
 author: Zackary Thornberg
 tags: [M&A, Strategy, Lower Middle Market]
-cover: https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg
 excerpt: In uncertain markets, disciplined process and buyer universe orchestration actually increase the broker's edge.
 ---
 
-### The Pocket of Inefficiency
+## The pocket of inefficiency
 
-Lower middle market deals ($2–$30M EV) are structurally inefficient—exactly where great advisors create outsized outcomes. When markets turn volatile, this inefficiency becomes even more pronounced.
+Lower middle market deals ($2–30M EV) are structurally inefficient—exactly where great advisors create outsized outcomes. When markets turn volatile, this inefficiency becomes even more pronounced.
 
 **Why volatility helps brokers:**
 
-- **Information asymmetry increases** - Buyers become more cautious, relying heavily on advisor guidance
-- **Process discipline matters more** - Sloppy deal management gets punished quickly
-- **Network effects amplify** - Relationships with committed buyers become invaluable
+- **Information asymmetry increases** – buyers become more cautious, relying heavily on advisor guidance
+- **Process discipline matters more** – sloppy deal management gets punished quickly
+- **Network effects amplify** – relationships with committed buyers become invaluable
 
-### The Three Pillars of Volatile Market Success
+## The three pillars of volatile-market success
 
-**1. Buyer Universe Orchestration**
+### 1. Buyer universe orchestration
 
 In volatile times, casting a wide net isn't enough. You need to know which buyers are still actively deploying capital and which are sitting on the sidelines.
 
@@ -27,7 +26,7 @@ In volatile times, casting a wide net isn't enough. You need to know which buyer
 - Strategic buyers with acquisition mandates vs. those focused on organic growth
 - Independent sponsors with committed capital vs. those still fundraising
 
-**2. Narrative Control**
+### 2. Narrative control
 
 Market volatility creates noise. Great brokers cut through that noise with clear, compelling narratives that address buyer concerns head-on.
 
@@ -35,7 +34,7 @@ Market volatility creates noise. Great brokers cut through that noise with clear
 - Countercyclical business models
 - Essential service positioning
 
-**3. Process Acceleration**
+### 3. Process acceleration
 
 When markets are uncertain, speed becomes a competitive advantage. Buyers who are ready to move want to close quickly before conditions change.
 

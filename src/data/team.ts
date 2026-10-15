@@ -1,9 +1,18 @@
 export type TeamSection = { label: string; text: string };
+
+/**
+ * Art direction for a headshot so every portrait reads at the same scale in a 4:5 frame.
+ * `position` is the CSS object-position; `zoom` scales the image around `origin`
+ * (defaults to `position`). Source photos vary from tight studio crops to full-length shots.
+ */
+export type PortraitFocus = { position?: string; origin?: string; zoom?: number };
+
 export type TeamMember = {
   id: string;
   name: string;
   title: string;
   headshot?: string;
+  portrait?: PortraitFocus;
   sections: TeamSection[];
 };
 
@@ -13,6 +22,7 @@ export const team: TeamMember[] = [
     name: "Zackary Thornberg",
     title: "Chief Executive Officer",
     headshot: "/media/Zack_Thornberg_Feb2021-26859.jpeg",
+    portrait: { position: "42% 50%" },
     sections: [
       {
         label: "About",
@@ -36,6 +46,7 @@ export const team: TeamMember[] = [
     name: "David Tucker",
     title: "Chief Operations Officer",
     headshot: "/media/David Tucker.png",
+    portrait: { position: "50% 0%" },
     sections: [
       {
         label: "About",
@@ -59,6 +70,7 @@ export const team: TeamMember[] = [
     name: "Cameron Bloniarz",
     title: "Chief Marketing Officer",
     headshot: "/media/Cameron Bloniarz.png",
+    portrait: { position: "50% 0%", origin: "49% 11%", zoom: 2.2 },
     sections: [
       {
         label: "About",
@@ -82,6 +94,7 @@ export const team: TeamMember[] = [
     name: "Gene Wright",
     title: "Senior Advisor / Mentor Broker",
     headshot: "/media/Gene Headshot Full Sized copy.png",
+    portrait: { position: "52% 0%", origin: "50% 0%", zoom: 1.15 },
     sections: [
       {
         label: "About",
@@ -105,6 +118,7 @@ export const team: TeamMember[] = [
     name: "Brady Smith",
     title: "Senior Software Engineer / IT Support",
     headshot: "/media/Brady Smith Headshot.png",
+    portrait: { position: "47% 0%", origin: "50% 0%", zoom: 1.1 },
     sections: [
       {
         label: "About",

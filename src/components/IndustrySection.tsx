@@ -1,162 +1,154 @@
-// src/components/IndustrySection.tsx
-// Premium, uniform layout for every Industry page.
-// Keeps copy from src/content/industries.ts but renders it with a fintech-grade UI.
+// Sub-sector brief for an industry page: title, thesis, then four hairline lists
+// (insights, illustrative multiples, likely buyers, diligence pitfalls) and a sell-side CTA.
+// Copy lives in src/content/industries.ts.
 
-import { industries } from "../content/industries";
-import { Link, useLocation } from "react-router-dom";
-import {
-  Factory, PackageSearch, LineChart, Users, ShieldAlert, Building2, ChevronRight,
-} from "lucide-react";
-import TypeformEmbed from "./TypeformEmbed";
+import type { ReactNode } from 'react';
+import { industries } from '../content/industries';
+import { Button, Eyebrow, Reveal } from './ui';
 
-type Props = { slug: string };
+type Band = { ev: string; multiple: string };
 
-const iconSize = 18;
+/** Pulls "~3.0–4.5× at $2–5M EV" pairs out of a comps line so they can be set as a ledger. */
+function parseBands(line: string): { bands: Band[]; note?: string } {
+  const re = /~?\s*([\d.]+)\s*[–-]\s*([\d.]+)\s*×\s*at\s*\$([\d.]+)\s*[–-]\s*([\d.]+)\s*M\s*EV/g;
+  const bands: Band[] = [];
+  for (const m of line.matchAll(re)) {
+    bands.push({ multiple: `${m[1]}–${m[2]}×`, ev: `$${m[3]}–${m[4]}M` });
+  }
+  if (bands.length > 0) {
+    const paren = line.match(/\(([^)]+)\)\.?\s*$/);
+    return { bands, note: paren ? capitalize(paren[1]) + '.' : undefined };
+  }
+  // Single headline range, e.g. "EBITDA ~5.0–8.0× for profitable MSPs in the LMM; …"
+  const single = stripIllustrative(line).match(/^EBITDA\s*~?\s*([\d.]+)\s*[–-]\s*([\d.]+)\s*×\s*(.*)$/);
+  if (single) {
+    return { bands: [{ ev: 'EBITDA', multiple: `${single[1]}–${single[2]}×` }], note: single[3] ? capitalize(single[3]) : undefined };
+  }
+  return { bands: [] };
+}
 
-export default function IndustrySection({ slug }: Props) {
-  const ind = industries.find(i => i.slug === slug);
-  const { pathname } = useLocation();
+function capitalize(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/** "Premiums: a, b" → label + rest, so the label can be set in ink. */
+function splitLabel(line: string) {
+  const m = line.match(/^([A-Z][A-Za-z ]{2,24}):\s*(.+)$/);
+  return m ? { label: m[1], rest: m[2] } : { label: undefined, rest: line };
+}
+
+/** "Illustrative bands: EBITDA ~5.0–8.0× …" → "EBITDA ~5.0–8.0× …" */
+function stripIllustrative(line: string) {
+  return line.replace(/^Illustrative( \d{4})?( LMM)? bands:\s*/i, '');
+}
+
+function ListHeading({ children }: { children: ReactNode }) {
+  return (
+    <h4 className="border-b border-line-strong pb-3 font-sans text-[13px] font-medium tracking-[0.01em] text-ink">{children}</h4>
+  );
+}
+
+function HairlineList({ items }: { items: string[] }) {
+  return (
+    <ul className="divide-y divide-line">
+      {items.map((item, i) => {
+        const { label, rest } = splitLabel(item);
+        return (
+          <li key={i} className="py-3.5 text-[15px] leading-relaxed text-mute-strong">
+            {label && <span className="font-medium text-ink">{label}: </span>}
+            {rest}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function Multiples({ comps }: { comps: string[] }) {
+  const [first, ...rest] = comps;
+  const { bands, note } = first ? parseBands(first) : { bands: [] as Band[], note: undefined };
+  const evBands = bands[0]?.ev.startsWith('$');
+  const noteText = evBands ? `EBITDA multiples, lower-middle-market bands.${note ? ` ${note}` : ''}` : note;
+
+  return (
+    <div>
+      <ListHeading>Illustrative multiples</ListHeading>
+      {bands.length > 0 ? (
+        <>
+          <dl className="divide-y divide-line">
+            {bands.map((b) => (
+              <div key={b.ev} className="flex items-baseline justify-between gap-4 py-3.5">
+                <dt className="text-[13px] text-mute">
+                  {b.ev.startsWith('$') ? (
+                    <>
+                      <span className="tabular text-ink">{b.ev}</span> enterprise value
+                    </>
+                  ) : (
+                    <span className="text-ink">{b.ev} multiple</span>
+                  )}
+                </dt>
+                <dd className="tabular font-display text-[1.75rem] leading-none text-ink">{b.multiple}</dd>
+              </div>
+            ))}
+          </dl>
+          {noteText && <p className="border-t border-line pt-3 text-[12px] leading-relaxed text-mute">{noteText}</p>}
+          {rest.length > 0 && <HairlineList items={rest} />}
+        </>
+      ) : (
+        <HairlineList items={comps.map(stripIllustrative)} />
+      )}
+    </div>
+  );
+}
+
+export default function IndustrySection({ slug, index }: { slug: string; index?: string | number }) {
+  const ind = industries.find((i) => i.slug === slug);
   if (!ind) return null;
 
-  // Try to surface a concise, readable "multiples" line from comps for the stat chip.
-  const multiplesLine =
-    ind.comps.find(c => /LMM|EBITDA|×|x/.test(c)) ?? "Illustrative 2025 LMM Multiples";
+  // First sentence is the thesis; the rest supports it.
+  const m = ind.intro.match(/^(.+?\.)\s+(.*)$/);
+  const thesis = m ? m[1] : ind.intro;
+  const support = m ? m[2] : '';
+  const titleId = `${slug}-title`;
 
   return (
-    <section className="relative">
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="mx-auto max-w-screen-xl px-4 md:px-6 mt-8">
-        <ol className="flex items-center gap-2 text-sm text-slate-500">
-          <li>
-            <Link to="/industries" className="hover:text-slate-700 transition-colors">Industries</Link>
-          </li>
-          <li aria-hidden="true"><ChevronRight className="inline -mt-0.5" size={16} /></li>
-          <li className="text-slate-900 font-medium">{ind.title}</li>
-        </ol>
-      </nav>
-
-      {/* Hero */}
-      <header className="mx-auto max-w-screen-xl px-4 md:px-6 mt-4">
-        <h1 className="text-3xl md:text-4xl font-semibold text-slate-900 tracking-tight">
-          {ind.title}
-        </h1>
-        <p className="mt-3 max-w-3xl text-slate-600 leading-relaxed">
-          {ind.intro}
-        </p>
-
-        {/* Meta chips */}
-        <div className="mt-5 flex flex-wrap items-center gap-2">
-          <Chip icon={<LineChart size={14} />} label={multiplesLine} />
-          <Chip icon={<PackageSearch size={14} />} label="Buyer Universe: PE, strategics, sponsors" />
-          {/* Add more chips if you want (e.g., "Typical Deal Size: $5–30M EV") */}
-        </div>
-      </header>
-
-      {/* Content grid */}
-      <div className="mx-auto max-w-screen-xl px-4 md:px-6 mt-10 grid gap-6 md:gap-8 md:grid-cols-2">
-        <InfoCard title="Pointed Insights" icon={<Factory size={iconSize} />} items={ind.insights} />
-        <InfoCard title="Recent Comps & Multiples (Illustrative)" icon={<LineChart size={iconSize} />} items={ind.comps} />
-        <InfoCard title="Typical Buyers" icon={<Users size={iconSize} />} items={ind.buyers} />
-        <InfoCard title="Diligence Pitfalls" icon={<ShieldAlert size={iconSize} />} items={ind.pitfalls} tone="warning" />
-      </div>
-
-      {/* CTA band */}
-      <div className="mx-auto max-w-screen-xl px-4 md:px-6">
-        <CTAIndustry slug={ind.slug} title={ind.title} ctaLine={ind.cta} pathname={pathname} />
-      </div>
-
-      {/* Footnote / compliance line */}
-      <p className="mx-auto max-w-screen-xl px-4 md:px-6 mt-6 mb-12 text-xs text-slate-500">
-        Valuation ranges are illustrative for lower-middle-market transactions and vary by quality, durability of
-        earnings, growth, and structure. Not an offer to sell or solicit an offer to buy securities.
-      </p>
-    </section>
-  );
-}
-
-/* ---------- subcomponents ---------- */
-
-function Chip({ icon, label }: { icon: React.ReactNode; label: string }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/70 backdrop-blur px-3 py-1 text-xs text-slate-700 shadow-sm">
-      {icon}
-      {label}
-    </span>
-  );
-}
-
-function InfoCard({
-  title, icon, items, tone = "default",
-}: {
-  title: string;
-  icon: React.ReactNode;
-  items: string[];
-  tone?: "default" | "warning";
-}) {
-  const ring =
-    tone === "warning"
-      ? "ring-1 ring-amber-200 bg-amber-50/40"
-      : "ring-1 ring-slate-200 bg-white/70";
-  return (
-    <article
-      className={`rounded-2xl ${ring} backdrop-blur p-6 shadow-[0_6px_24px_-8px_rgba(15,23,42,0.15)]`}
-    >
-      <div className="flex items-center gap-2">
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white">
-          {icon}
-        </span>
-        <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-      </div>
-      <ul className="mt-4 space-y-2 text-slate-700 leading-relaxed">
-        {items.map((x, i) => (
-          <li key={i} className="pl-5 relative">
-            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
-            {x}
-          </li>
-        ))}
-      </ul>
-    </article>
-  );
-}
-
-function CTAIndustry({
-  slug, title, ctaLine, pathname,
-}: { slug: string; title: string; ctaLine: string; pathname: string }) {
-  const base = import.meta.env.VITE_TALLY_BOOK_URL || "/contact";
-  const href = `${base}${base.includes("?") ? "&" : "?"}industry=${encodeURIComponent(slug)}&source=${encodeURIComponent(pathname)}`;
-  return (
-    <div className="mt-10 overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-900 to-slate-700 text-white p-6 md:p-8 shadow-[0_16px_40px_-12px_rgba(2,6,23,0.45)]">
-      <div className="md:flex md:items-center md:justify-between gap-6">
-        <div className="max-w-3xl">
-          <h3 className="text-xl md:text-2xl font-semibold">
-            Ready to explore opportunities in {title}?
+    <article id={slug} aria-labelledby={titleId} className="scroll-mt-24 border-t border-line pt-10 md:pt-12">
+      {/* DOM order (thesis → lists → CTA) keeps the CTA last on mobile; on lg the CTA tucks under the thesis. */}
+      <div className="grid gap-10 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-12 lg:gap-y-0">
+        <Reveal className="lg:col-span-4 lg:col-start-1 lg:row-start-1">
+          <h3 id={titleId}>
+            <Eyebrow index={index}>{ind.title}</Eyebrow>
           </h3>
-          <p className="mt-2 text-slate-200">
-            {ctaLine}
-          </p>
-        </div>
-        <div className="mt-4 md:mt-0 flex items-center gap-3">
-          {import.meta.env.VITE_TYPEFORM_FORM_ID ? (
-            <TypeformEmbed
-              mode="popup"
-              hidden={{ industry: slug, source: pathname }}
-            />
-          ) : (
-            <a
-              href={href}
-              className="inline-flex items-center justify-center rounded-lg bg-white text-slate-900 px-4 py-2.5 font-medium shadow hover:bg-slate-100 transition"
-            >
-              Schedule a call
-            </a>
-          )}
-          <Link
-            to="/buy"
-            className="inline-flex items-center justify-center rounded-lg bg-white/10 text-white px-4 py-2.5 font-medium ring-1 ring-white/30 hover:bg-white/15 transition"
-          >
-            View listings
-          </Link>
+          <p className="mt-5 font-display text-display-sm text-ink">{thesis}</p>
+          {support && <p className="mt-4 text-[15px] leading-relaxed text-mute">{support}</p>}
+        </Reveal>
+
+        <Reveal
+          delay={0.06}
+          className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-8 lg:col-start-5 lg:row-span-2 lg:row-start-1"
+        >
+          <div>
+            <ListHeading>What moves value</ListHeading>
+            <HairlineList items={ind.insights} />
+          </div>
+          <Multiples comps={ind.comps} />
+          <div>
+            <ListHeading>Likely buyers</ListHeading>
+            <HairlineList items={ind.buyers} />
+          </div>
+          <div>
+            <ListHeading>Diligence pitfalls</ListHeading>
+            <HairlineList items={ind.pitfalls} />
+          </div>
+        </Reveal>
+
+        <div className="border-t border-line pt-6 lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:mt-8 lg:self-start">
+          <p className="text-[15px] leading-relaxed text-ink/85">{ind.cta}</p>
+          <Button to={`/contact?intent=sell&industry=${slug}`} variant="secondary" size="sm" arrow className="mt-5">
+            Discuss a sale
+          </Button>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
