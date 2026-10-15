@@ -1,217 +1,104 @@
-import React, { useState } from 'react';
-import { Search, Filter, MapPin, DollarSign, TrendingUp, Eye, Mail, Lock } from 'lucide-react';
+import { Button, Card, Container, CtaBand, Eyebrow, PageHero, Reveal, Section, SectionHeading, Stat } from '../../components/ui';
 import ProcessSection from '../../components/ProcessSection';
+import ListingsLedger from '../../components/buy/ListingsLedger';
+import { LISTINGS } from '../../components/buy/listings';
 
-interface BusinessListing {
-  id: string;
-  title: string;
-  industry: string;
-  location: string;
-  cashFlow: string;
-  askingPrice: string;
-  image: string;
-  isConfidential: boolean;
-}
-
-const BusinessListings: React.FC = () => {
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: ''
-  });
-
-  const mockListings: BusinessListing[] = [
-    {
-      id: '1',
-      title: 'Established Manufacturing Company',
-      industry: 'Manufacturing',
-      location: 'Phoenix, AZ',
-      cashFlow: '$850K',
-      askingPrice: '$2.4M',
-      image: 'https://images.pexels.com/photos/1108101/pexels-photo-1108101.jpeg',
-      isConfidential: true
-    },
-    {
-      id: '2',
-      title: 'Regional HVAC Service Provider',
-      industry: 'Home Services',
-      location: 'Dallas, TX',
-      cashFlow: '$420K',
-      askingPrice: '$1.2M',
-      image: 'https://images.pexels.com/photos/8985475/pexels-photo-8985475.jpeg',
-      isConfidential: false
-    },
-    {
-      id: '3',
-      title: 'Tech Consulting Firm',
-      industry: 'Technology',
-      location: 'Austin, TX',
-      cashFlow: '$650K',
-      askingPrice: '$1.8M',
-      image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg',
-      isConfidential: true
-    }
-  ];
-
-  const handleInputChange = (field: string, value: string) => {
-    setLoginData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Login attempt:', loginData);
-  };
-
+export default function BusinessListings() {
   return (
-    <div className="pt-20 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Acquisition Opportunities
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Acquisition opportunities are available to approved buyers. This keeps sellers 
-            confidential and ensures serious, well-prepared counterparties. Log in or register to request access.
+    <>
+      <PageHero
+        tone="paper"
+        crumbs={[{ label: 'Buy' }, { label: 'Current listings' }]}
+        eyebrow="Buy · Listings"
+        title="Businesses currently for sale with Legacy."
+        lede="Every listing is confidential. Summary financials are shown here; the seller's identity, the CIM and full financials are released to registered buyers under a signed NDA."
+        actions={
+          <>
+            <Button to="/buy/registration" size="lg" arrow>
+              Register as a buyer
+            </Button>
+            <Button to="/buy/representation" variant="secondary" size="lg">
+              Buyer representation
+            </Button>
+          </>
+        }
+      />
+
+      <Section tone="paper" aria-labelledby="listings-title">
+        <Container>
+          <SectionHeading
+            split
+            eyebrow="Representative listings"
+            id="listings-title"
+            title="Summary financials, before the NDA."
+            lede="Live inventory changes weekly. Figures are rounded; cash flow is shown as SDE or adjusted EBITDA depending on size."
+          />
+          <Reveal className="mt-12">
+            <ListingsLedger listings={LISTINGS} />
+          </Reveal>
+          <p className="mt-5 text-xs leading-relaxed text-mute-soft">
+            Listings are anonymized and representative. Asking prices are indicative and subject to diligence.
           </p>
-        </div>
+        </Container>
+      </Section>
 
-        {/* Login Card with Blurred Background */}
-        <div className="relative">
-          {/* Blurred Listings Background */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="blur-xl opacity-30">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {mockListings.map((listing) => (
-                  <div key={listing.id} className="bg-white rounded-xl overflow-hidden shadow-lg">
-                    <div className="relative">
-                      <img
-                        src={listing.image}
-                        alt={listing.title}
-                        className="w-full h-48 object-cover"
-                      />
-                      {listing.isConfidential && (
-                        <div className="absolute top-4 right-4 bg-purple-900 text-white px-3 py-1 rounded-full text-sm font-medium">
-                          Confidential
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-gray-900 mb-3">
-                        {listing.title}
-                      </h3>
-                      
-                      <div className="space-y-2 mb-6">
-                        <div className="flex items-center text-gray-600">
-                          <Filter className="h-4 w-4 mr-2 text-accent" />
-                          <span className="text-sm">{listing.industry}</span>
-                        </div>
-                        <div className="flex items-center text-gray-600">
-                          <MapPin className="h-4 w-4 mr-2 text-accent" />
-                          <span className="text-sm">{listing.location}</span>
-                        </div>
-                        <div className="flex items-center text-gray-600">
-                          <TrendingUp className="h-4 w-4 mr-2 text-green-600" />
-                          <span className="text-sm">Cash Flow: {listing.cashFlow}</span>
-                        </div>
-                        <div className="flex items-center text-gray-600">
-                          <DollarSign className="h-4 w-4 mr-2 text-blue-600" />
-                          <span className="text-sm font-semibold">Asking: {listing.askingPrice}</span>
-                        </div>
-                      </div>
+      <ProcessSection mode="buy" />
 
-                      <button className="w-full bg-accent text-white py-3 rounded-xl hover:bg-accentAlt motion-safe font-semibold flex items-center justify-center">
-                        <Eye className="h-4 w-4 mr-2" />
-                        View Details
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Login Form */}
-          <div className="relative z-10 flex justify-center">
-            <div className="bg-white rounded-xl p-8 shadow-xl max-w-md w-full">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  Access Portal
-                </h2>
-                <p className="text-gray-600">
-                  Log in to view confidential opportunities
+      <Section tone="paper" aria-labelledby="network-title">
+        <Container>
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+            <Reveal className="lg:col-span-7">
+              <Eyebrow className="mb-4">Buyer network</Eyebrow>
+              <h2 id="network-title" className="max-w-xl font-display text-display-lg text-ink">
+                The buyers who see Legacy deals first.
+              </h2>
+              <div className="mt-10 grid gap-8 border-t border-line pt-8 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-12">
+                <Stat value="2,400+" label="Registered buyers" size="lg" />
+                <p className="max-w-md text-[15px] leading-relaxed text-mute">
+                  Private equity groups, family offices, search funds, strategic acquirers and individual operators.
+                  Each registration is reviewed by a Legacy advisor, so sellers meet buyers who are qualified to close and
+                  buyers see businesses that fit their criteria.
                 </p>
               </div>
+            </Reveal>
 
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                    <input
-                      type="email"
-                      required
-                      value={loginData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                      placeholder="Enter your email"
-                      aria-label="Email address"
-                    />
-                  </div>
+            <Reveal className="lg:col-span-5" delay={0.06}>
+              <Card tone="brass" padding="lg" className="h-full">
+                <Eyebrow>For buyers</Eyebrow>
+                <h3 className="mt-4 font-display text-display-sm text-ink">See new listings before they go wide.</h3>
+                <p className="mt-3 text-[15px] leading-relaxed text-mute-strong">
+                  Register once with your criteria. We send matching businesses, including confidential off-market
+                  opportunities, and handle the NDA for every deal you request.
+                </p>
+                <div className="mt-7">
+                  <Button to="/buy/registration" arrow>
+                    Register as a buyer
+                  </Button>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                    <input
-                      type="password"
-                      required
-                      value={loginData.password}
-                      onChange={(e) => handleInputChange('password', e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                      placeholder="Enter your password"
-                      aria-label="Password"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-accent text-white py-3 rounded-xl hover:bg-accentAlt motion-safe font-semibold"
-                  aria-label="Log in to access listings"
-                >
-                  Log In
-                </button>
-              </form>
-
-              <div className="mt-6 text-center space-y-3">
-                <a href="/forgot-password" className="text-accent hover:text-accentAlt text-sm">
-                  Forgot password?
-                </a>
-                <div className="text-gray-500 text-sm">
-                  Don't have an account?{' '}
-                  <a href="/buy/registration" className="text-accent hover:text-accentAlt font-medium">
-                    Register as a Buyer
-                  </a>
-                </div>
-              </div>
-            </div>
+                <p className="mt-5 text-[13px] leading-relaxed text-mute">
+                  Already registered? Request any listing above and we will match it to your profile.
+                </p>
+              </Card>
+            </Reveal>
           </div>
-        </div>
-      </div>
+        </Container>
+      </Section>
 
-      {/* Process Section */}
-      <ProcessSection mode="buy" />
-    </div>
+      <CtaBand
+        eyebrow="For owners"
+        title="Own a business like these? Start with a valuation."
+        body="Legacy runs a confidential, competitive sale process for owners of $1M–$25M companies. It begins with a private conversation about what your business is worth."
+        actions={
+          <>
+            <Button to="/contact?intent=sell" size="lg" arrow>
+              Request a valuation
+            </Button>
+            <Button to="/sell/brokerage" variant="secondary" size="lg">
+              How we sell
+            </Button>
+          </>
+        }
+      />
+    </>
   );
-};
-
-export default BusinessListings;
+}

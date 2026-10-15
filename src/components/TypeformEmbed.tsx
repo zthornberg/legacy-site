@@ -1,43 +1,60 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
+import Button, { type ButtonVariant } from './ui/Button';
 
 type Props = {
-  formId?: string;        // e.g., "AbCdEf"
-  mode?: "popup" | "inline";
+  formId?: string; // e.g., "AbCdEf"
+  mode?: 'popup' | 'inline';
   hidden?: Record<string, string | number | boolean>;
-  height?: number;        // for inline
+  height?: number; // for inline
+  /** Popup trigger label. */
+  label?: string;
+  /** Popup trigger style. Use 'inverse-outline' on ink bands. */
+  variant?: ButtonVariant;
+};
+
+type TypeformEmbedApi = {
+  createPopup?: (id: string, options: { hidden?: Record<string, string> }) => { open: () => void };
 };
 
 declare global {
-  interface Window { tf?: any; }
+  interface Window {
+    tf?: TypeformEmbedApi;
+  }
 }
 
-export default function TypeformEmbed({ formId, mode = "popup", hidden = {}, height = 520 }: Props) {
+/**
+ * Typeform popup trigger or inline embed. Renders nothing unless a form id is passed
+ * or VITE_TYPEFORM_FORM_ID is set.
+ */
+export default function TypeformEmbed({ formId, mode = 'popup', hidden = {}, height = 520, label = 'Schedule a call', variant = 'secondary' }: Props) {
   const id = formId || import.meta.env.VITE_TYPEFORM_FORM_ID;
-  if (!id) return null;
-
-  const hiddenQS = Object.entries(hidden)
-    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
-    .join("&");
-  const baseUrl = `https://form.typeform.com/to/${id}?${hiddenQS}`;
 
   useEffect(() => {
-    if (mode !== "popup") return;
-    let script = document.querySelector<HTMLScriptElement>("#tf-embed");
+    if (!id || mode !== 'popup') return;
+    let script = document.querySelector<HTMLScriptElement>('#tf-embed');
     if (!script) {
-      script = document.createElement("script");
-      script.id = "tf-embed";
-      script.src = "https://embed.typeform.com/next/embed.js";
+      script = document.createElement('script');
+      script.id = 'tf-embed';
+      script.src = 'https://embed.typeform.com/next/embed.js';
       script.async = true;
       document.body.appendChild(script);
     }
-  }, [mode]);
+  }, [id, mode]);
 
-  if (mode === "inline") {
+  if (!id) return null;
+
+  const hiddenStrings = Object.fromEntries(Object.entries(hidden).map(([k, v]) => [k, String(v)]));
+  const hiddenQS = Object.entries(hiddenStrings)
+    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+    .join('&');
+  const baseUrl = `https://form.typeform.com/to/${id}?${hiddenQS}`;
+
+  if (mode === 'inline') {
     return (
       <iframe
         title="Typeform"
         src={baseUrl}
-        className="w-full rounded-xl border border-slate-200"
+        className="w-full rounded-xl border border-line bg-white"
         style={{ height }}
       />
     );
@@ -45,19 +62,17 @@ export default function TypeformEmbed({ formId, mode = "popup", hidden = {}, hei
 
   // Popup trigger
   return (
-    <button
+    <Button
+      variant={variant}
       onClick={() => {
-        // @ts-ignore
-        if (window?.tf?.createPopup) {
-          // @ts-ignore
-          window.tf.createPopup(id, { hidden }).open();
+        if (window.tf?.createPopup) {
+          window.tf.createPopup(id, { hidden: hiddenStrings }).open();
         } else {
-          window.open(baseUrl, "_blank");
+          window.open(baseUrl, '_blank');
         }
       }}
-      className="inline-flex items-center justify-center rounded-lg bg-white text-slate-900 px-4 py-2.5 font-medium shadow hover:bg-slate-100 transition"
     >
-      Schedule a call
-    </button>
+      {label}
+    </Button>
   );
 }
