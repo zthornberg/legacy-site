@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Search, Filter, MapPin, DollarSign, Building, Mail } from 'lucide-react';
+import { Mail, Search } from 'lucide-react';
+import { Badge, Button, Card, Eyebrow } from '../../components/ui';
+import PortalShell from '../../components/portal/PortalShell';
 
 interface Buyer {
   id: string;
@@ -10,170 +12,251 @@ interface Buyer {
   lastActive: string;
 }
 
+const mockBuyers: Buyer[] = [
+  {
+    id: 'B001',
+    type: 'Individual Investor',
+    investmentRange: '$1M - $2M',
+    preferredIndustries: ['Manufacturing', 'Construction'],
+    location: 'Phoenix, AZ',
+    lastActive: '2 days ago',
+  },
+  {
+    id: 'B002',
+    type: 'Private Equity',
+    investmentRange: '$5M - $20M',
+    preferredIndustries: ['Technology', 'Healthcare'],
+    location: 'Dallas, TX',
+    lastActive: '1 week ago',
+  },
+  {
+    id: 'B003',
+    type: 'Strategic Buyer',
+    investmentRange: '$500K - $5M',
+    preferredIndustries: ['Home Services', 'Business Services'],
+    location: 'Denver, CO',
+    lastActive: '3 days ago',
+  },
+];
+
+/** "$1M - $2M" → "$1M–$2M" for display. */
+const range = (r: string) => r.replace(/\s*-\s*/, '–');
+
+const filterFields = [
+  {
+    key: 'industry',
+    label: 'Industry',
+    options: [
+      ['', 'All industries'],
+      ['manufacturing', 'Manufacturing'],
+      ['technology', 'Technology'],
+      ['healthcare', 'Healthcare'],
+      ['services', 'Services'],
+    ],
+  },
+  {
+    key: 'location',
+    label: 'Location',
+    options: [
+      ['', 'All locations'],
+      ['arizona', 'Arizona'],
+      ['texas', 'Texas'],
+      ['california', 'California'],
+      ['colorado', 'Colorado'],
+    ],
+  },
+  {
+    key: 'investmentRange',
+    label: 'Investment range',
+    options: [
+      ['', 'All ranges'],
+      ['under-1m', 'Under $1M'],
+      ['1m-5m', '$1M–$5M'],
+      ['5m-plus', '$5M+'],
+    ],
+  },
+  {
+    key: 'buyerType',
+    label: 'Buyer type',
+    options: [
+      ['', 'All buyer types'],
+      ['individual', 'Individual Investor'],
+      ['private-equity', 'Private Equity'],
+      ['strategic', 'Strategic Buyer'],
+    ],
+  },
+] as const;
+
+type Filters = Record<(typeof filterFields)[number]['key'], string>;
+
 const BuyerNetworkSearch: React.FC = () => {
-  const [searchFilters, setSearchFilters] = useState({
+  const [searchFilters, setSearchFilters] = useState<Filters>({
     industry: '',
     location: '',
     investmentRange: '',
-    buyerType: ''
+    buyerType: '',
   });
 
-  const mockBuyers: Buyer[] = [
-    {
-      id: 'B001',
-      type: 'Individual Investor',
-      investmentRange: '$1M - $2M',
-      preferredIndustries: ['Manufacturing', 'Construction'],
-      location: 'Phoenix, AZ',
-      lastActive: '2 days ago'
-    },
-    {
-      id: 'B002', 
-      type: 'Private Equity',
-      investmentRange: '$5M - $20M',
-      preferredIndustries: ['Technology', 'Healthcare'],
-      location: 'Dallas, TX',
-      lastActive: '1 week ago'
-    },
-    {
-      id: 'B003',
-      type: 'Strategic Buyer',
-      investmentRange: '$500K - $5M',
-      preferredIndustries: ['Home Services', 'Business Services'],
-      location: 'Denver, CO',
-      lastActive: '3 days ago'
-    }
-  ];
-
-  const handleSearch = () => {
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault();
     // Implement search logic
     console.log('Searching with filters:', searchFilters);
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Buyer Network Search
-          </h1>
-          <p className="text-gray-600">
-            Search our database of 2,400+ qualified buyers to find matches for your listings
-          </p>
-        </div>
-
-        {/* Search Filters */}
-        <div className="bg-white rounded-lg p-6 shadow-sm mb-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <select
-              value={searchFilters.industry}
-              onChange={(e) => setSearchFilters(prev => ({ ...prev, industry: e.target.value }))}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-            >
-              <option value="">All Industries</option>
-              <option value="manufacturing">Manufacturing</option>
-              <option value="technology">Technology</option>
-              <option value="healthcare">Healthcare</option>
-              <option value="services">Services</option>
-            </select>
-
-            <select
-              value={searchFilters.location}
-              onChange={(e) => setSearchFilters(prev => ({ ...prev, location: e.target.value }))}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-            >
-              <option value="">All Locations</option>
-              <option value="arizona">Arizona</option>
-              <option value="texas">Texas</option>
-              <option value="california">California</option>
-              <option value="colorado">Colorado</option>
-            </select>
-
-            <select
-              value={searchFilters.investmentRange}
-              onChange={(e) => setSearchFilters(prev => ({ ...prev, investmentRange: e.target.value }))}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-            >
-              <option value="">All Investment Ranges</option>
-              <option value="under-1m">Under $1M</option>
-              <option value="1m-5m">$1M - $5M</option>
-              <option value="5m-plus">$5M+</option>
-            </select>
-
-            <select
-              value={searchFilters.buyerType}
-              onChange={(e) => setSearchFilters(prev => ({ ...prev, buyerType: e.target.value }))}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-            >
-              <option value="">All Buyer Types</option>
-              <option value="individual">Individual Investor</option>
-              <option value="private-equity">Private Equity</option>
-              <option value="strategic">Strategic Buyer</option>
-            </select>
-          </div>
-
-          <button
-            onClick={handleSearch}
-            className="w-full md:w-auto bg-accent text-white px-6 py-3 rounded-xl hover:bg-accentAlt motion-safe font-semibold flex items-center justify-center"
-          >
-            <Search className="h-4 w-4 mr-2" />
-            Search Buyers
-          </button>
-        </div>
-
-        {/* Results */}
-        <div className="space-y-4">
-          {mockBuyers.map((buyer) => (
-            <div key={buyer.id} className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center mb-2">
-                    <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mr-3">
-                      {buyer.id}
-                    </span>
-                    <span className="text-lg font-semibold text-gray-900">{buyer.type}</span>
-                  </div>
-                  
-                  <div className="grid md:grid-cols-3 gap-4 text-sm text-gray-600">
-                    <div className="flex items-center">
-                      <DollarSign className="h-4 w-4 mr-2 text-green-600" />
-                      {buyer.investmentRange}
-                    </div>
-                    <div className="flex items-center">
-                      <MapPin className="h-4 w-4 mr-2 text-blue-600" />
-                      {buyer.location}
-                    </div>
-                    <div className="flex items-center">
-                      <Building className="h-4 w-4 mr-2 text-purple-600" />
-                      {buyer.preferredIndustries.join(', ')}
-                    </div>
-                  </div>
-                  
-                  <div className="mt-2 text-xs text-gray-500">
-                    Last active: {buyer.lastActive}
-                  </div>
-                </div>
-
-                <button className="bg-accent text-white px-4 py-2 rounded-xl hover:bg-accentAlt motion-safe flex items-center">
-                  <Mail className="h-4 w-4 mr-2" />
-                  Request Introduction
-                </button>
-              </div>
+    <PortalShell
+      eyebrow="Buyers"
+      title="Buyer network"
+      description="Search our database of 2,400+ qualified buyers to find matches for your listings."
+    >
+      {/* Filters */}
+      <Card padding="sm">
+        <form onSubmit={handleSearch} className="grid gap-4 sm:grid-cols-2 xl:grid-cols-[repeat(4,minmax(0,1fr))_auto] xl:items-end">
+          {filterFields.map((f) => (
+            <div key={f.key} className="min-w-0">
+              <label htmlFor={`bn-${f.key}`} className="label">
+                {f.label}
+              </label>
+              <select
+                id={`bn-${f.key}`}
+                value={searchFilters[f.key]}
+                onChange={(e) => setSearchFilters((prev) => ({ ...prev, [f.key]: e.target.value }))}
+                className="field"
+              >
+                {f.options.map(([value, text]) => (
+                  <option key={value} value={value}>
+                    {text}
+                  </option>
+                ))}
+              </select>
             </div>
           ))}
+          <Button
+            type="submit"
+            className="w-full sm:col-span-2 xl:col-span-1 xl:w-auto"
+            icon={<Search size={16} strokeWidth={1.75} aria-hidden />}
+          >
+            Search buyers
+          </Button>
+        </form>
+      </Card>
+
+      {/* Results */}
+      <div className="mt-8 flex items-baseline justify-between gap-4">
+        <h2 className="font-sans text-[15px] font-medium text-ink">Matching buyers</h2>
+        <p className="tabular text-[13px] text-mute">{mockBuyers.length} results</p>
+      </div>
+
+      <Card padding="none" className="mt-3 overflow-hidden">
+        {/* Desktop: hairline table */}
+        <div className="hidden lg:block">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="whitespace-nowrap border-b border-line bg-paper text-[11px] uppercase tracking-[0.14em] text-mute">
+                <th scope="col" className="px-5 py-3 font-medium">
+                  Buyer
+                </th>
+                <th scope="col" className="px-5 py-3 font-medium">
+                  Range
+                </th>
+                <th scope="col" className="px-5 py-3 font-medium">
+                  Preferred industries
+                </th>
+                <th scope="col" className="px-5 py-3 font-medium">
+                  Location
+                </th>
+                <th scope="col" className="px-5 py-3 font-medium">
+                  Last active
+                </th>
+                <th scope="col" className="px-5 py-3">
+                  <span className="sr-only">Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-line">
+              {mockBuyers.map((buyer) => (
+                <tr key={buyer.id} className="align-middle transition-colors duration-150 hover:bg-paper/70">
+                  <td className="px-5 py-4">
+                    <p className="whitespace-nowrap text-sm font-medium text-ink">{buyer.type}</p>
+                    <p className="tabular mt-0.5 text-xs text-mute-soft">{buyer.id}</p>
+                  </td>
+                  <td className="tabular whitespace-nowrap px-5 py-4 text-sm text-ink">{range(buyer.investmentRange)}</td>
+                  <td className="px-5 py-4">
+                    <div className="flex flex-wrap gap-1.5">
+                      {buyer.preferredIndustries.map((ind) => (
+                        <Badge key={ind}>{ind}</Badge>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap px-5 py-4 text-sm text-mute-strong">{buyer.location}</td>
+                  <td className="whitespace-nowrap px-5 py-4 text-sm text-mute">{buyer.lastActive}</td>
+                  <td className="px-5 py-4 text-right">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      icon={<Mail size={14} strokeWidth={1.75} aria-hidden />}
+                      aria-label={`Request introduction to buyer ${buyer.id}`}
+                    >
+                      Request introduction
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
-        {/* Note */}
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-blue-800 text-sm">
-            <strong>Note:</strong> All buyer introductions are coordinated through Legacy HQ 
-            to maintain confidentiality and ensure proper vetting. Contact information is 
-            shared only after mutual interest is established.
-          </p>
-        </div>
-      </div>
-    </div>
+        {/* Mobile / tablet: stacked rows */}
+        <ul className="divide-y divide-line lg:hidden">
+          {mockBuyers.map((buyer) => (
+            <li key={buyer.id} className="p-5">
+              <div className="flex items-baseline justify-between gap-3">
+                <p className="text-sm font-medium text-ink">{buyer.type}</p>
+                <span className="tabular text-xs text-mute-soft">{buyer.id}</span>
+              </div>
+              <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                <div>
+                  <dt className="text-xs text-mute">Range</dt>
+                  <dd className="tabular mt-0.5 text-ink">{range(buyer.investmentRange)}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-mute">Location</dt>
+                  <dd className="mt-0.5 text-ink">{buyer.location}</dd>
+                </div>
+                <div className="col-span-2">
+                  <dt className="text-xs text-mute">Preferred industries</dt>
+                  <dd className="mt-1.5 flex flex-wrap gap-1.5">
+                    {buyer.preferredIndustries.map((ind) => (
+                      <Badge key={ind}>{ind}</Badge>
+                    ))}
+                  </dd>
+                </div>
+              </dl>
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-xs text-mute">Last active {buyer.lastActive}</p>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  icon={<Mail size={14} strokeWidth={1.75} aria-hidden />}
+                  aria-label={`Request introduction to buyer ${buyer.id}`}
+                >
+                  Request introduction
+                </Button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </Card>
+
+      {/* Note */}
+      <Card tone="brass" padding="sm" className="mt-6">
+        <Eyebrow as="p">Confidentiality</Eyebrow>
+        <p className="mt-2.5 max-w-3xl text-sm leading-relaxed text-mute-strong">
+          All buyer introductions are coordinated through Legacy HQ to maintain confidentiality and ensure proper vetting.
+          Contact information is shared only after mutual interest is established.
+        </p>
+      </Card>
+    </PortalShell>
   );
 };
 
