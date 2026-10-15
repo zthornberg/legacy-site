@@ -1,35 +1,247 @@
 {
   "hero": {
-    "headline": "Whether you're selling your life's work, acquiring your next opportunity, or building an elite advisory practice, Legacy provides the AI‑augmented tools and expert human counsel to maximize value at every step.",
-    "subtext": "We serve with humility and execute with a relentless commitment to excellence.",
-    "cta_primary": "Sell My Business",
-    "cta_secondary": "Buy a Business"
+    "eyebrow": "M&A advisory for owners",
+    "title": [
+      "Sell the company you built.",
+      "On your terms."
+    ],
+    "lede": "Legacy pairs senior M&A advisors with AI-assisted research to run a confidential, competitive sale process for $1M–⁠$50M companies.",
+    "primary": {
+      "label": "Request a confidential valuation",
+      "to": "/contact"
+    },
+    "secondary": {
+      "label": "Explore the licensing program",
+      "to": "/licensing/program"
+    }
   },
   "stats": [
-    { "value": "2,417+", "label": "Buyer Profiles" },
-    { "value": "30+", "label": "Licensed Brokers Nationwide" },
-    { "value": "97%+", "label": "Client Satisfaction" },
-    { "value": "35+ Years", "label": "Combined Team Experience" },
-    { "value": "$60M+", "label": "Transaction Value Closed" }
-  ],
-  "services": [
     {
-      "title": "Selling a Business",
-      "description": "Ready to sell? We'll help you maximize your company's value and find the right buyer with our comprehensive brokerage services.",
-      "link_text": "Learn About Selling",
-      "link_url": "/sell/brokerage"
+      "value": "$60M+",
+      "label": "Transaction value closed"
     },
     {
-      "title": "Buying a Business",
-      "description": "Explore curated listings and let our team guide your next acquisition from search to close with expert representation.",
-      "link_text": "Browse Listings",
-      "link_url": "/buy/listings"
+      "value": "2,417+",
+      "label": "Buyer profiles"
     },
     {
-      "title": "Join Our Network",
-      "description": "Become a Legacy-licensed broker and launch your own M&A practice with our comprehensive support and training.",
-      "link_text": "Legacy Licensing Program",
-      "link_url": "/licensing/program"
+      "value": "97%+",
+      "label": "Client satisfaction"
+    },
+    {
+      "value": "35+",
+      "label": "Years of team experience"
+    },
+    {
+      "value": "30+",
+      "label": "Licensed brokers nationwide"
     }
-  ]
+  ],
+  "paths": {
+    "eyebrow": "How we work with you",
+    "title": "Three ways to work with Legacy.",
+    "lede": "Owners come to us to sell. Operators and sponsors come to buy. Experienced professionals license the platform to build a practice of their own.",
+    "items": [
+      {
+        "eyebrow": "Sell",
+        "title": "A confidential, competitive sale process.",
+        "description": "Senior advisors recast your numbers, build the buyer universe and run the process from blind teaser to funded close.",
+        "link": {
+          "label": "Sell-side services",
+          "to": "/sell/brokerage"
+        }
+      },
+      {
+        "eyebrow": "Buy",
+        "title": "Acquisitions with a clear mandate.",
+        "description": "Current listings, plus buy-side search, underwriting and negotiation for owner-operators and sponsors.",
+        "link": {
+          "label": "Current listings",
+          "to": "/buy/listings"
+        }
+      },
+      {
+        "eyebrow": "License",
+        "title": "Your own firm on the Legacy platform.",
+        "description": "Launch a Legacy-licensed practice with exclusive seller leads, research support, deal templates and coaching.",
+        "link": {
+          "label": "Licensing program",
+          "to": "/licensing/program"
+        }
+      }
+    ]
+  },
+  "transactions": {
+    "eyebrow": "Closed transactions",
+    "title": "Representative outcomes, anonymized.",
+    "lede": "Five recent sell-side mandates across construction, manufacturing, distribution and energy services.",
+    "note": "Details anonymized; confidential information redacted.",
+    "link": {
+      "label": "All closed transactions",
+      "to": "/sell/case-studies"
+    },
+    "items": [
+      {
+        "id": "construction",
+        "title": "Home-builder construction company",
+        "region": "Southwest US",
+        "image": "/media/Home Builder Construction Case Study.png",
+        "alt": "Framed houses under construction on a residential development site",
+        "summary": "Multiple above-ask offers; strong asset base and scale efficiencies.",
+        "facts": [
+          {
+            "label": "Revenue",
+            "value": "$40M"
+          },
+          {
+            "label": "EBITDA",
+            "value": "$5.5M"
+          },
+          {
+            "label": "FF&E",
+            "value": "$12M"
+          },
+          {
+            "label": "Employees",
+            "value": "60+"
+          }
+        ]
+      },
+      {
+        "id": "elevator",
+        "title": "Elevator manufacturing company",
+        "region": "Midwest US",
+        "image": "/media/Elevator Manufacturing Pic.png",
+        "alt": "Technicians on a steel elevator test tower inside a manufacturing plant",
+        "summary": "Strategic buyer demand from the installed base and recurring parts and service.",
+        "facts": [
+          {
+            "label": "Revenue",
+            "value": "$3M+"
+          },
+          {
+            "label": "EBITDA",
+            "value": "$700K"
+          },
+          {
+            "label": "Employees",
+            "value": "15+"
+          },
+          {
+            "label": "Client base",
+            "value": "Diversified"
+          }
+        ]
+      },
+      {
+        "id": "flooring",
+        "title": "Flooring distribution company",
+        "region": "Southwest US",
+        "image": "/media/Flooring Distributor Pic.png",
+        "alt": "Flooring showroom with sample racks and a front counter",
+        "summary": "Lean operations and strong supplier terms; fast diligence from clear documentation.",
+        "facts": [
+          {
+            "label": "Revenue",
+            "value": "$6.5M+"
+          },
+          {
+            "label": "EBITDA",
+            "value": "$950K"
+          },
+          {
+            "label": "Employees",
+            "value": "5+"
+          }
+        ]
+      },
+      {
+        "id": "oil",
+        "title": "Oil pressure pumping company",
+        "region": "Midwest US",
+        "image": "/media/Oil Pressure Pumping Company.png",
+        "alt": "Pressure pumping trucks and crew at a well site at dusk",
+        "summary": "Process tailored to commodity cycles; generated sponsor competition.",
+        "facts": [
+          {
+            "label": "Revenue",
+            "value": "$15M+"
+          },
+          {
+            "label": "EBITDA",
+            "value": "$4M"
+          },
+          {
+            "label": "Employees",
+            "value": "20+"
+          }
+        ]
+      },
+      {
+        "id": "electrical",
+        "title": "Commercial electrical contractor",
+        "region": "Southeast US",
+        "image": "/media/Commercial Electrical Contractor pic.png",
+        "alt": "Electricians wiring a panel on a commercial construction site",
+        "summary": "Backlog and safety record highlighted; culture-fit buyer prioritized.",
+        "facts": [
+          {
+            "label": "Revenue",
+            "value": "$3.5M+"
+          },
+          {
+            "label": "EBITDA",
+            "value": "$950K"
+          },
+          {
+            "label": "Employees",
+            "value": "10+"
+          }
+        ]
+      }
+    ]
+  },
+  "approach": {
+    "eyebrow": "Our approach",
+    "statement": "We help owners turn hard work into lasting value, pairing AI-assisted research with seasoned, human deal craft.",
+    "principles": [
+      {
+        "title": "Senior advisors on every mandate",
+        "body": "The advisor who values your company runs the process and sits at the closing table. No hand-offs to junior staff."
+      },
+      {
+        "title": "Research-led positioning",
+        "body": "We map comps and the buyer universe before going to market, so every conversation and counterparty is prepared with care."
+      },
+      {
+        "title": "Confidential by design",
+        "body": "Blind teasers, NDA-gated data rooms and staged disclosure protect your employees, customers and suppliers until close."
+      }
+    ]
+  },
+  "licensing": {
+    "eyebrow": "Licensing program",
+    "title": "Build an M&A practice on the Legacy platform.",
+    "body": "Two license tiers, one standard of support: exclusive seller leads, research, deal templates and coaching from advisors who still close deals.",
+    "primary": {
+      "label": "See the program",
+      "to": "/licensing/program"
+    },
+    "secondary": {
+      "label": "Compare pricing",
+      "to": "/licensing/pricing"
+    }
+  },
+  "cta": {
+    "title": "Thinking about a sale in the next 6–18 months?",
+    "body": "A 20-minute call to audit your add-backs and map the likely buyers. Confidential, no obligation.",
+    "primary": {
+      "label": "Request a confidential valuation",
+      "to": "/contact"
+    },
+    "secondary": {
+      "label": "See closed transactions",
+      "to": "/sell/case-studies"
+    }
+  }
 }
