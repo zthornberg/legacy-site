@@ -21,7 +21,7 @@ export const team: TeamMember[] = [
     id: "zackary-thornberg",
     name: "Zackary Thornberg",
     title: "Chief Executive Officer",
-    headshot: "/media/Zack_Thornberg_Feb2021-26859.jpeg",
+    headshot: "/media/Zack_Thornberg_Feb2021-26859.webp",
     portrait: { position: "42% 50%" },
     sections: [
       {
