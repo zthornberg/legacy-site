@@ -100,6 +100,10 @@ export const financingNote =
 export const assuranceCopy =
   'If you complete onboarding and meet the activity requirements, Legacy guarantees delivery of the defined program assets: warm introductions to interested sellers, tailored market data packs, platform access, and hands-on deal coaching. If we fail to deliver these within the stated windows, we make it right through additional delivery or a fee credit. This is a deliverable guarantee, not an earnings guarantee.';
 
+/** One-paragraph version of `assuranceCopy` for the FAQ; keep the two in step. */
+export const assuranceSummary =
+  'If you complete onboarding and meet the activity requirements, Legacy guarantees delivery of the defined program assets (seller introductions, market data packs, platform access and deal coaching) within the stated windows, or makes it right with additional delivery or a fee credit. It is a deliverable guarantee, not an earnings guarantee.';
+
 export const disclaimers: string[] = [
   'Legacy is a licensing program, not a franchise. Licensees operate independent businesses and are solely responsible for their services.',
   'Legacy does not provide or disclose client financial statements. All examples are illustrative.',

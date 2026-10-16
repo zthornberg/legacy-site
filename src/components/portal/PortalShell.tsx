@@ -25,8 +25,16 @@ function MobileTabs() {
 
   useEffect(() => {
     const el = scroller.current;
-    const active = el?.querySelector<HTMLElement>('[aria-current="page"]');
-    if (el && active) el.scrollLeft = active.offsetLeft - (el.clientWidth - active.offsetWidth) / 2;
+    if (!el) return;
+    // Recenter whenever the bar gets a size (it is hidden at lg) or the viewport changes.
+    const center = () => {
+      const active = el.querySelector<HTMLElement>('[aria-current="page"]');
+      if (active && el.clientWidth > 0) el.scrollLeft = active.offsetLeft - (el.clientWidth - active.offsetWidth) / 2;
+    };
+    center();
+    const ro = new ResizeObserver(center);
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   return (

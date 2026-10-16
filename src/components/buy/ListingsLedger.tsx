@@ -3,6 +3,8 @@ import { Lock } from 'lucide-react';
 import { Badge, Button, TextLink } from '../ui';
 import { cn } from '../../lib/utils';
 import type { Listing } from './listings';
+import { InquiryError, EmailHandoffNote } from '../../components/InquiryStatus';
+import { inquiryMailto, submitInquiry } from '../../lib/inquiry';
 
 /*
  * Confidential listings ledger. Desktop: a hairline table (one row per listing, tabular figures).
@@ -27,6 +29,9 @@ function Metric({ label, value, strong = false }: { label: string; value: string
 function RequestPanel({ listing, id }: { listing: Listing; id: string }) {
   const [form, setForm] = useState({ name: '', email: '' });
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [via, setVia] = useState<'endpoint' | 'email'>('endpoint');
   const firstField = useRef<HTMLInputElement>(null);
   const uid = useId();
 
@@ -37,8 +42,23 @@ function RequestPanel({ listing, id }: { listing: Listing; id: string }) {
 
   const underLoi = listing.status === 'Under LOI';
 
-  const submit = (e: React.FormEvent) => {
+  const requestFields = () => ({
+    listing: `${listing.ref} · ${listing.title}`,
+    name: form.name,
+    email: form.email,
+  });
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSending(true);
+    setFailed(false);
+    const result = await submitInquiry('listing-request', requestFields(), listing.ref);
+    setSending(false);
+    if (!result.ok) {
+      setFailed(true);
+      return;
+    }
+    setVia(result.via);
     setSent(true);
   };
 
@@ -47,7 +67,10 @@ function RequestPanel({ listing, id }: { listing: Listing; id: string }) {
       {sent ? (
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" role="status">
           <div>
-            <p className="font-display text-2xl leading-tight text-ink">Request received.</p>
+            <p className="font-display text-2xl leading-tight text-ink">
+              {via === 'email' ? 'One last step.' : 'Request received.'}
+            </p>
+            {via === 'email' && <EmailHandoffNote className="mt-1.5 text-sm leading-relaxed text-ink" />}
             <p className="mt-1.5 text-sm leading-relaxed text-mute">
               A Legacy advisor will send the NDA for <span className="tabular text-ink">{listing.ref}</span> to{' '}
               <span className="text-ink">{form.email}</span> and confirm your buyer profile before releasing the package.
@@ -107,8 +130,8 @@ function RequestPanel({ listing, id }: { listing: Listing; id: string }) {
               </div>
             </div>
             <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <Button type="submit" arrow>
-                Send me the NDA
+              <Button type="submit" arrow disabled={sending}>
+                {sending ? 'Sending…' : 'Send me the NDA'}
               </Button>
               <p className="text-[13px] text-mute">
                 Not registered?{' '}
@@ -117,6 +140,7 @@ function RequestPanel({ listing, id }: { listing: Listing; id: string }) {
                 </TextLink>
               </p>
             </div>
+            {failed && <InquiryError mailto={inquiryMailto('listing-request', requestFields(), listing.ref)} />}
           </form>
         </div>
       )}
@@ -167,7 +191,7 @@ function Row({ listing, open, onToggle }: { listing: Listing; open: boolean; onT
           variant="secondary"
           onClick={onToggle}
           aria-expanded={open}
-          aria-controls={panelId}
+          aria-controls={open ? panelId : undefined}
           className="w-full lg:w-auto"
         >
           {open ? 'Close' : 'Request details'}

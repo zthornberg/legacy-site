@@ -22,6 +22,8 @@ type CommonProps = {
   arrow?: boolean | 'external';
   icon?: React.ReactNode;
   full?: boolean;
+  /** Accessible name when the visible label is not specific enough (e.g. "Download" in a table row). */
+  'aria-label'?: string;
 };
 
 type AsLink = CommonProps & { to: string; href?: never; onClick?: React.MouseEventHandler<HTMLAnchorElement> };
@@ -38,12 +40,12 @@ type AsButton = CommonProps &
 export type ButtonProps = AsLink | AsAnchor | AsButton;
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-lg font-medium whitespace-nowrap select-none transition-[background-color,border-color,color,transform,box-shadow] duration-200 ease-out-expo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:opacity-50 disabled:pointer-events-none active:translate-y-px';
+  'inline-flex items-center justify-center gap-2 rounded-lg font-medium text-center leading-tight sm:whitespace-nowrap select-none transition-[background-color,border-color,color,transform,box-shadow] duration-200 ease-out-expo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:opacity-50 disabled:pointer-events-none active:translate-y-px';
 
 const sizes: Record<ButtonSize, string> = {
-  sm: 'h-9 px-3.5 text-[13px]',
-  md: 'h-11 px-5 text-sm',
-  lg: 'h-12 px-6 text-[15px]',
+  sm: 'min-h-9 px-3.5 py-1.5 text-[13px]',
+  md: 'min-h-11 px-5 py-2 text-sm',
+  lg: 'min-h-12 px-6 py-2.5 text-[15px]',
 };
 
 const variants: Record<ButtonVariant, string> = {
@@ -76,14 +78,21 @@ export default function Button(props: ButtonProps) {
 
   if ('to' in props && props.to) {
     return (
-      <Link to={props.to} onClick={props.onClick} className={cn('group/btn', classes)}>
+      <Link to={props.to} onClick={props.onClick} aria-label={props['aria-label']} className={cn('group/btn', classes)}>
         {content}
       </Link>
     );
   }
   if ('href' in props && props.href) {
     return (
-      <a href={props.href} target={props.target} rel={props.rel} onClick={props.onClick} className={cn('group/btn', classes)}>
+      <a
+        href={props.href}
+        target={props.target}
+        rel={props.rel}
+        onClick={props.onClick}
+        aria-label={props['aria-label']}
+        className={cn('group/btn', classes)}
+      >
         {content}
       </a>
     );

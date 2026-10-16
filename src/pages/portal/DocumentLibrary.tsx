@@ -2,7 +2,17 @@ import React, { useState } from 'react';
 import { Download, File, FileText, Search, Video } from 'lucide-react';
 import { Badge, Button, Card } from '../../components/ui';
 import PortalShell from '../../components/portal/PortalShell';
+import { SITE_EMAIL } from '../../lib/site';
 import { cn } from '../../lib/utils';
+
+/** Files with a real URL download directly; the rest open a request to HQ instead of a dead button. */
+const docAction = (doc: { title: string; downloadUrl: string }) =>
+  doc.downloadUrl && doc.downloadUrl !== '#'
+    ? { href: doc.downloadUrl, label: 'Download' }
+    : {
+        href: `mailto:${SITE_EMAIL}?subject=${encodeURIComponent(`Document request: ${doc.title}`)}`,
+        label: 'Request file',
+      };
 
 interface Document {
   id: string;
@@ -188,9 +198,10 @@ const DocumentLibrary: React.FC = () => {
                       variant="secondary"
                       size="sm"
                       icon={<Download size={14} strokeWidth={1.75} aria-hidden />}
-                      aria-label={`Download ${doc.title}`}
+                      href={docAction(doc).href}
+                      aria-label={`${docAction(doc).label}: ${doc.title}`}
                     >
-                      Download
+                      {docAction(doc).label}
                     </Button>
                   </td>
                 </tr>
@@ -219,9 +230,10 @@ const DocumentLibrary: React.FC = () => {
                   full
                   className="mt-4"
                   icon={<Download size={14} strokeWidth={1.75} aria-hidden />}
-                  aria-label={`Download ${doc.title}`}
+                  href={docAction(doc).href}
+                  aria-label={`${docAction(doc).label}: ${doc.title}`}
                 >
-                  Download
+                  {docAction(doc).label}
                 </Button>
               </li>
             ))}

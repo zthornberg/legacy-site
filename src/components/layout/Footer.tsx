@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Linkedin } from 'lucide-react';
 import Container from '../ui/Container';
+import { SITE_EMAIL } from '../../lib/site';
 
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
@@ -55,8 +56,8 @@ export default function Footer() {
               of licensed brokers.
             </p>
             <div className="mt-6 space-y-1.5 text-sm">
-              <a href="mailto:info@legacybrokers.com" className="block text-paper/80 transition-colors hover:text-paper">
-                info@legacybrokers.com
+              <a href={`mailto:${SITE_EMAIL}`} className="block text-paper/80 transition-colors hover:text-paper">
+                {SITE_EMAIL}
               </a>
               <p className="text-paper/50">Scottsdale, Arizona · Serving owners nationwide</p>
             </div>

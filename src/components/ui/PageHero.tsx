@@ -84,7 +84,9 @@ export default function PageHero({
                         {c.label}
                       </Link>
                     ) : (
-                      <span className={cn(last && (inverse ? 'text-paper' : 'text-ink'))}>{c.label}</span>
+                      <span aria-current={last ? 'page' : undefined} className={cn(last && (inverse ? 'text-paper' : 'text-ink'))}>
+                        {c.label}
+                      </span>
                     )}
                     {!last && <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden />}
                   </li>

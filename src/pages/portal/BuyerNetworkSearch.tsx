@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Mail, Search } from 'lucide-react';
 import { Badge, Button, Card, Eyebrow } from '../../components/ui';
 import PortalShell from '../../components/portal/PortalShell';
+import { SITE_EMAIL } from '../../lib/site';
 
 interface Buyer {
   id: string;
@@ -38,6 +39,41 @@ const mockBuyers: Buyer[] = [
     lastActive: '3 days ago',
   },
 ];
+
+const STATE_CODES: Record<string, string> = { arizona: 'AZ', texas: 'TX', california: 'CA', colorado: 'CO' };
+
+/** "$500K - $5M" → [0.5, 5] in millions. */
+function rangeMillions(r: string): [number, number] {
+  const nums = [...r.matchAll(/\$?([\d.]+)\s*([KM])/gi)].map(
+    (m) => parseFloat(m[1]) / (m[2].toUpperCase() === 'K' ? 1000 : 1),
+  );
+  return [nums[0] ?? 0, nums[1] ?? nums[0] ?? 0];
+}
+
+function matches(buyer: Buyer, f: Filters) {
+  if (f.industry) {
+    const inds = buyer.preferredIndustries.map((i) => i.toLowerCase());
+    if (!inds.some((i) => i.includes(f.industry))) return false;
+  }
+  if (f.location && !buyer.location.endsWith(`, ${STATE_CODES[f.location]}`)) return false;
+  if (f.investmentRange) {
+    const [min, max] = rangeMillions(buyer.investmentRange);
+    if (f.investmentRange === 'under-1m' && !(min < 1)) return false;
+    if (f.investmentRange === '1m-5m' && !(min <= 5 && max >= 1)) return false;
+    if (f.investmentRange === '5m-plus' && !(max >= 5)) return false;
+  }
+  if (f.buyerType) {
+    const t = buyer.type.toLowerCase();
+    const want = { individual: 'individual', 'private-equity': 'private equity', strategic: 'strategic' }[f.buyerType];
+    if (want && !t.includes(want)) return false;
+  }
+  return true;
+}
+
+const introHref = (buyer: Buyer) =>
+  `mailto:${SITE_EMAIL}?subject=${encodeURIComponent(`Introduction request: buyer ${buyer.id}`)}&body=${encodeURIComponent(
+    `Please introduce me to buyer ${buyer.id} (${buyer.type}, ${buyer.location}).\n\nListing:\n`,
+  )}`;
 
 /** "$1M - $2M" → "$1M–$2M" for display. */
 const range = (r: string) => r.replace(/\s*-\s*/, '–');
@@ -97,10 +133,9 @@ const BuyerNetworkSearch: React.FC = () => {
     buyerType: '',
   });
 
-  const handleSearch = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    // Implement search logic
-  };
+  // Filters apply as they change; the submit button is kept for keyboard users who expect one.
+  const results = useMemo(() => mockBuyers.filter((b) => matches(b, searchFilters)), [searchFilters]);
+  const handleSearch = (e?: React.FormEvent) => e?.preventDefault();
 
   return (
     <PortalShell
@@ -143,10 +178,19 @@ const BuyerNetworkSearch: React.FC = () => {
       {/* Results */}
       <div className="mt-8 flex items-baseline justify-between gap-4">
         <h2 className="font-sans text-[15px] font-medium text-ink">Matching buyers</h2>
-        <p className="tabular text-[13px] text-mute">{mockBuyers.length} results</p>
+        <p className="tabular text-[13px] text-mute">
+          {results.length} {results.length === 1 ? 'result' : 'results'}
+        </p>
       </div>
 
-      <Card padding="none" className="mt-3 overflow-hidden">
+      {results.length === 0 && (
+        <Card padding="sm" tone="deep" className="mt-3">
+          <p className="text-sm text-mute-strong">
+            No buyers match these filters. Widen one of them to see more of the network.
+          </p>
+        </Card>
+      )}
+      <Card padding="none" className={results.length === 0 ? 'hidden' : 'mt-3 overflow-hidden'}>
         {/* Desktop: hairline table */}
         <div className="hidden xl:block">
           <table className="w-full text-left">
@@ -173,7 +217,7 @@ const BuyerNetworkSearch: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
-              {mockBuyers.map((buyer) => (
+              {results.map((buyer) => (
                 <tr key={buyer.id} className="align-middle transition-colors duration-150 hover:bg-paper/70">
                   <td className="px-5 py-4">
                     <p className="whitespace-nowrap text-sm font-medium text-ink">{buyer.type}</p>
@@ -194,6 +238,7 @@ const BuyerNetworkSearch: React.FC = () => {
                       variant="secondary"
                       size="sm"
                       icon={<Mail size={14} strokeWidth={1.75} aria-hidden />}
+                      href={introHref(buyer)}
                       aria-label={`Request introduction to buyer ${buyer.id}`}
                     >
                       Request introduction
@@ -207,7 +252,7 @@ const BuyerNetworkSearch: React.FC = () => {
 
         {/* Mobile / tablet: stacked rows */}
         <ul className="divide-y divide-line xl:hidden">
-          {mockBuyers.map((buyer) => (
+          {results.map((buyer) => (
             <li key={buyer.id} className="p-5">
               <div className="flex items-baseline justify-between gap-3">
                 <p className="text-sm font-medium text-ink">{buyer.type}</p>
@@ -237,6 +282,7 @@ const BuyerNetworkSearch: React.FC = () => {
                   variant="secondary"
                   size="sm"
                   icon={<Mail size={14} strokeWidth={1.75} aria-hidden />}
+                  href={introHref(buyer)}
                   aria-label={`Request introduction to buyer ${buyer.id}`}
                 >
                   Request introduction

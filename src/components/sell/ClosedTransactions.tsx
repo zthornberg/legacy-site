@@ -46,7 +46,7 @@ function TransactionIndex() {
         ))}
       </ol>
       <div className="flex items-center justify-between border-t border-line bg-paper px-5 py-3 text-[12px] text-mute">
-        <span>Engagement to close</span>
+        <span>Time to close</span>
         <span className="tabular">
           {Math.min(...months)}–{Math.max(...months)} months
         </span>

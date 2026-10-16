@@ -5,8 +5,9 @@ import TeamAvatar from '../../components/team/TeamAvatar';
 import Breadcrumbs from '../../components/company/Breadcrumbs';
 import { cn } from '../../lib/utils';
 import { usePageMeta } from '../../lib/seo';
+import { SITE_EMAIL } from '../../lib/site';
 
-const CONTACT_EMAIL = 'info@legacybrokers.com';
+const CONTACT_EMAIL = SITE_EMAIL;
 
 function paragraphs(text: string) {
   return text.split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
@@ -43,8 +44,7 @@ export default function TeamMemberBio() {
   const { name } = useParams<{ name: string }>();
   const index = team.findIndex((m) => m.id === name);
   const member = index >= 0 ? team[index] : undefined;
-  const about = member?.sections.find((s) => s.label === 'About') ?? member?.sections[0];
-  usePageMeta(member ? `${member.name}, ${member.title}` : undefined, about ? paragraphs(about.text)[0] : undefined);
+  usePageMeta(member ? `${member.name}, ${member.title}` : undefined, member?.summary);
 
   if (!member) {
     return (

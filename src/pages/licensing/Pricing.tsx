@@ -131,7 +131,7 @@ export default function Pricing() {
                 lede="The questions we hear most on the first call. Anything else, ask the team."
               />
               <Reveal delay={0.06} className="mt-8">
-                <Button to="/contact" variant="secondary" arrow>
+                <Button to={APPLY_PATH} variant="secondary" arrow>
                   Talk to the team
                 </Button>
               </Reveal>
@@ -154,7 +154,7 @@ export default function Pricing() {
             <Button to={APPLY_PATH} size="lg" arrow>
               Start an application
             </Button>
-            <Button to="/contact" variant="secondary" size="lg">
+            <Button to={APPLY_PATH} variant="secondary" size="lg">
               Talk to the team
             </Button>
           </>

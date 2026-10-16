@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Button, Card, Container, Eyebrow, PageHero, Reveal, Section, TextLink } from '../components/ui';
 import { Field, NextSteps } from '../components/buy/form';
+import { InquiryError, EmailHandoffNote } from '../components/InquiryStatus';
+import { inquiryMailto, submitInquiry } from '../lib/inquiry';
+import { SITE_EMAIL } from '../lib/site';
+import { SECTORS, SUBSECTORS_BY_SECTOR } from '../components/industries/sectors';
 
 const INQUIRY_TYPES = [
   { value: 'sell-business', label: 'Sell my business' },
@@ -14,13 +18,20 @@ const INQUIRY_TYPES = [
 /** Words a plain slug → Title Case pass would get wrong. */
 const SLUG_WORDS: Record<string, string> = { it: 'IT', msp: 'MSP', hvac: 'HVAC', saas: 'SaaS', and: 'and' };
 
+/** Every slug an industry CTA can send: the ten sectors plus their sub-sector briefs. */
+const KNOWN_INDUSTRY_SLUGS = new Set([...SECTORS.map((s) => s.key), ...Object.values(SUBSECTORS_BY_SECTOR).flat()]);
+
 /** `?industry=construction-homebuilding` → "Construction Homebuilding". Unknown or malformed slugs are ignored. */
 function industryFromSlug(slug: string | null) {
-  if (!slug || !/^[a-z0-9-]{2,60}$/.test(slug)) return '';
+  if (!slug || !KNOWN_INDUSTRY_SLUGS.has(slug)) return '';
+  const sector = SECTORS.find((s) => s.key === slug);
+  if (sector) return sector.name;
   return slug
     .split('-')
     .filter(Boolean)
-    .map((w) => SLUG_WORDS[w] ?? w.charAt(0).toUpperCase() + w.slice(1))
+    .map((w) =>
+      Object.prototype.hasOwnProperty.call(SLUG_WORDS, w) ? SLUG_WORDS[w] : w.charAt(0).toUpperCase() + w.slice(1),
+    )
     .join(' ');
 }
 
@@ -64,20 +75,42 @@ export default function Contact() {
     message: industry ? `Industry: ${industry}\n\n` : '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [via, setVia] = useState<'endpoint' | 'email'>('endpoint');
 
   // Keep the preselection in sync when an in-page link changes ?intent=
   useEffect(() => {
     const mapped = INTENT_TO_TYPE[intent] ?? '';
     setFormData((prev) => ({ ...prev, inquiryType: mapped }));
+    // A new ?intent= is a new inquiry: leave any previous confirmation behind.
+    setSubmitted(false);
   }, [intent]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const inquiryFields = () => ({
+    name: formData.name,
+    email: formData.email,
+    phone: formData.phone,
+    company: formData.company,
+    inquiryType: INQUIRY_TYPES.find((t) => t.value === formData.inquiryType)?.label ?? formData.inquiryType,
+    message: formData.message,
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // No backend yet: the submission is not sent anywhere.
+    setSending(true);
+    setFailed(false);
+    const result = await submitInquiry('contact', inquiryFields(), formData.name);
+    setSending(false);
+    if (!result.ok) {
+      setFailed(true);
+      return;
+    }
+    setVia(result.via);
     setSubmitted(true);
   };
 
@@ -102,8 +135,13 @@ export default function Contact() {
               {submitted ? (
                 <Card padding="none" className="p-6 sm:p-8 md:p-10">
                   <div role="status">
-                    <Eyebrow>Message received</Eyebrow>
-                    <h2 className="mt-5 font-display text-display-lg text-ink">Thank you. Your note is with our team.</h2>
+                    <Eyebrow>{via === 'email' ? 'Almost there' : 'Message received'}</Eyebrow>
+                    <h2 className="mt-5 font-display text-display-lg text-ink">
+                      {via === 'email' ? 'Thank you. One last step.' : 'Thank you. Your note is with our team.'}
+                    </h2>
+                    {via === 'email' && (
+                      <EmailHandoffNote className="mt-5 max-w-lg text-[15px] leading-relaxed text-ink" />
+                    )}
                     <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-mute">
                       We will respond within one business day. A Legacy advisor will reach out to discuss your needs and
                       suggest a time for a short fit call.
@@ -202,9 +240,10 @@ export default function Contact() {
                     </Field>
 
                     <div className="pt-3">
-                      <Button type="submit" size="lg" full arrow>
-                        Send message
+                      <Button type="submit" size="lg" full arrow disabled={sending}>
+                        {sending ? 'Sending…' : 'Send message'}
                       </Button>
+                      {failed && <InquiryError mailto={inquiryMailto('contact', inquiryFields(), formData.name)} />}
                       <p className="mt-3 text-center text-xs text-mute">Confidential by default. We reply within one business day.</p>
                     </div>
                   </form>
@@ -225,10 +264,10 @@ export default function Contact() {
                     <dt className="eyebrow text-mute">Email</dt>
                     <dd className="mt-1">
                       <a
-                        href="mailto:info@legacybrokers.com"
+                        href={`mailto:${SITE_EMAIL}`}
                         className="inline-block py-1.5 font-display text-[1.75rem] leading-tight text-ink underline decoration-ink/20 decoration-1 underline-offset-[6px] transition-colors hover:decoration-ink"
                       >
-                        info@legacybrokers.com
+                        {SITE_EMAIL}
                       </a>
                     </dd>
                   </div>

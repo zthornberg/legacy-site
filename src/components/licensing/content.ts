@@ -2,7 +2,7 @@
 // Tier data, comparison rows, financing, assurance and disclaimers live in
 // src/content/licensing.ts, the single source of truth. Everything here is
 // derived from copy the site already carried; no new statistics.
-import { financingNote, tiers, type Tier, type TierId } from '../../content/licensing';
+import { assuranceSummary, financingNote, tiers, type Tier, type TierId } from '../../content/licensing';
 
 export const APPLY_PATH = '/contact?intent=licensing';
 
@@ -33,7 +33,7 @@ export const pricingFaq: FaqItem[] = [
   },
   {
     q: 'What is the deliverable-based assurance?',
-    a: 'If you complete onboarding and meet the activity requirements, Legacy guarantees delivery of the defined program assets, or makes it right with additional delivery or a fee credit. It is a deliverable guarantee, not an earnings guarantee.',
+    a: assuranceSummary,
   },
   {
     q: 'Is financing available?',

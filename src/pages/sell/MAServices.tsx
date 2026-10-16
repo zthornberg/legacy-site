@@ -18,7 +18,7 @@ const SERVICES: { label: string; title: string; body: string; icon: LucideIcon }
   {
     label: 'Planning',
     title: 'Strategic sale planning',
-    body: 'We prepare the business before it goes to market, through financial recasting and growth adjustments, so it goes to market with clean numbers and a defensible multiple.',
+    body: 'We prepare the business before launch, through financial recasting and growth adjustments, so it goes to market with clean numbers and a defensible multiple.',
     icon: BarChart3,
   },
   {

@@ -16,6 +16,8 @@ import {
 import ProcessSection from '../../components/ProcessSection';
 import SourcingTracker from '../../components/buy/SourcingTracker';
 import { Field, TargetEvField } from '../../components/buy/form';
+import { InquiryError, EmailHandoffNote } from '../../components/InquiryStatus';
+import { inquiryMailto, submitInquiry } from '../../lib/inquiry';
 
 /** In-page anchor for the mandate brief form; every "Start a mandate" on this page points here. */
 const BRIEF_ID = 'mandate-brief';
@@ -62,13 +64,25 @@ function MandateForm() {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [via, setVia] = useState<'endpoint' | 'email'>('endpoint');
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSending(true);
+    setFailed(false);
+    const result = await submitInquiry('buyer-mandate', formData, formData.name);
+    setSending(false);
+    if (!result.ok) {
+      setFailed(true);
+      return;
+    }
+    setVia(result.via);
     setSubmitted(true);
   };
 
@@ -76,8 +90,11 @@ function MandateForm() {
     return (
       <Card padding="none" className="p-6 sm:p-8 md:p-10">
         <div role="status">
-          <Eyebrow>Mandate brief received</Eyebrow>
-          <p className="mt-4 font-display text-display-md text-ink">Thank you. An advisor will be in touch.</p>
+          <Eyebrow>{via === 'email' ? 'Almost there' : 'Mandate brief received'}</Eyebrow>
+          <p className="mt-4 font-display text-display-md text-ink">
+            {via === 'email' ? 'Thank you. One last step.' : 'Thank you. An advisor will be in touch.'}
+          </p>
+          {via === 'email' && <EmailHandoffNote className="mt-4 max-w-md text-[15px] leading-relaxed text-ink" />}
           <p className="mt-4 max-w-md text-[15px] leading-relaxed text-mute">
             We reply within one business day to schedule a 20-minute fit call about your criteria.
           </p>
@@ -152,9 +169,10 @@ function MandateForm() {
         </Field>
 
         <div className="pt-2">
-          <Button type="submit" size="lg" full arrow>
-            Send mandate brief
+          <Button type="submit" size="lg" full arrow disabled={sending}>
+            {sending ? 'Sending…' : 'Send mandate brief'}
           </Button>
+          {failed && <InquiryError mailto={inquiryMailto('buyer-mandate', formData, formData.name)} />}
           <p className="mt-3 text-center text-xs text-mute">Confidential. We reply within one business day.</p>
         </div>
       </form>

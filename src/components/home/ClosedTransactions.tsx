@@ -20,7 +20,9 @@ export default function ClosedTransactions() {
   const { transactions } = home;
   const items = TRANSACTIONS;
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const paused = hovered || focused;
   const [picked, setPicked] = useState(false);
   const reduce = useReducedMotion();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -75,10 +77,12 @@ export default function ClosedTransactions() {
         <div
           ref={rootRef}
           className="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-12 lg:gap-12"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          onFocusCapture={() => setPaused(true)}
-          onBlurCapture={() => setPaused(false)}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          onFocusCapture={() => setFocused(true)}
+          onBlurCapture={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocused(false);
+          }}
         >
           {/* Selectable list */}
           <Reveal className="order-2 lg:order-1 lg:col-span-5">

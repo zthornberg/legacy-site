@@ -47,7 +47,7 @@ export const sellProcess: ProcessPage = {
 
 /** Shown under the sell timeline so the week ranges read against the closed-deal timelines. */
 export const sellTimelineNote =
-  "Week ranges cover the marketed phase; engagement to close has run 6–12 months on recent mandates.";
+  "Week ranges show a typical process from preparation to close. Recent closed mandates took 6–12 months from listing to close, depending on buyer diligence and financing.";
 
 export const buyProcess: ProcessPage = {
   slug: "buy",

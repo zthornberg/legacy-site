@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { SITE_NAME } from './site';
 
-const SITE = 'Legacy Business Brokers';
+const SITE = SITE_NAME;
 const DEFAULT_DESCRIPTION =
   'Legacy pairs senior M&A advisors with AI-assisted research to run confidential, competitive sale processes for $1M–$50M companies, and licenses its platform to a select network of brokers.';
 
@@ -69,7 +71,8 @@ const SECTION_FALLBACKS: Record<string, string> = {
   '/portal/': 'Broker Portal',
 };
 
-export function metaForPath(pathname: string): Meta {
+export function metaForPath(rawPath: string): Meta {
+  const pathname = rawPath.length > 1 ? rawPath.replace(/\/+$/, '') : rawPath;
   const exact = ROUTES[pathname];
   if (exact) return exact;
   const prefix = Object.keys(SECTION_FALLBACKS).find((p) => pathname.startsWith(p));
@@ -94,12 +97,15 @@ function apply(meta: Meta) {
  * Pass nothing to use the static route table; pass a title (and optional description)
  * from dynamic pages such as a team member, an industry, or a post.
  */
-export function usePageMeta(title?: string, description?: string, pathname?: string) {
+export function usePageMeta(title?: string, description?: string) {
+  // Depend on the location so a page that stays mounted across navigations (two 404s, two
+  // unknown sectors) reapplies its metadata after PageMeta's route default runs.
+  const { pathname } = useLocation();
   useEffect(() => {
     if (title) {
       apply({ title, description });
       return;
     }
-    apply(metaForPath(pathname ?? window.location.pathname));
+    apply(metaForPath(pathname));
   }, [title, description, pathname]);
 }

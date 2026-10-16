@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button, Card, Eyebrow, TextLink } from '../../components/ui';
+import { SITE_EMAIL } from '../../lib/site';
 
 const BrokerLogin: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -72,7 +73,7 @@ const BrokerLogin: React.FC = () => {
                   Password
                 </label>
                 <a
-                  href="mailto:info@legacybrokers.com?subject=Broker%20portal%20password%20reset"
+                  href={`mailto:${SITE_EMAIL}?subject=Broker%20portal%20password%20reset`}
                   className="mb-1.5 text-[13px] text-mute underline decoration-mute/30 underline-offset-4 transition-colors hover:text-ink hover:decoration-ink"
                 >
                   Forgot password?

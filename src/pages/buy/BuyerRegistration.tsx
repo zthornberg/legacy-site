@@ -1,7 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import { Button, Card, CheckList, Container, Eyebrow, PageHero, Section, TextLink } from '../../components/ui';
 import { Field, Fieldset, InlineCheck, Legend, NextSteps, OptionTile, TargetEvField } from '../../components/buy/form';
+import { InquiryError, EmailHandoffNote } from '../../components/InquiryStatus';
+import { inquiryMailto, submitInquiry } from '../../lib/inquiry';
 
 const industries = [
   'Manufacturing & Distribution',
@@ -60,6 +62,10 @@ export default function BuyerRegistration() {
   const [locationsText, setLocationsText] = useState('');
   const [agreed, setAgreed] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [via, setVia] = useState<'endpoint' | 'email'>('endpoint');
+  const doneRef = useRef<HTMLHeadingElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
 
   const handleInputChange = (field: string, value: string | string[]) => {
@@ -83,11 +89,31 @@ export default function BuyerRegistration() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const registrationFields = () => ({
+    ...formData,
+    agreedToConfidentiality: agreed,
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSending(true);
+    setFailed(false);
+    const name = `${formData.firstName} ${formData.lastName}`.trim();
+    const result = await submitInquiry('buyer-registration', registrationFields(), name);
+    setSending(false);
+    if (!result.ok) {
+      setFailed(true);
+      return;
+    }
+    setVia(result.via);
     setSubmitted(true);
     topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
+
+  // Move focus to the confirmation so keyboard and screen-reader users are not left on the removed form.
+  useEffect(() => {
+    if (submitted) doneRef.current?.focus({ preventScroll: true });
+  }, [submitted]);
 
   return (
     <>
@@ -110,10 +136,13 @@ export default function BuyerRegistration() {
               {submitted ? (
                 <Card padding="none" className="min-h-[24rem] p-6 sm:p-8 md:p-10">
                   <div role="status">
-                    <Eyebrow>Registration received</Eyebrow>
-                    <h2 className="mt-5 font-display text-display-lg text-ink">
+                    <Eyebrow>{via === 'email' ? 'Almost there' : 'Registration received'}</Eyebrow>
+                    <h2 ref={doneRef} tabIndex={-1} className="mt-5 font-display text-display-lg text-ink outline-none">
                       Thank you, {formData.firstName || 'and welcome'}.
                     </h2>
+                    {via === 'email' && (
+                      <EmailHandoffNote className="mt-5 max-w-lg text-[15px] leading-relaxed text-ink" />
+                    )}
                     <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-mute">
                       A Legacy M&amp;A advisor will contact you to complete onboarding and countersign an NDA before
                       sharing confidential materials. Until then, the representative listings show the kind of businesses
@@ -196,7 +225,7 @@ export default function BuyerRegistration() {
                       >
                         <div className="space-y-7">
                           <fieldset>
-                            <Legend qualifier="Select all that apply">Preferred industries</Legend>
+                            <Legend qualifier="Optional · select all that apply">Preferred industries</Legend>
                             <div className="mt-1 grid gap-2 sm:grid-cols-2">
                               {industries.map((industry) => (
                                 <OptionTile
@@ -324,9 +353,18 @@ export default function BuyerRegistration() {
                     </div>
 
                     <div className="border-t border-line bg-paper/60 px-6 py-6 sm:px-8 md:px-10">
-                      <Button type="submit" size="lg" full arrow>
-                        Submit registration
+                      <Button type="submit" size="lg" full arrow disabled={sending}>
+                        {sending ? 'Sending…' : 'Submit registration'}
                       </Button>
+                      {failed && (
+                        <InquiryError
+                          mailto={inquiryMailto(
+                            'buyer-registration',
+                            registrationFields(),
+                            `${formData.firstName} ${formData.lastName}`.trim(),
+                          )}
+                        />
+                      )}
                     </div>
                   </form>
                 </Card>

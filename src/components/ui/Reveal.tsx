@@ -22,14 +22,16 @@ export default function Reveal({
   once?: boolean;
 }) {
   const reduce = useReducedMotion();
+  // Transforms do not apply to inline boxes.
+  const cls = as === 'span' ? ['inline-block', className].filter(Boolean).join(' ') : className;
   const Comp = (motion as unknown as Record<string, React.ElementType>)[as] ?? motion.div;
   if (reduce) {
     const Plain = as as React.ElementType;
-    return <Plain className={className}>{children}</Plain>;
+    return <Plain className={cls}>{children}</Plain>;
   }
   return (
     <Comp
-      className={className}
+      className={cls}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={once ? viewportOnce : { margin: viewportOnce.margin }}

@@ -77,13 +77,13 @@ export default function Testimonials() {
         <Container>
           <SectionHeading eyebrow="Across the network" title="The numbers behind the stories." size="md" />
           <Reveal delay={0.06} className="mt-10">
-            <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line lg:grid-cols-4">
+            <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line lg:grid-cols-4">
               {brokerStats.map((s) => (
-                <div key={s.label} className="bg-paper-deep p-6 md:p-8">
+                <li key={s.label} className="bg-paper-deep p-6 md:p-8">
                   <Stat value={s.value} label={s.label} />
-                </div>
+                </li>
               ))}
-            </dl>
+            </ul>
             <p className="mt-5 max-w-2xl text-xs leading-relaxed text-mute-soft">{earningsFootnote}</p>
           </Reveal>
         </Container>

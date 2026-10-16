@@ -28,7 +28,9 @@ export function CountUp({ value, className, duration = 1400 }: { value: string; 
   const inView = useInView(ref, { once: true, margin: '-10% 0px' });
   const reduce = useReducedMotion();
   const parsed = parseValue(value);
-  const [display, setDisplay] = useState(() => (parsed ? parsed.prefix + format(0, parsed.decimals, parsed.grouped) + parsed.suffix : value));
+  const [display, setDisplay] = useState(() =>
+    parsed && !reduce ? parsed.prefix + format(0, parsed.decimals, parsed.grouped) + parsed.suffix : value
+  );
 
   useEffect(() => {
     if (!parsed) return;
@@ -60,7 +62,7 @@ export function CountUp({ value, className, duration = 1400 }: { value: string; 
 
 /**
  * A single statistic: serif number over a small label.
- * Use inside a grid; add `divider` to draw a left hairline between stats.
+ * Use inside a grid; the parent draws any dividers between stats.
  */
 export default function Stat({
   value,

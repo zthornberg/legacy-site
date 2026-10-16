@@ -2,7 +2,7 @@
 
 Marketing site and broker portal for Legacy Business Brokers: sell-side M&A advisory for owners of lower-middle-market companies, and the licensing program behind a national network of brokers.
 
-Stack: Vite · React 18 · TypeScript · Tailwind 3.4 · framer-motion · lucide-react · react-router 7. Deployed on Vercel (`vercel.json` rewrites every path to `index.html`).
+Stack: Vite · React 18 · TypeScript · Tailwind 3.4 · framer-motion · lucide-react · react-router 7. Deployed on Vercel (`vercel.json` rewrites every non-API path to `index.html`).
 
 ```bash
 npm ci          # install

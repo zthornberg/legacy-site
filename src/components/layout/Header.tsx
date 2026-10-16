@@ -367,6 +367,16 @@ export default function Header() {
     };
   }, [isHome]);
 
+  // The sheet is mobile-only: close it if the viewport grows past lg so the page is never left inert.
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const onChange = () => {
+      if (mq.matches) setMobileOpen(false);
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
   // Close menus on route change
   useEffect(() => {
     setOpenGroup(null);

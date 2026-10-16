@@ -34,7 +34,9 @@ export function Field({
         <span>{label}</span>
         {optional && <span className={QUALIFIER}>Optional</span>}
       </label>
-      {children}
+      {hint && React.isValidElement<{ 'aria-describedby'?: string }>(children) && !children.props['aria-describedby']
+        ? React.cloneElement(children, { 'aria-describedby': `${id}-hint` })
+        : children}
       {hint && (
         <p id={`${id}-hint`} className="hint">
           {hint}

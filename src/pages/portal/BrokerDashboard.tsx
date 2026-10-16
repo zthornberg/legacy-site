@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Button, Card, Stat } from '../../components/ui';
 import PortalShell from '../../components/portal/PortalShell';
 import { PanelHeading } from '../../components/portal/Form';
+import { SITE_EMAIL } from '../../lib/site';
 
 type Tool = { title: string; description: string; icon: LucideIcon; href: string };
 
@@ -115,10 +116,10 @@ const BrokerDashboard: React.FC = () => {
                   Need something that is not listed here? Legacy HQ handles custom requests for licensed brokers.
                 </p>
                 <a
-                  href="mailto:info@legacybrokers.com"
+                  href={`mailto:${SITE_EMAIL}`}
                   className="mt-4 inline-flex text-sm font-medium text-ink sm:mt-6 underline decoration-ink/30 underline-offset-4 transition-colors hover:decoration-ink"
                 >
-                  info@legacybrokers.com
+                  {SITE_EMAIL}
                 </a>
               </Card>
             </li>

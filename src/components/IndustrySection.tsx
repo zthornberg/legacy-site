@@ -5,6 +5,8 @@
 import type { ReactNode } from 'react';
 import { industries } from '../content/industries';
 import { Button, Eyebrow, Reveal } from './ui';
+import { useLocation } from 'react-router-dom';
+import TypeformEmbed from './TypeformEmbed';
 
 type Band = { ev: string; multiple: string };
 
@@ -92,7 +94,7 @@ function Multiples({ comps }: { comps: string[] }) {
                     <span className="text-ink">{b.ev} multiple</span>
                   )}
                 </dt>
-                <dd className="tabular font-display text-display-sm leading-none text-ink">{b.multiple}</dd>
+                <dd className="tabular font-display text-display-sm leading-none text-ink">{keepRanges(b.multiple)}</dd>
               </div>
             ))}
           </dl>
@@ -152,11 +154,41 @@ export default function IndustrySection({ slug, index }: { slug: string; index?:
 
         <div className="border-t border-line pt-6 lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:mt-8 lg:self-start">
           <p className="text-[15px] leading-relaxed text-ink/85">{ind.cta}</p>
-          <Button to={`/contact?intent=sell&industry=${slug}`} variant="secondary" size="sm" arrow className="mt-5">
-            Discuss a sale
-          </Button>
+          <div className="mt-5">
+            <IndustryCta slug={slug} />
+          </div>
         </div>
       </div>
     </article>
+  );
+}
+
+/**
+ * The sector CTA. Honors the booking settings the original site supported: a Typeform popup when
+ * VITE_TYPEFORM_FORM_ID is set, a booking link when VITE_TALLY_BOOK_URL is set, else the contact form.
+ */
+function IndustryCta({ slug }: { slug: string }) {
+  const { pathname } = useLocation();
+  if (import.meta.env.VITE_TYPEFORM_FORM_ID) {
+    return <TypeformEmbed mode="popup" label="Discuss a sale" hidden={{ industry: slug, source: pathname }} />;
+  }
+  const booking = (import.meta.env.VITE_TALLY_BOOK_URL as string | undefined)?.trim();
+  if (booking) {
+    const sep = booking.includes('?') ? '&' : '?';
+    return (
+      <Button
+        href={`${booking}${sep}industry=${encodeURIComponent(slug)}&source=${encodeURIComponent(pathname)}`}
+        variant="secondary"
+        size="sm"
+        arrow
+      >
+        Discuss a sale
+      </Button>
+    );
+  }
+  return (
+    <Button to={`/contact?intent=sell&industry=${slug}`} variant="secondary" size="sm" arrow>
+      Discuss a sale
+    </Button>
   );
 }

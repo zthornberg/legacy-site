@@ -8,9 +8,9 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { AuthProvider } from "./contexts/AuthContext";
 
 import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
 
 // Route-level code splitting: only the home page ships in the initial bundle.
+const NotFound = lazy(() => import("./pages/NotFound"));
 const Contact = lazy(() => import("./pages/Contact"));
 const BusinessListings = lazy(() => import("./pages/buy/BusinessListings"));
 const BuyerRegistration = lazy(() => import("./pages/buy/BuyerRegistration"));
@@ -58,7 +58,11 @@ function App() {
           <Header />
           <main id="main" className="relative flex-1">
             <Suspense
-              fallback={<div className="min-h-[60vh]" aria-busy="true" />}
+              fallback={
+                <div role="status" className="flex min-h-[60vh] items-center justify-center text-sm text-mute">
+                  Loading…
+                </div>
+              }
             >
               <Routes>
                 <Route path="/" element={<Home />} />

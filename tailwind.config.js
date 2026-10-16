@@ -32,7 +32,7 @@ export default {
         mute: {
           DEFAULT: '#6B6860',
           strong: '#45433E',
-          soft: '#7D796F',
+          soft: '#716D65',
         },
         // Hairlines.
         line: {

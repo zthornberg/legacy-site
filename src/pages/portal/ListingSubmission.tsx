@@ -202,7 +202,7 @@ const ListingSubmission: React.FC = () => {
               <FormSection
                 index={4}
                 title="Supporting documents"
-                description="Financial statements, offering memo, or other relevant documents."
+                description="Optional. Financial statements, offering memo, or other relevant documents."
               >
                 <div className="sm:col-span-full">
                   <label
