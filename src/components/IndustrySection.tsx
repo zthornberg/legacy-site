@@ -19,12 +19,17 @@ function parseBands(line: string): { bands: Band[]; note?: string } {
     const paren = line.match(/\(([^)]+)\)\.?\s*$/);
     return { bands, note: paren ? capitalize(paren[1]) + '.' : undefined };
   }
-  // Single headline range, e.g. "EBITDA ~5.0–8.0× for profitable MSPs in the LMM; …"
+  // Single headline range, e.g. "EBITDA ~5.0–8.0× for profitable MSPs in the lower middle market; …"
   const single = stripIllustrative(line).match(/^EBITDA\s*~?\s*([\d.]+)\s*[–-]\s*([\d.]+)\s*×\s*(.*)$/);
   if (single) {
     return { bands: [{ ev: 'EBITDA', multiple: `${single[1]}–${single[2]}×` }], note: single[3] ? capitalize(single[3]) : undefined };
   }
   return { bands: [] };
+}
+
+/** Keep numeric ranges like "2–3×" on one line: a word joiner after the en dash stops the browser breaking there. */
+function keepRanges(text: string) {
+  return text.replace(/(\d)–(?=\d)/g, '$1–\u2060');
 }
 
 function capitalize(text: string) {
@@ -37,9 +42,9 @@ function splitLabel(line: string) {
   return m ? { label: m[1], rest: m[2] } : { label: undefined, rest: line };
 }
 
-/** "Illustrative bands: EBITDA ~5.0–8.0× …" → "EBITDA ~5.0–8.0× …" */
+/** "Illustrative 2025 lower-middle-market bands: EBITDA ~5.0–8.0× …" → "EBITDA ~5.0–8.0× …" */
 function stripIllustrative(line: string) {
-  return line.replace(/^Illustrative( \d{4})?( LMM)? bands:\s*/i, '');
+  return line.replace(/^Illustrative( \d{4})?( lower-middle-market| LMM)? bands:\s*/i, '');
 }
 
 function ListHeading({ children }: { children: ReactNode }) {
@@ -56,7 +61,7 @@ function HairlineList({ items }: { items: string[] }) {
         return (
           <li key={i} className="py-3.5 text-[15px] leading-relaxed text-mute-strong">
             {label && <span className="font-medium text-ink">{label}: </span>}
-            {rest}
+            {keepRanges(rest)}
           </li>
         );
       })}
@@ -87,11 +92,11 @@ function Multiples({ comps }: { comps: string[] }) {
                     <span className="text-ink">{b.ev} multiple</span>
                   )}
                 </dt>
-                <dd className="tabular font-display text-[1.75rem] leading-none text-ink">{b.multiple}</dd>
+                <dd className="tabular font-display text-display-sm leading-none text-ink">{b.multiple}</dd>
               </div>
             ))}
           </dl>
-          {noteText && <p className="border-t border-line pt-3 text-[12px] leading-relaxed text-mute">{noteText}</p>}
+          {noteText && <p className="border-t border-line pt-3 text-[12px] leading-relaxed text-mute">{keepRanges(noteText)}</p>}
           {rest.length > 0 && <HairlineList items={rest} />}
         </>
       ) : (
@@ -110,13 +115,16 @@ export default function IndustrySection({ slug, index }: { slug: string; index?:
   const thesis = m ? m[1] : ind.intro;
   const support = m ? m[2] : '';
   const titleId = `${slug}-title`;
+  // The eyebrow sets index and title as separate flex items, which some screen readers run together ("4.1Construction").
+  const indexLabel = typeof index === 'number' ? String(index).padStart(2, '0') : index;
+  const headingLabel = indexLabel ? `${indexLabel} ${ind.title}` : ind.title;
 
   return (
     <article id={slug} aria-labelledby={titleId} className="scroll-mt-24 border-t border-line pt-10 md:pt-12">
       {/* DOM order (thesis → lists → CTA) keeps the CTA last on mobile; on lg the CTA tucks under the thesis. */}
       <div className="grid gap-10 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-12 lg:gap-y-0">
         <Reveal className="lg:col-span-4 lg:col-start-1 lg:row-start-1">
-          <h3 id={titleId}>
+          <h3 id={titleId} aria-label={headingLabel}>
             <Eyebrow index={index}>{ind.title}</Eyebrow>
           </h3>
           <p className="mt-5 font-display text-display-sm text-ink">{thesis}</p>

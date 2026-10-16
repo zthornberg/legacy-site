@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button, Card, Container, CtaBand, Eyebrow, PageHero, Reveal, Section, TextLink } from '../../components/ui';
 import { SECTORS, SUBSECTORS_BY_SECTOR } from '../../components/industries/sectors';
@@ -23,14 +24,65 @@ function briefLabel(key: string) {
   return `${n} sub-sector ${n === 1 ? 'brief' : 'briefs'}`;
 }
 
+function briefCount(key: string) {
+  const n = SUBSECTORS_BY_SECTOR[key]?.length ?? 0;
+  if (n === 0) return 'Overview';
+  return `${n} ${n === 1 ? 'brief' : 'briefs'}`;
+}
+
+/** Compact index of every sector for the hero. Desktop only: on phones the cards directly below do this job. */
+function SectorLedger() {
+  return (
+    <Card padding="md" className="hidden lg:ml-auto lg:block lg:max-w-sm">
+      <nav aria-label="Sector index">
+        <div className="flex items-baseline justify-between gap-4">
+          <Eyebrow tone="mute" as="p">
+            Sector index
+          </Eyebrow>
+          <span className="tabular text-[12px] text-mute-soft">{SECTORS.length} sectors</span>
+        </div>
+        <ol className="mt-5 divide-y divide-line border-t border-line">
+          {SECTORS.map((s, i) => (
+            <li key={s.key}>
+              <Link
+                to={`/industries/${s.key}`}
+                className="group flex items-baseline gap-4 py-2.5 text-[14px] text-mute-strong transition-colors hover:text-ink"
+              >
+                <span className="tabular w-6 shrink-0 text-[12px] text-mute-soft">{String(i + 1).padStart(2, '0')}</span>
+                <span className="flex-1">{s.name}</span>
+                <span className="tabular shrink-0 text-[12px] text-mute transition-colors group-hover:text-ink">
+                  {briefCount(s.key)}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </Card>
+  );
+}
+
 export default function IndustriesOverview() {
   return (
     <>
       <PageHero
         tone="paper"
+        // The ledger aside is hidden below lg; drop the hero grid's row gap there so no empty row is left behind.
+        className="max-lg:[&_.grid]:gap-0"
         eyebrow="Industries"
         title="Sector fluency for every mandate."
         lede="Legacy has facilitated deals across a wide range of industries. We know the value drivers, buyer universe, and diligence questions in each sector, so every company goes to market positioned around what acquirers actually pay for."
+        actions={
+          <>
+            <Button to="/contact?intent=sell" size="lg" arrow>
+              Request a valuation
+            </Button>
+            <Button to="/buy/listings" size="lg" variant="secondary">
+              View listings
+            </Button>
+          </>
+        }
+        aside={<SectorLedger />}
       />
 
       <Section tone="paper" aria-labelledby="sectors-heading" className="pt-12 md:pt-16">
@@ -47,15 +99,15 @@ export default function IndustriesOverview() {
               const Icon = s.icon;
               return (
                 <Reveal as="li" key={s.key} delay={(i % 3) * 0.06} className="h-full">
-                  <Card hover to={`/industries/${s.key}`} className="flex h-full flex-col">
+                  <Card hover to={`/industries/${s.key}`} padding="sm" className="flex h-full flex-col sm:p-6 md:p-7">
                     <div className="flex items-start justify-between gap-4">
                       <Eyebrow index={i + 1} tone="mute">
                         {null}
                       </Eyebrow>
                       <Icon className="h-[18px] w-[18px] text-mute" strokeWidth={1.75} aria-hidden />
                     </div>
-                    <h3 className="mt-10 font-display text-display-sm text-ink">{s.name}</h3>
-                    <p className="mb-8 mt-2 text-[15px] leading-relaxed text-mute">{s.description}</p>
+                    <h3 className="mt-6 font-display text-display-sm text-ink sm:mt-10">{s.name}</h3>
+                    <p className="mb-6 mt-2 text-[15px] leading-relaxed text-mute sm:mb-8">{s.description}</p>
                     <div className="mt-auto flex items-center justify-between gap-4 border-t border-line pt-4 text-[13px]">
                       <span className="text-mute">{briefLabel(s.key)}</span>
                       <ArrowRight
@@ -68,7 +120,11 @@ export default function IndustriesOverview() {
               );
             })}
             <Reveal as="li" delay={0.06} className="h-full sm:col-span-2">
-              <Card tone="deep" className="flex h-full flex-col justify-between gap-8 md:flex-row md:items-end">
+              <Card
+                tone="deep"
+                padding="sm"
+                className="flex h-full flex-col justify-between gap-6 sm:gap-8 sm:p-6 md:flex-row md:items-end md:p-7"
+              >
                 <div className="max-w-md">
                   <Eyebrow tone="mute">Not listed</Eyebrow>
                   <h3 className="mt-5 font-display text-display-sm text-ink">Your sector isn't here?</h3>

@@ -3,7 +3,8 @@ import { ArrowRight } from 'lucide-react';
 import industryContent from '../../content/industries/industries.json';
 import { industries as subsectors } from '../../content/industries';
 import IndustrySection from '../../components/IndustrySection';
-import { SECTORS, SUBSECTORS_BY_SECTOR } from '../../components/industries/sectors';
+import { SECTORS, SUBSECTORS_BY_SECTOR, type Sector } from '../../components/industries/sectors';
+import { usePageMeta } from '../../lib/seo';
 import { Button, Card, CheckList, Container, CtaBand, Eyebrow, PageHero, Reveal, Section, TextLink } from '../../components/ui';
 
 interface IndustryData {
@@ -18,6 +19,27 @@ interface IndustryData {
 const content = industryContent as Record<string, IndustryData>;
 
 type TocItem = { id: string; index: string; label: string };
+
+const SENTENCE = /^.+?[.!?](?=\s|$)/;
+
+/** Meta description: the overview's first sentence, plus the second when the first is a short opener. */
+function metaDescription(overview: string) {
+  const first = overview.match(SENTENCE)?.[0] ?? overview;
+  if (first.length >= 60) return first;
+  // "Hospitality is consolidating." is too thin to stand alone in search results.
+  const second = overview.slice(first.length).trim().match(SENTENCE)?.[0];
+  return second ? `${first} ${second}` : first;
+}
+
+/** Hand-picked related sectors when the sector defines them; otherwise the next three in menu order. */
+function relatedSectors(key: string): Sector[] {
+  const index = SECTORS.findIndex((s) => s.key === key);
+  const picked = (SECTORS[index]?.related ?? [])
+    .map((k) => SECTORS.find((s) => s.key === k))
+    .filter((s): s is Sector => s !== undefined);
+  if (picked.length > 0) return picked;
+  return [1, 2, 3].map((n) => SECTORS[(Math.max(index, 0) + n) % SECTORS.length]);
+}
 
 function BriefContents({ items }: { items: TocItem[] }) {
   return (
@@ -49,6 +71,7 @@ function BriefContents({ items }: { items: TocItem[] }) {
 export default function IndustryPage() {
   const { industry = '' } = useParams<{ industry: string }>();
   const data = content[industry];
+  usePageMeta(data ? `${data.name} M&A` : 'Sector not found', data ? metaDescription(data.overview) : undefined);
 
   if (!data) {
     return (
@@ -70,8 +93,7 @@ export default function IndustryPage() {
   }
 
   const briefs = (SUBSECTORS_BY_SECTOR[industry] ?? []).filter((slug) => subsectors.some((s) => s.slug === slug));
-  const sectorIndex = SECTORS.findIndex((s) => s.key === industry);
-  const related = [1, 2, 3].map((n) => SECTORS[(Math.max(sectorIndex, 0) + n) % SECTORS.length]);
+  const related = relatedSectors(industry);
   const isFunding = industry === 'startup-funding';
 
   const toc: TocItem[] = [
@@ -192,7 +214,7 @@ export default function IndustryPage() {
                 <li key={s.key}>
                   <Card hover to={`/industries/${s.key}`} padding="sm" className="flex h-full items-start justify-between gap-4">
                     <div>
-                      <h3 className="font-display text-xl text-ink">{s.name}</h3>
+                      <h3 className="font-display text-display-sm text-ink">{s.name}</h3>
                       <p className="mt-1.5 text-[14px] leading-relaxed text-mute">{s.description}</p>
                     </div>
                     <Icon className="mt-1 h-[18px] w-[18px] shrink-0 text-mute" strokeWidth={1.75} aria-hidden />
@@ -205,7 +227,11 @@ export default function IndustryPage() {
       </Section>
 
       <CtaBand
-        title={isFunding ? 'Raising capital or weighing a sale?' : `Selling in ${data.name}?`}
+        title={
+          isFunding
+            ? 'Raise capital or sell, with advisors who know founders.'
+            : `Sell with advisors who know ${data.name.toLowerCase()}.`
+        }
         body={
           isFunding
             ? 'Start with a confidential conversation about minority investment, a majority sale, or both, and what each would mean for you as a founder.'

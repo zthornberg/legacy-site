@@ -11,6 +11,8 @@ export type Sector = {
   name: string;
   description: string;
   icon: LucideIcon;
+  /** Hand-picked "Other sectors" (keys) for the industry page; falls back to the next three in order. */
+  related?: string[];
 };
 
 export const SECTORS: Sector[] = [
@@ -25,6 +27,7 @@ export const SECTORS: Sector[] = [
     name: 'Construction',
     description: 'General contractors, specialty trades, and building-materials suppliers.',
     icon: HardHat,
+    related: ['home-services', 'manufacturing-distribution', 'energy-sustainability'],
   },
   {
     key: 'home-services',
@@ -49,6 +52,7 @@ export const SECTORS: Sector[] = [
     name: 'Technology',
     description: 'Software and SaaS, managed IT services, and tech-enabled services.',
     icon: Cpu,
+    related: ['business-services', 'healthcare', 'startup-funding'],
   },
   {
     key: 'energy-sustainability',
@@ -67,6 +71,7 @@ export const SECTORS: Sector[] = [
     name: 'Hospitality',
     description: 'Hotels, restaurant groups, bars, and travel and tourism operators.',
     icon: Hotel,
+    related: ['retail-consumer', 'home-services', 'business-services'],
   },
   {
     key: 'startup-funding',
