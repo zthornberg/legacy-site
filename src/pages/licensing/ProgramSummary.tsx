@@ -21,7 +21,8 @@ export default function ProgramSummary() {
         size="lg"
         eyebrow="Licensing program"
         title="Build an M&A practice on the Legacy platform."
-        lede="The tools, data and senior mentorship to build a real M&A practice without going it alone: serve owners well, and earn like a top-5% advisor."
+        // U+2011 non-breaking hyphen keeps "top‑5%" on one line.
+        lede={'The tools, data and senior mentorship to build a real M&A practice without going it alone: serve owners well, and earn like a top‑5% advisor.'}
         actions={
           <>
             <Button to="/licensing/pricing" variant="inverse" size="lg" arrow>
@@ -168,7 +169,7 @@ export default function ProgramSummary() {
         <Container>
           <SectionHeading
             eyebrow="Pricing"
-            title="Two licenses. One standard of support."
+            title="Two licenses, one platform."
             lede="Both include the full platform, training and coaching. They differ in lead volume, data depth and royalty."
             split
             action={<TextLink to="/licensing/pricing">See full pricing</TextLink>}

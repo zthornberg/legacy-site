@@ -11,7 +11,7 @@ export default function Testimonials() {
         crumbs={[{ label: 'Licensing', to: '/licensing/program' }, { label: 'Broker stories' }]}
         eyebrow="Broker stories"
         title="What licensed brokers say."
-        lede="Four brokers on the Legacy platform, in their own words: the leads, the training, and what the first year looked like."
+        lede="Brokers who built their practice on the Legacy platform, in their own words: the leads, the training, and what the first year looked like."
       />
 
       {/* Stories */}
@@ -38,7 +38,12 @@ export default function Testimonials() {
                         t.frame === 'landscape' ? 'aspect-[4/3]' : 'aspect-[4/5]'
                       )}
                     >
-                      <img src={t.image} alt={t.alt} className="h-full w-full object-cover" loading="lazy" />
+                      <img
+                        src={t.image}
+                        alt={t.alt}
+                        className={cn('h-full w-full object-cover', t.frame === 'portrait' && 'object-top')}
+                        loading="lazy"
+                      />
                     </div>
                   </figure>
 
@@ -50,11 +55,11 @@ export default function Testimonials() {
                       <p className="font-display text-display-md text-ink">{t.quote}</p>
                     </blockquote>
                     <div className="mt-8 flex flex-col gap-6 border-t border-line pt-6 sm:flex-row sm:items-start sm:justify-between sm:gap-10">
-                      <div className="shrink-0">
+                      <div className="min-w-0">
                         <div className="text-[15px] font-medium text-ink">{t.name}</div>
                         <div className="mt-1 text-sm text-mute">{t.role}</div>
                       </div>
-                      <div className="sm:max-w-sm sm:text-right">
+                      <div className="sm:w-72 sm:shrink-0">
                         <Eyebrow tone="mute">Outcome</Eyebrow>
                         <p className="mt-2 text-sm leading-relaxed text-mute-strong">{t.outcome}</p>
                       </div>

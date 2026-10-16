@@ -1,4 +1,4 @@
-import { Badge, Button, Card, CheckList, Eyebrow, Reveal, TextLink } from '../ui';
+import { Badge, Button, Card, CheckList, Eyebrow, Reveal } from '../ui';
 import type { Tier } from '../../content/licensing';
 import { cn } from '../../lib/utils';
 import { APPLY_PATH } from './content';
@@ -18,7 +18,8 @@ function Facts({ rows, className }: { rows: { label: string; value: string }[]; 
 }
 
 /**
- * A license tier. Full card on the pricing page; `compact` on the program teaser.
+ * A license tier. Full card on the pricing page; `compact` on the program teaser
+ * (no per-card link there: the teaser's section heading carries the single link to pricing).
  * The featured tier gets a brass top rule and a brass-soft border, nothing louder.
  */
 export default function TierCard({ tier, compact = false, delay = 0 }: { tier: Tier; compact?: boolean; delay?: number }) {
@@ -51,9 +52,8 @@ export default function TierCard({ tier, compact = false, delay = 0 }: { tier: T
             <span className="text-sm text-mute">one-time license</span>
           </div>
           <p className="mt-4 text-[15px] leading-relaxed text-mute">{tier.tagline}</p>
-          <Facts rows={[facts[0], facts[3]]} className="mt-6" />
           <div className="mt-auto pt-6">
-            <TextLink to="/licensing/pricing">See everything included</TextLink>
+            <Facts rows={[facts[0], facts[3]]} />
           </div>
         </Card>
       </Reveal>

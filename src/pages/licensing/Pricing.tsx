@@ -28,7 +28,7 @@ export default function Pricing() {
         crumbs={[{ label: 'Licensing', to: '/licensing/program' }, { label: 'Pricing' }]}
         eyebrow="Licensing program"
         title="Two licenses. One standard of support."
-        lede="Both licenses include the full Legacy platform, the Scottsdale training intensive and ongoing coaching; they differ in lead volume, data depth and royalty."
+        lede="Both include the full Legacy platform, the Scottsdale intensive and ongoing coaching."
       >
         <div className="mt-14 grid gap-5 md:mt-16 lg:grid-cols-2 lg:gap-6">
           {tiers.map((tier, i) => (
@@ -37,8 +37,7 @@ export default function Pricing() {
         </div>
         <Reveal delay={0.12}>
           <p className="mt-6 text-xs leading-relaxed text-mute-soft">
-            Prices are one-time license fees. The royalty applies to closed commissions only. Financing is available for
-            select applicants.
+            Prices are one-time license fees. The royalty applies to closed commissions only.
           </p>
         </Reveal>
       </PageHero>
@@ -51,7 +50,7 @@ export default function Pricing() {
               <SectionHeading
                 eyebrow="Included in both"
                 title="The platform is the same. The license sets the scale."
-                lede="Training, coaching, tooling and the buyer network come with every license. What changes is how much lead flow and data you start with, and what you pay on closed commissions."
+                lede="Training, coaching, tooling and the buyer network come with every license."
               />
             </div>
             <Reveal delay={0.06} className="lg:col-span-7 lg:pt-3">
@@ -81,18 +80,14 @@ export default function Pricing() {
       <Section tone="white" id="financing">
         <Container>
           <div className="grid gap-5 lg:grid-cols-12 lg:gap-6">
-            <Reveal className="lg:col-span-7">
+            <Reveal className="lg:col-span-5">
               <Card tone="deep" padding="lg" className="h-full">
                 <Eyebrow>Financing</Eyebrow>
-                <h2 className="mt-4 font-display text-display-md text-ink">Financing for select applicants*</h2>
+                <h2 className="mt-4 font-display text-display-md text-ink">Financing, for select applicants.</h2>
                 <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-mute">{financingNote}</p>
-                <p className="mt-8 text-xs leading-relaxed text-mute-soft">
-                  *For qualified candidates. Financing and deferred schedules are discussed during the interview process
-                  and are not available to every applicant.
-                </p>
               </Card>
             </Reveal>
-            <Reveal delay={0.06} className="lg:col-span-5">
+            <Reveal delay={0.06} className="lg:col-span-7">
               <Card tone="brass" padding="lg" className="h-full">
                 <Eyebrow>Assurance</Eyebrow>
                 <h2 className="mt-4 font-display text-display-md text-ink">Deliverable-based, by design.</h2>
@@ -151,21 +146,19 @@ export default function Pricing() {
       <Disclaimers />
 
       <CtaBand
-        tone="ink"
         eyebrow="Apply"
         title="Apply for a Legacy license."
         body="Legacy accepts a handful of new brokers each quarter. Start an application, or talk to the team first."
         actions={
           <>
-            <Button to={APPLY_PATH} variant="inverse" size="lg" arrow>
+            <Button to={APPLY_PATH} size="lg" arrow>
               Start an application
             </Button>
-            <Button to="/contact" variant="inverse-outline" size="lg">
+            <Button to="/contact" variant="secondary" size="lg">
               Talk to the team
             </Button>
           </>
         }
-        className="border-b border-line-inverse"
       />
     </>
   );

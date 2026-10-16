@@ -2,12 +2,25 @@
 // Tier data, comparison rows, financing, assurance and disclaimers live in
 // src/content/licensing.ts, the single source of truth. Everything here is
 // derived from copy the site already carried; no new statistics.
-import { assuranceCopy, financingNote, tiers } from '../../content/licensing';
+import { financingNote, tiers, type Tier, type TierId } from '../../content/licensing';
 
 export const APPLY_PATH = '/contact?intent=licensing';
 
-const partner = tiers.find((t) => t.id === 'partner');
-const principal = tiers.find((t) => t.id === 'principal');
+function tierById(id: TierId): Tier {
+  const tier = tiers.find((t) => t.id === id);
+  if (!tier) throw new Error(`Missing licensing tier: ${id}`);
+  return tier;
+}
+
+const partner = tierById('partner');
+const principal = tierById('principal');
+
+/** The number in a tier's exclusive-lead line, e.g. "10 per month" -> "10". Lead counts are never hardcoded here. */
+const leadCount = (tier: Tier) => tier.hotLeads.match(/\d+/)?.[0] ?? tier.hotLeads;
+/** "10 to 15": Partner to Principal. */
+const leadRange = `${leadCount(partner)} to ${leadCount(principal)}`;
+/** "10+": the Partner license floor. */
+const leadFloor = `${leadCount(partner)}+`;
 
 /* ------------------------------------------------------------------ pricing */
 
@@ -20,7 +33,7 @@ export const pricingFaq: FaqItem[] = [
   },
   {
     q: 'What is the deliverable-based assurance?',
-    a: assuranceCopy,
+    a: 'If you complete onboarding and meet the activity requirements, Legacy guarantees delivery of the defined program assets, or makes it right with additional delivery or a fee credit. It is a deliverable guarantee, not an earnings guarantee.',
   },
   {
     q: 'Is financing available?',
@@ -36,7 +49,7 @@ export const pricingFaq: FaqItem[] = [
   },
   {
     q: 'What is the royalty on?',
-    a: `Closed commissions only: ${partner?.royalty ?? '15%'} under the Partner license and ${principal?.royalty ?? '10%'} under the Principal license. It is not charged on the license fee, on leads or on platform access.`,
+    a: `Closed commissions only: ${partner.royalty} under the ${partner.name} license and ${principal.royalty} under the ${principal.name} license. It is not charged on the license fee, on leads or on platform access.`,
   },
 ];
 
@@ -58,7 +71,7 @@ export const programFeatures: ProgramFeature[] = [
   {
     kicker: 'Leads',
     title: 'Exclusive lead flow',
-    body: '6+ exclusive seller leads every month in your first year. Each is a $1M+ revenue company, pre-contacted and vetted by our marketing team.',
+    body: `${leadRange} exclusive seller leads a month, depending on license. Each is a $1M+ revenue company, pre-contacted and vetted by our marketing team.`,
   },
   {
     kicker: 'Training',
@@ -123,7 +136,7 @@ export const opportunityCopy = {
   ],
   stats: [
     { value: '$500K+', label: 'Annual earning potential*' },
-    { value: '6+', label: 'Exclusive seller leads a month in your first year' },
+    { value: leadFloor, label: `Exclusive seller leads a month, from the ${partner.name} license` },
     { value: '3-day', label: 'Training intensive in Scottsdale, travel and lodging covered' },
   ],
 };
@@ -131,7 +144,7 @@ export const opportunityCopy = {
 export const cultureCopy = {
   paragraphs: [
     'At Legacy, success is a byproduct of putting others first. Our brokers are trained to serve clients with empathy and professionalism, inside a collaborative network where every broker keeps learning.',
-    'This is not a get-rich-quick scheme. It is a partnership built on integrity, hard work and client results. We look for applicants with a demonstrated track record of excellence.',
+    'The license is a partnership built on integrity, hard work and client results. We look for applicants with a demonstrated track record of excellence.',
   ],
   backgrounds: ['Business ownership', 'Finance', 'Corporate leadership', 'B2B sales'],
 };
@@ -204,5 +217,5 @@ export const brokerStats = [
   { value: '97%', label: 'Broker satisfaction' },
   { value: '$500K+', label: 'Annual earning potential*' },
   { value: '12', label: 'Months to ROI' },
-  { value: '6+', label: 'Exclusive leads a month' },
+  { value: leadFloor, label: 'Exclusive seller leads a month' },
 ];

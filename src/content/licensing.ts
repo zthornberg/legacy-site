@@ -81,7 +81,6 @@ export const includedInBoth: string[] = [
 
 /** Rows for the side-by-side comparison table. `true` renders a check, `false` a dash. */
 export const comparisonRows: { label: string; partner: string | boolean; principal: string | boolean; note?: string }[] = [
-  { label: 'License investment', partner: '$125,000', principal: '$185,000' },
   { label: 'Exclusive seller leads', partner: '10 / month', principal: '15 / month', note: 'Pre-contacted and vetted; $1M+ revenue' },
   { label: 'Warm local leads', partner: '30+ / month', principal: '50+ / month' },
   { label: 'Royalty on closed commissions', partner: '15%', principal: '10%' },
