@@ -1,10 +1,13 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { Button, Container, Eyebrow } from '../ui';
 import { EASE } from '../../lib/motion';
-import MandateTracker from './MandateTracker';
 import home from '../../content/home.json';
 
-/** Home opener: ink band, serif h1, lede, two actions and the mandate tracker aside on lg+. */
+/**
+ * Home opener: a full-height photograph under an ink wash, with the serif headline set low-left
+ * and the header floating transparently over the top. The proof cards straddle the bottom edge.
+ * Swap the photo by replacing /media/hero-table.webp (1920w) and /media/hero-table-960.webp (mobile).
+ */
 export default function HomeHero() {
   const reduce = useReducedMotion();
   const { hero } = home;
@@ -13,44 +16,62 @@ export default function HomeHero() {
     reduce
       ? {}
       : {
-          initial: { opacity: 0, y: 16 },
+          initial: { opacity: 0, y: 18 },
           animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.7, ease: EASE, delay: 0.05 + i * 0.08 },
+          transition: { duration: 0.8, ease: EASE, delay: 0.15 + i * 0.09 },
         };
 
   return (
-    <header className="relative overflow-hidden bg-ink text-paper">
-      <div className="pointer-events-none absolute inset-0 ink-glow" aria-hidden />
-      <div className="pointer-events-none absolute inset-0 ink-grid" aria-hidden />
-      <Container className="relative pt-16 pb-16 md:pt-24 md:pb-24 lg:pt-28 lg:pb-28">
-        <div className="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
-          <div className="lg:col-span-7">
-            <motion.div {...anim(0)}>
-              <Eyebrow tone="inverse" className="mb-5">
-                {hero.eyebrow}
-              </Eyebrow>
-            </motion.div>
-            <motion.h1 className="font-display text-display-2xl text-paper" {...anim(1)}>
-              {hero.title.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
-              ))}
-            </motion.h1>
-            <motion.p className="mt-6 max-w-xl text-lede text-paper/72 md:text-lede-lg" {...anim(2)}>
-              {hero.lede}
-            </motion.p>
-            <motion.div className="mt-9 flex flex-col gap-3 sm:flex-row" {...anim(3)}>
-              <Button to={hero.primary.to} variant="inverse" size="lg" arrow>
-                {hero.primary.label}
-              </Button>
-              <Button to={hero.secondary.to} variant="inverse-outline" size="lg">
-                {hero.secondary.label}
-              </Button>
-            </motion.div>
-          </div>
-          <motion.div className="hidden lg:col-span-5 lg:block" {...anim(2)}>
-            <MandateTracker delay={0.3} />
+    <header id="home-hero" className="relative -mt-16 flex min-h-[90svh] items-end overflow-hidden bg-ink text-paper md:min-h-[92vh]">
+      {/* Photograph */}
+      <motion.div
+        className="absolute inset-0"
+        initial={reduce ? false : { scale: 1 }}
+        animate={reduce ? undefined : { scale: 1.06 }}
+        transition={{ duration: 22, ease: 'linear' }}
+        aria-hidden
+      >
+        <picture>
+          <source media="(max-width: 640px)" srcSet="/media/hero-table-960.webp" />
+          <img
+            src="/media/hero-table.webp"
+            alt=""
+            className="h-full w-full object-cover object-[68%_42%]"
+            fetchPriority="high"
+            decoding="async"
+            draggable={false}
+          />
+        </picture>
+      </motion.div>
+
+      {/* Ink wash: heavier on the text side, lifting toward the handshake; darker at the foot for the cards */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/70 to-ink/30" aria-hidden />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/10 to-ink/35" aria-hidden />
+
+      <Container className="relative pt-40 pb-32 md:pt-48 md:pb-40">
+        <div className="max-w-3xl">
+          <motion.div {...anim(0)}>
+            <Eyebrow tone="inverse" className="mb-5">
+              {hero.eyebrow}
+            </Eyebrow>
+          </motion.div>
+          <motion.h1 className="font-display text-display-2xl text-paper" {...anim(1)}>
+            {hero.title.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </motion.h1>
+          <motion.p className="mt-6 max-w-xl text-lede text-paper/75 md:text-lede-lg" {...anim(2)}>
+            {hero.lede}
+          </motion.p>
+          <motion.div className="mt-9 flex flex-col gap-3 sm:flex-row" {...anim(3)}>
+            <Button to={hero.primary.to} variant="inverse" size="lg" arrow>
+              {hero.primary.label}
+            </Button>
+            <Button to={hero.secondary.to} variant="inverse-outline" size="lg">
+              {hero.secondary.label}
+            </Button>
           </motion.div>
         </div>
       </Container>

@@ -89,7 +89,19 @@ function Logo({ className, inverse = false }: { className?: string; inverse?: bo
 
 /* ----------------------------------------------------------------- desktop */
 
-function DesktopGroup({ group, open, onOpen, onClose }: { group: NavGroup; open: boolean; onOpen: () => void; onClose: () => void }) {
+function DesktopGroup({
+  group,
+  open,
+  onOpen,
+  onClose,
+  inverse = false,
+}: {
+  group: NavGroup;
+  open: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+  inverse?: boolean;
+}) {
   const location = useLocation();
   const prefixes = [group.href.split('/').slice(0, 2).join('/'), ...(group.match ?? [])];
   const active = prefixes.some((p) => location.pathname.startsWith(p));
@@ -113,7 +125,13 @@ function DesktopGroup({ group, open, onOpen, onClose }: { group: NavGroup; open:
         onClick={() => (open ? onClose() : onOpen())}
         className={cn(
           'inline-flex h-9 items-center gap-1 rounded-md px-3 text-sm font-medium transition-colors duration-200',
-          active || open ? 'text-ink' : 'text-mute-strong hover:text-ink'
+          inverse
+            ? active || open
+              ? 'text-paper'
+              : 'text-paper/75 hover:text-paper'
+            : active || open
+              ? 'text-ink'
+              : 'text-mute-strong hover:text-ink'
         )}
       >
         {group.label}
@@ -292,16 +310,28 @@ export default function Header() {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [overHero, setOverHero] = useState(false);
   const rootRef = useRef<HTMLElement>(null);
 
   const isPortal = location.pathname.startsWith('/portal');
+  const isHome = location.pathname === '/';
 
+  // Solid after a few pixels of scroll; transparent while floating over the home hero photograph.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 8);
+      const hero = isHome ? document.getElementById('home-hero') : null;
+      setOverHero(!!hero && y < hero.offsetHeight - 64);
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [isHome]);
 
   // Close menus on route change
   useEffect(() => {
@@ -341,11 +371,17 @@ export default function Header() {
         ref={rootRef}
         className={cn(
           'sticky top-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-300',
-          scrolled ? 'border-line bg-paper/85 backdrop-blur-md' : 'border-transparent bg-paper'
+          overHero
+            ? scrolled
+              ? 'border-white/10 bg-ink/60 backdrop-blur-md'
+              : 'border-transparent bg-transparent'
+            : scrolled
+              ? 'border-line bg-paper/85 backdrop-blur-md'
+              : 'border-transparent bg-paper'
         )}
       >
         <div className="mx-auto flex h-16 w-full max-w-wide items-center gap-6 px-5 sm:px-6 lg:px-8">
-          <Logo />
+          <Logo inverse={overHero} />
 
           {isPortal ? (
             <div className="ml-auto flex items-center gap-4">
@@ -369,15 +405,22 @@ export default function Header() {
                     open={openGroup === group.label}
                     onOpen={() => setOpenGroup(group.label)}
                     onClose={() => setOpenGroup((g) => (g === group.label ? null : g))}
+                    inverse={overHero}
                   />
                 ))}
               </nav>
 
               <div className="ml-auto hidden items-center gap-2 lg:flex">
-                <Link to="/portal/login" className="px-3 text-sm font-medium text-mute-strong transition-colors hover:text-ink">
+                <Link
+                  to="/portal/login"
+                  className={cn(
+                    'px-3 text-sm font-medium transition-colors',
+                    overHero ? 'text-paper/75 hover:text-paper' : 'text-mute-strong hover:text-ink'
+                  )}
+                >
                   Broker login
                 </Link>
-                <Button to="/contact" size="sm" arrow>
+                <Button to="/contact" size="sm" arrow variant={overHero ? 'inverse' : 'primary'}>
                   Get a valuation
                 </Button>
               </div>
@@ -386,7 +429,10 @@ export default function Header() {
                 type="button"
                 onClick={() => setMobileOpen(true)}
                 aria-label="Open menu"
-                className="-mr-2 ml-auto inline-flex h-10 w-10 items-center justify-center rounded-md text-ink hover:bg-paper-deep lg:hidden"
+                className={cn(
+                  '-mr-2 ml-auto inline-flex h-10 w-10 items-center justify-center rounded-md lg:hidden',
+                  overHero ? 'text-paper hover:bg-white/10' : 'text-ink hover:bg-paper-deep'
+                )}
               >
                 <Menu className="h-5 w-5" />
               </button>

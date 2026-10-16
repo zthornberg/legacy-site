@@ -1,30 +1,42 @@
-import { Container, Reveal, Stat } from '../ui';
-import { cn } from '../../lib/utils';
+import { motion, useReducedMotion } from 'framer-motion';
+import { Container, Stat } from '../ui';
+import { EASE } from '../../lib/motion';
 import home from '../../content/home.json';
 
-/**
- * Five stats in a hairline-bordered row. On lg it is one row with vertical dividers;
- * on small screens the lead stat spans the row and the rest sit in a 2×2 ledger.
- */
-const CELL: string[] = [
-  'col-span-2 border-b border-line lg:col-span-1 lg:border-b-0 lg:pr-6',
-  'border-b border-line pr-4 lg:border-b-0 lg:border-l lg:px-6',
-  'border-b border-l border-line pl-5 lg:border-b-0 lg:px-6',
-  'pr-4 lg:border-l lg:border-line lg:px-6',
-  'border-l border-line pl-5 lg:px-6 lg:pr-0',
-];
+const CARD = 'rounded-xl border border-line bg-white p-6 shadow-lift';
 
+/**
+ * Five proof cards that straddle the bottom edge of the hero and count up as they land.
+ * One row on lg; a horizontal snap-scroll row with a peek on smaller screens.
+ */
 export default function ProofStrip() {
+  const reduce = useReducedMotion();
+  const item = (i: number) =>
+    reduce
+      ? {}
+      : {
+          initial: { opacity: 0, y: 18, scale: 0.98 },
+          animate: { opacity: 1, y: 0, scale: 1 },
+          transition: { duration: 0.7, ease: EASE, delay: 0.5 + i * 0.08 },
+        };
+
   return (
-    <section aria-label="Legacy by the numbers" className="bg-paper">
+    <section aria-label="Legacy by the numbers" className="relative z-10 -mt-14 bg-transparent md:-mt-20">
       <Container>
-        <Reveal as="ul" className="grid grid-cols-2 border-b border-line lg:grid-cols-5">
+        <ul className="hidden gap-4 lg:grid lg:grid-cols-5">
           {home.stats.map((s, i) => (
-            <li key={s.label} className={cn('py-7 lg:py-10', CELL[i])}>
+            <motion.li key={s.label} className={CARD} {...item(i)}>
               <Stat value={s.value} label={s.label} />
-            </li>
+            </motion.li>
           ))}
-        </Reveal>
+        </ul>
+        <ul className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-1 sm:-mx-6 sm:px-6 lg:hidden">
+          {home.stats.map((s, i) => (
+            <motion.li key={s.label} className={`${CARD} min-w-[62%] snap-start sm:min-w-[38%]`} {...item(i)}>
+              <Stat value={s.value} label={s.label} size="sm" />
+            </motion.li>
+          ))}
+        </ul>
       </Container>
     </section>
   );
