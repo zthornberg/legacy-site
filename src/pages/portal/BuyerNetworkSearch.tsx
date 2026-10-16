@@ -100,7 +100,6 @@ const BuyerNetworkSearch: React.FC = () => {
   const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
     // Implement search logic
-    console.log('Searching with filters:', searchFilters);
   };
 
   return (
@@ -149,7 +148,7 @@ const BuyerNetworkSearch: React.FC = () => {
 
       <Card padding="none" className="mt-3 overflow-hidden">
         {/* Desktop: hairline table */}
-        <div className="hidden lg:block">
+        <div className="hidden xl:block">
           <table className="w-full text-left">
             <thead>
               <tr className="whitespace-nowrap border-b border-line bg-paper text-[11px] uppercase tracking-[0.14em] text-mute">
@@ -207,7 +206,7 @@ const BuyerNetworkSearch: React.FC = () => {
         </div>
 
         {/* Mobile / tablet: stacked rows */}
-        <ul className="divide-y divide-line lg:hidden">
+        <ul className="divide-y divide-line xl:hidden">
           {mockBuyers.map((buyer) => (
             <li key={buyer.id} className="p-5">
               <div className="flex items-baseline justify-between gap-3">

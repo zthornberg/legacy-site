@@ -70,7 +70,8 @@ function BriefContents({ items }: { items: TocItem[] }) {
 
 export default function IndustryPage() {
   const { industry = '' } = useParams<{ industry: string }>();
-  const data = content[industry];
+  // Own-property check so prototype keys like /industries/constructor cannot resolve to a function.
+  const data = Object.prototype.hasOwnProperty.call(content, industry) ? content[industry] : undefined;
   usePageMeta(data ? `${data.name} M&A` : 'Sector not found', data ? metaDescription(data.overview) : undefined);
 
   if (!data) {
@@ -117,7 +118,7 @@ export default function IndustryPage() {
         lede={data.overview}
         actions={
           <>
-            <Button to={`/contact?intent=sell&industry=${industry}`} size="lg" arrow>
+            <Button to={`/contact?intent=${industry === 'startup-funding' ? 'ma' : 'sell'}&industry=${industry}`} size="lg" arrow>
               {isFunding ? 'Talk to an advisor' : 'Request a confidential valuation'}
             </Button>
             <Button to="/buy/listings" size="lg" variant="secondary">
@@ -239,7 +240,7 @@ export default function IndustryPage() {
         }
         actions={
           <>
-            <Button to={`/contact?intent=sell&industry=${industry}`} size="lg" arrow>
+            <Button to={`/contact?intent=${industry === 'startup-funding' ? 'ma' : 'sell'}&industry=${industry}`} size="lg" arrow>
               {isFunding ? 'Talk to an advisor' : 'Request a valuation'}
             </Button>
             <Button to="/industries" size="lg" variant="secondary">

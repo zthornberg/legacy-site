@@ -67,8 +67,8 @@ export default function Contact() {
 
   // Keep the preselection in sync when an in-page link changes ?intent=
   useEffect(() => {
-    const mapped = INTENT_TO_TYPE[intent];
-    if (mapped) setFormData((prev) => ({ ...prev, inquiryType: mapped }));
+    const mapped = INTENT_TO_TYPE[intent] ?? '';
+    setFormData((prev) => ({ ...prev, inquiryType: mapped }));
   }, [intent]);
 
   const handleInputChange = (field: string, value: string) => {
@@ -77,7 +77,7 @@ export default function Contact() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Contact form submitted:', formData);
+    // No backend yet: the submission is not sent anywhere.
     setSubmitted(true);
   };
 
@@ -109,7 +109,13 @@ export default function Contact() {
                       suggest a time for a short fit call.
                     </p>
                     <div className="mt-9">
-                      <Button variant="secondary" onClick={() => setSubmitted(false)}>
+                      <Button
+                        variant="secondary"
+                        onClick={() => {
+                          setFormData((prev) => ({ ...prev, message: '' }));
+                          setSubmitted(false);
+                        }}
+                      >
                         Send another message
                       </Button>
                     </div>

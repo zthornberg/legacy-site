@@ -85,7 +85,6 @@ export default function BuyerRegistration() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
     setSubmitted(true);
     topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };

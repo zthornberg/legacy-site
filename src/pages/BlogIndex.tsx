@@ -57,7 +57,7 @@ function FeaturedPost({ post }: { post: BlogPost }) {
             </Eyebrow>
             <ol className="mt-5 divide-y divide-line border-y border-line">
               {post.outline.map((h, i) => (
-                <li key={h} className="flex items-baseline gap-4 py-3.5 text-[15px] text-ink/85">
+                <li key={`${i}-${h}`} className="flex items-baseline gap-4 py-3.5 text-[15px] text-ink/85">
                   <span className="tabular w-5 shrink-0 text-[12px] text-mute-soft">{String(i + 1).padStart(2, '0')}</span>
                   {h}
                 </li>

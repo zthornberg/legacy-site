@@ -35,7 +35,6 @@ const PrivateEquityRequest: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('PE request submitted:', formData);
     setSubmitted(true);
   };
 

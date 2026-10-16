@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useId, useRef } from 'react';
 import { cn } from '../../lib/utils';
 import Button, { TextLink } from '../ui/Button';
 import Card from '../ui/Card';
@@ -37,14 +37,19 @@ export function FormSection({
   columns?: 2 | 3;
   children: React.ReactNode;
 }) {
+  const descId = useId();
   return (
-    <fieldset className="min-w-0 p-6 md:p-8">
+    <fieldset className="min-w-0 p-6 md:p-8" aria-describedby={description ? descId : undefined}>
       <legend className="sr-only">{title}</legend>
       <div className="mb-6">
         <div aria-hidden>
           <Eyebrow index={index}>{title}</Eyebrow>
         </div>
-        {description && <p className="mt-2 text-[13px] leading-relaxed text-mute">{description}</p>}
+        {description && (
+          <p id={descId} className="mt-2 text-[13px] leading-relaxed text-mute">
+            {description}
+          </p>
+        )}
       </div>
       <div className={cn('grid gap-5', columns === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2')}>{children}</div>
     </fieldset>

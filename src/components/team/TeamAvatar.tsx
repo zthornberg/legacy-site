@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '../../lib/utils';
 import type { PortraitFocus } from '../../data/team';
 
@@ -34,6 +34,7 @@ export default function TeamAvatar({
   priority?: boolean;
 }) {
   const [error, setError] = useState(false);
+  useEffect(() => setError(false), [src]);
   const portrait = shape === 'portrait';
   const showImage = Boolean(src) && !error;
   const zoom = focus?.zoom ?? 1;

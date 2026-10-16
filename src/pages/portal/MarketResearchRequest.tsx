@@ -44,7 +44,6 @@ const MarketResearchRequest: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Research request submitted:', formData);
     setSubmitted(true);
   };
 

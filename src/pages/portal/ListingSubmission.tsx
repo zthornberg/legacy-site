@@ -58,13 +58,15 @@ const ListingSubmission: React.FC = () => {
   const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     setDragging(false);
-    setFiles(e.dataTransfer.files);
+    const accepted = /\.(pdf|docx?|xlsx?)$/i;
+    const dt = new DataTransfer();
+    Array.from(e.dataTransfer.files).filter((f) => accepted.test(f.name)).forEach((f) => dt.items.add(f));
+    setFiles(dt.files);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission
-    console.log('Listing submitted:', formData);
     setSubmitted(true);
   };
 

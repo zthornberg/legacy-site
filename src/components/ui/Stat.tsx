@@ -40,7 +40,7 @@ export function CountUp({ value, className, duration = 1400 }: { value: string; 
     let raf = 0;
     const start = performance.now();
     const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / duration);
+      const t = duration > 0 ? Math.min(1, (now - start) / duration) : 1;
       const eased = 1 - Math.pow(1 - t, 4);
       const n = parsed.number * eased;
       setDisplay(parsed.prefix + format(t === 1 ? parsed.number : n, parsed.decimals, parsed.grouped) + parsed.suffix);

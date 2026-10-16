@@ -119,6 +119,9 @@ function DesktopGroup({
     if (timer.current) window.clearTimeout(timer.current);
     timer.current = window.setTimeout(onClose, 140);
   };
+  useEffect(() => () => {
+    if (timer.current) window.clearTimeout(timer.current);
+  }, []);
   const blur = (e: React.FocusEvent<HTMLDivElement>) => {
     if (!e.currentTarget.contains(e.relatedTarget as Node | null)) onClose();
   };
@@ -288,7 +291,7 @@ function MobileMenu({
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.25, ease: EASE }}
+                          transition={{ duration: reduce ? 0 : 0.25, ease: EASE }}
                           className="overflow-hidden"
                         >
                           <ul className={cn('pb-4', group.columns === 2 && 'grid grid-cols-2 gap-x-4')}>
@@ -340,7 +343,7 @@ export default function Header() {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [overHero, setOverHero] = useState(false);
+  const [overHero, setOverHero] = useState(() => typeof window !== 'undefined' && window.location.pathname === '/' && window.scrollY < 100);
   const rootRef = useRef<HTMLElement>(null);
   const openerRef = useRef<HTMLButtonElement>(null);
 

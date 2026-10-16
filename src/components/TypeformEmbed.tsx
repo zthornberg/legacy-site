@@ -68,7 +68,7 @@ export default function TypeformEmbed({ formId, mode = 'popup', hidden = {}, hei
         if (window.tf?.createPopup) {
           window.tf.createPopup(id, { hidden: hiddenStrings }).open();
         } else {
-          window.open(baseUrl, '_blank');
+          window.open(baseUrl, '_blank', 'noopener,noreferrer');
         }
       }}
     >

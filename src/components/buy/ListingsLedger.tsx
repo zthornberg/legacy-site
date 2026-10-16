@@ -32,13 +32,13 @@ function RequestPanel({ listing, id }: { listing: Listing; id: string }) {
 
   useEffect(() => {
     firstField.current?.focus({ preventScroll: true });
+    firstField.current?.scrollIntoView({ block: 'nearest' });
   }, []);
 
   const underLoi = listing.status === 'Under LOI';
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Listing details request:', { listing: listing.ref, ...form });
     setSent(true);
   };
 

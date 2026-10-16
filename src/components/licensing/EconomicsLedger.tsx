@@ -79,7 +79,7 @@ export default function EconomicsLedger() {
             {columns.map(({ tier, rate, royalty }) => (
               <td key={tier.id} className={cn(value, 'text-paper')}>
                 −{usd(royalty)}
-                <span className="mt-0.5 block whitespace-nowrap text-xs text-paper/45">{pct(rate)} royalty</span>
+                <span className="mt-0.5 block whitespace-nowrap text-xs text-paper/55">{pct(rate)} royalty</span>
               </td>
             ))}
           </tr>
@@ -96,7 +96,7 @@ export default function EconomicsLedger() {
         </tbody>
       </table>
 
-      <p className="border-t border-line-inverse px-5 py-4 text-xs leading-relaxed text-paper/45 sm:px-6">{footnote}</p>
+      <p className="border-t border-line-inverse px-5 py-4 text-xs leading-relaxed text-paper/55 sm:px-6">{footnote}</p>
     </Card>
   );
 }

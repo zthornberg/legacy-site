@@ -91,5 +91,5 @@ export function formatPostDate(iso: string) {
 
 /** Covers render only from the site's own media folder. */
 export function localCover(cover?: string) {
-  return cover && cover.startsWith("/") ? cover : undefined;
+  return cover && cover.startsWith("/media/") ? cover : undefined;
 }

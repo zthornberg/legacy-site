@@ -91,7 +91,7 @@ export default function Button(props: ButtonProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { variant: _v, size: _s, className: _c, children: _ch, arrow: _a, icon: _i, full: _f, ...rest } = props as AsButton;
   return (
-    <button type={rest.type ?? 'button'} {...rest} className={cn('group/btn', classes)}>
+    <button {...rest} type={rest.type ?? 'button'} className={cn('group/btn', classes)}>
       {content}
     </button>
   );
@@ -105,9 +105,7 @@ export function TextLink({
   className,
   tone = 'ink',
   arrow = true,
-}: {
-  to?: string;
-  href?: string;
+}: ({ to: string; href?: never } | { href: string; to?: never }) & {
   children: React.ReactNode;
   className?: string;
   tone?: 'ink' | 'brass' | 'inverse' | 'mute';
