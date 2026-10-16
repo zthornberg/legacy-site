@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import { Button, Card, CheckList, Container, Eyebrow, PageHero, Section, TextLink } from '../../components/ui';
-import { Field, Fieldset, InlineCheck, NextSteps, OptionTile } from '../../components/buy/form';
+import { Field, Fieldset, InlineCheck, Legend, NextSteps, OptionTile, TargetEvField } from '../../components/buy/form';
 
 const industries = [
   'Manufacturing & Distribution',
@@ -47,7 +47,7 @@ export default function BuyerRegistration() {
     location: '',
 
     // Acquisition criteria
-    investmentRange: '',
+    targetEV: '',
     preferredIndustries: [] as string[],
     preferredLocations: [] as string[],
     timeframe: '',
@@ -99,7 +99,9 @@ export default function BuyerRegistration() {
         eyebrow="Buy · Registration"
         title="Register as a buyer."
         lede="Get early access to new listings, including confidential off-market opportunities. Tell us what you are looking for and a Legacy advisor will match you with the right deals and handle the NDA for each one."
-      />
+      >
+        <p className="mt-5 text-sm text-mute">All fields are required unless marked optional.</p>
+      </PageHero>
 
       <Section tone="paper" size="sm" className="md:pb-28">
         <Container>
@@ -162,22 +164,20 @@ export default function BuyerRegistration() {
                               className="field"
                             />
                           </Field>
-                          <Field id="reg-phone" label="Phone">
+                          <Field id="reg-phone" label="Phone" optional>
                             <input
                               id="reg-phone"
                               type="tel"
-                              required
                               autoComplete="tel"
                               value={formData.phone}
                               onChange={(e) => handleInputChange('phone', e.target.value)}
                               className="field"
                             />
                           </Field>
-                          <Field id="reg-location" label="Location">
+                          <Field id="reg-location" label="Location" optional>
                             <input
                               id="reg-location"
                               type="text"
-                              required
                               placeholder="City, State"
                               autoComplete="address-level2"
                               value={formData.location}
@@ -197,9 +197,7 @@ export default function BuyerRegistration() {
                       >
                         <div className="space-y-7">
                           <fieldset>
-                            <legend className="label">
-                              Preferred industries <span className="font-normal text-mute">· select all that apply</span>
-                            </legend>
+                            <Legend qualifier="Select all that apply">Preferred industries</Legend>
                             <div className="mt-1 grid gap-2 sm:grid-cols-2">
                               {industries.map((industry) => (
                                 <OptionTile
@@ -233,10 +231,8 @@ export default function BuyerRegistration() {
                           </Field>
 
                           <fieldset>
-                            <legend className="label">
-                              Timeline for purchase <span className="font-normal text-mute-soft">· optional</span>
-                            </legend>
-                            <div className="mt-1 grid grid-cols-2 gap-2">
+                            <Legend qualifier="Optional">Timeline for purchase</Legend>
+                            <div className="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-2">
                               {timeframes.map((t) => (
                                 <OptionTile
                                   key={t.value}
@@ -264,22 +260,13 @@ export default function BuyerRegistration() {
                         description="Helps us match you with businesses you are positioned to close."
                       >
                         <div className="grid gap-5 sm:grid-cols-2 sm:gap-4">
-                          <Field id="reg-range" label="Investment budget" className="sm:col-span-2">
-                            <select
-                              id="reg-range"
-                              required
-                              value={formData.investmentRange}
-                              onChange={(e) => handleInputChange('investmentRange', e.target.value)}
-                              className="field"
-                            >
-                              <option value="">Select investment range</option>
-                              <option value="under-500k">Under $500K</option>
-                              <option value="500k-1m">$500K – $1M</option>
-                              <option value="1m-2m">$1M – $2M</option>
-                              <option value="2m-5m">$2M – $5M</option>
-                              <option value="5m-plus">$5M+</option>
-                            </select>
-                          </Field>
+                          <TargetEvField
+                            id="reg-ev"
+                            required
+                            value={formData.targetEV}
+                            onChange={(v) => handleInputChange('targetEV', v)}
+                            className="sm:col-span-2"
+                          />
                           <Field id="reg-financing" label="Financing" optional>
                             <select
                               id="reg-financing"

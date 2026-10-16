@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Button,
   Card,
@@ -14,28 +15,32 @@ import {
 } from '../../components/ui';
 import ProcessSection from '../../components/ProcessSection';
 import SourcingTracker from '../../components/buy/SourcingTracker';
-import { Field } from '../../components/buy/form';
+import { Field, TargetEvField } from '../../components/buy/form';
 
-const SERVICES = [
+/** In-page anchor for the mandate brief form; every "Start a mandate" on this page points here. */
+const BRIEF_ID = 'mandate-brief';
+
+/** What the buyer gets. Un-numbered on purpose: the phased sequence lives in ProcessSection below. */
+const DELIVERABLES = [
   {
-    title: 'Mandate & criteria',
-    body: 'Define the investment thesis, size parameters and must-have characteristics of the right acquisition, then turn them into screening criteria.',
+    title: 'A written mandate',
+    body: 'Your thesis, size parameters and must-have traits, turned into the screening criteria we source against.',
   },
   {
-    title: 'Sourcing & first pass',
+    title: 'Proprietary sourcing',
     body: 'Our network and proprietary deal flow surface high-signal opportunities, many off-market, that match your criteria.',
   },
   {
-    title: 'Diligence prep',
-    body: 'Structure diligence across financial, operational and strategic factors, so you know what to test before you commit.',
+    title: 'A diligence plan',
+    body: 'Diligence structured across financial, operational and strategic factors, so you know what to test before you commit.',
   },
   {
-    title: 'Bid strategy',
-    body: 'Competitive positioning and a negotiation strategy built to win the right deal at the right price.',
+    title: 'Bid and negotiation strategy',
+    body: 'Competitive positioning and a negotiation plan built to win the right deal at the right price.',
   },
   {
-    title: 'Close & 90-day plan',
-    body: 'A disciplined closing process, then an integration roadmap so value creation starts in the first quarter of ownership.',
+    title: 'Closing and a 100-day plan',
+    body: 'A disciplined close, then an integration roadmap so value creation starts in the first quarter of ownership.',
   },
 ];
 
@@ -70,7 +75,7 @@ function MandateForm() {
 
   if (submitted) {
     return (
-      <Card padding="none" className="p-6 sm:p-8 md:p-10 lg:min-h-[32rem]">
+      <Card padding="none" className="p-6 sm:p-8 md:p-10">
         <div role="status">
           <Eyebrow>Mandate brief received</Eyebrow>
           <p className="mt-4 font-display text-display-md text-ink">Thank you. An advisor will be in touch.</p>
@@ -133,20 +138,7 @@ function MandateForm() {
               ))}
             </select>
           </Field>
-          <Field id="rep-ev" label="Target enterprise value" optional>
-            <select
-              id="rep-ev"
-              value={formData.targetEV}
-              onChange={(e) => handleInputChange('targetEV', e.target.value)}
-              className="field"
-            >
-              <option value="">Select range</option>
-              <option value="1m-5m">$1M – $5M</option>
-              <option value="5m-10m">$5M – $10M</option>
-              <option value="10m-25m">$10M – $25M</option>
-              <option value="25m-plus">$25M+</option>
-            </select>
-          </Field>
+          <TargetEvField id="rep-ev" value={formData.targetEV} onChange={(v) => handleInputChange('targetEV', v)} />
         </div>
 
         <Field id="rep-message" label="Acquisition criteria" optional>
@@ -172,6 +164,14 @@ function MandateForm() {
 }
 
 export default function Representation() {
+  const { hash, key } = useLocation();
+
+  // ScrollToTop only reacts when the hash changes. Router links to the brief (the process CTA) can repeat the
+  // same hash, so re-scroll on every navigation that targets it.
+  useEffect(() => {
+    if (hash === `#${BRIEF_ID}`) document.getElementById(BRIEF_ID)?.scrollIntoView({ block: 'start' });
+  }, [hash, key]);
+
   return (
     <>
       <PageHero
@@ -182,7 +182,7 @@ export default function Representation() {
         lede="Legacy sources off-market, high-signal deals, then runs a professional process so you can move first and win clean."
         actions={
           <>
-            <Button to="/contact?intent=buy" variant="inverse" size="lg" arrow>
+            <Button href={`#${BRIEF_ID}`} variant="inverse" size="lg" arrow>
               Start a mandate
             </Button>
             <Button to="/buy/listings" variant="inverse-outline" size="lg">
@@ -193,22 +193,20 @@ export default function Representation() {
         aside={<SourcingTracker />}
       />
 
-      {/* Scope of work */}
+      {/* What a mandate includes */}
       <Section tone="paper" aria-labelledby="scope-title">
         <Container>
           <SectionHeading
             split
             id="scope-title"
-            eyebrow="Scope of work"
+            eyebrow="What a mandate includes"
             title="A professional process on your side of the table."
-            lede="We work as an extension of your deal team, from a written mandate through the first 90 days of ownership."
+            lede="We work as an extension of your deal team, from a written mandate through the first 100 days of ownership."
           />
           <Reveal className="mt-14 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-            {SERVICES.map((s, i) => (
+            {DELIVERABLES.map((s) => (
               <div key={s.title} className="bg-white p-7 sm:p-8">
-                <Eyebrow tone="mute" index={i + 1}>
-                  Stage
-                </Eyebrow>
+                <span aria-hidden className="block w-6 border-t border-brass" />
                 <h3 className="mt-5 font-display text-display-sm text-ink">{s.title}</h3>
                 <p className="mt-3 text-[15px] leading-relaxed text-mute">{s.body}</p>
               </div>
@@ -221,7 +219,7 @@ export default function Representation() {
                   Bring your thesis. We will tell you plainly whether we can source to it.
                 </p>
               </div>
-              <TextLink to="/contact?intent=buy">Start a mandate</TextLink>
+              <TextLink href={`#${BRIEF_ID}`}>Start a mandate</TextLink>
             </div>
           </Reveal>
         </Container>
@@ -254,10 +252,15 @@ export default function Representation() {
         </Container>
       </Section>
 
-      <ProcessSection mode="buy" />
+      <ProcessSection
+        mode="buy"
+        title="First screen to first 100 days."
+        subtitle="Disciplined origination and underwriting in five phases. Timelines are indicative and move with deal complexity."
+        ctaTo={`#${BRIEF_ID}`}
+      />
 
       {/* Mandate brief */}
-      <Section tone="deep" aria-labelledby="brief-title">
+      <Section tone="deep" id={BRIEF_ID} className="scroll-mt-24" aria-labelledby="brief-title">
         <Container>
           <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
@@ -289,8 +292,8 @@ export default function Representation() {
 
       <CtaBand
         eyebrow="Buyer network"
-        title="Not ready for a mandate? Start with the listings."
-        body="Registered buyers see new businesses first, with the NDA handled by a Legacy advisor."
+        title="Registered buyers see new businesses first."
+        body="Not ready for a mandate? Register once with your criteria. A Legacy advisor matches you to new listings and handles the NDA."
         actions={
           <>
             <Button to="/buy/registration" size="lg" arrow>

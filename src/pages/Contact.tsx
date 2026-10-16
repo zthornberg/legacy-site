@@ -11,6 +11,19 @@ const INQUIRY_TYPES = [
   { value: 'general', label: 'General inquiry' },
 ];
 
+/** Words a plain slug → Title Case pass would get wrong. */
+const SLUG_WORDS: Record<string, string> = { it: 'IT', msp: 'MSP', hvac: 'HVAC', saas: 'SaaS', and: 'and' };
+
+/** `?industry=construction-homebuilding` → "Construction Homebuilding". Unknown or malformed slugs are ignored. */
+function industryFromSlug(slug: string | null) {
+  if (!slug || !/^[a-z0-9-]{2,60}$/.test(slug)) return '';
+  return slug
+    .split('-')
+    .filter(Boolean)
+    .map((w) => SLUG_WORDS[w] ?? w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
 /** `?intent=` values accepted from CTAs across the site. */
 const INTENT_TO_TYPE: Record<string, string> = {
   sell: 'sell-business',
@@ -39,6 +52,7 @@ const NEXT_STEPS = [
 export default function Contact() {
   const [searchParams] = useSearchParams();
   const intent = searchParams.get('intent') ?? '';
+  const industry = industryFromSlug(searchParams.get('industry'));
 
   const [formData, setFormData] = useState({
     name: '',
@@ -46,7 +60,8 @@ export default function Contact() {
     phone: '',
     company: '',
     inquiryType: INTENT_TO_TYPE[intent] ?? '',
-    message: '',
+    // Arriving from an industry page: carry the sector into the note so the advisor sees it.
+    message: industry ? `Industry: ${industry}\n\n` : '',
   });
   const [submitted, setSubmitted] = useState(false);
 
@@ -202,10 +217,10 @@ export default function Contact() {
                 <dl className="mt-10 grid gap-6 border-t border-line-strong pt-8">
                   <div>
                     <dt className="eyebrow text-mute">Email</dt>
-                    <dd className="mt-2.5">
+                    <dd className="mt-1">
                       <a
                         href="mailto:info@legacybrokers.com"
-                        className="font-display text-[1.75rem] leading-tight text-ink underline decoration-ink/20 decoration-1 underline-offset-[6px] transition-colors hover:decoration-ink"
+                        className="inline-block py-1.5 font-display text-[1.75rem] leading-tight text-ink underline decoration-ink/20 decoration-1 underline-offset-[6px] transition-colors hover:decoration-ink"
                       >
                         info@legacybrokers.com
                       </a>
@@ -219,19 +234,14 @@ export default function Contact() {
 
                 <nav aria-label="Other ways to start" className="mt-10 border-t border-line-strong pt-8">
                   <p className="eyebrow text-mute">Looking for something specific</p>
-                  <ul className="mt-5 space-y-3.5">
+                  <ul className="mt-3">
                     <li>
-                      <TextLink to="/contact?intent=sell" tone="mute">
-                        Request a valuation
-                      </TextLink>
-                    </li>
-                    <li>
-                      <TextLink to="/buy/registration" tone="mute">
+                      <TextLink to="/buy/registration" tone="mute" className="min-h-11 py-2">
                         Register as a buyer
                       </TextLink>
                     </li>
                     <li>
-                      <TextLink to="/licensing/program" tone="mute">
+                      <TextLink to="/licensing/program" tone="mute" className="min-h-11 py-2">
                         Licensing program
                       </TextLink>
                     </li>

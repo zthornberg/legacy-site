@@ -10,7 +10,7 @@ export default function BusinessListings() {
         tone="paper"
         crumbs={[{ label: 'Buy' }, { label: 'Current listings' }]}
         eyebrow="Buy · Listings"
-        title="Businesses currently for sale with Legacy."
+        title="The businesses Legacy brings to market."
         lede="Every listing is confidential. Summary financials are shown here; the seller's identity, the CIM and full financials are released to registered buyers under a signed NDA."
         actions={
           <>
@@ -31,7 +31,7 @@ export default function BusinessListings() {
             eyebrow="Representative listings"
             id="listings-title"
             title="Summary financials, before the NDA."
-            lede="Live inventory changes weekly. Figures are rounded; cash flow is shown as SDE or adjusted EBITDA depending on size."
+            lede="Figures are rounded; cash flow is shown as SDE or adjusted EBITDA depending on size."
           />
           <Reveal className="mt-12">
             <ListingsLedger listings={LISTINGS} />
@@ -42,7 +42,7 @@ export default function BusinessListings() {
         </Container>
       </Section>
 
-      <ProcessSection mode="buy" />
+      <ProcessSection mode="buy" compact ctaTo="/buy/representation" title="Legacy can also run the search for you." />
 
       <Section tone="paper" aria-labelledby="network-title">
         <Container>
@@ -86,7 +86,7 @@ export default function BusinessListings() {
 
       <CtaBand
         eyebrow="For owners"
-        title="Own a business like these? Start with a valuation."
+        title="Start with a valuation of your own business."
         body="Legacy runs a confidential, competitive sale process for owners of $1M–$25M companies. It begins with a private conversation about what your business is worth."
         actions={
           <>

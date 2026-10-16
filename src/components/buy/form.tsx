@@ -10,6 +10,9 @@ import { cn } from '../../lib/utils';
 /** Native checkbox / radio tint. Kept inline so it works without a CSS change. */
 const NATIVE_ACCENT: React.CSSProperties = { accentColor: '#0B0B0C' };
 
+/** Right-aligned qualifier on a label or legend ("Optional", "Select all that apply"). */
+const QUALIFIER = 'text-xs font-normal text-mute-soft';
+
 export function Field({
   id,
   label,
@@ -29,7 +32,7 @@ export function Field({
     <div className={className}>
       <label htmlFor={id} className="label flex items-baseline justify-between gap-3">
         <span>{label}</span>
-        {optional && <span className="text-xs font-normal text-mute-soft">Optional</span>}
+        {optional && <span className={QUALIFIER}>Optional</span>}
       </label>
       {children}
       {hint && (
@@ -38,6 +41,52 @@ export function Field({
         </p>
       )}
     </div>
+  );
+}
+
+/** Legend for a group of tiles, styled like a field label with the same right-aligned qualifier. */
+export function Legend({ children, qualifier }: { children: React.ReactNode; qualifier?: React.ReactNode }) {
+  return (
+    <legend className="label flex w-full items-baseline justify-between gap-3">
+      <span>{children}</span>
+      {qualifier && <span className={QUALIFIER}>{qualifier}</span>}
+    </legend>
+  );
+}
+
+/** Size bands shared by every buyer form, so registration and mandate briefs report the same values. */
+const TARGET_EV_BANDS = [
+  { value: 'under-1m', label: 'Under $1M' },
+  { value: '1m-5m', label: '$1M–$5M' },
+  { value: '5m-10m', label: '$5M–$10M' },
+  { value: '10m-25m', label: '$10M–$25M' },
+  { value: '25m-plus', label: '$25M+' },
+];
+
+export function TargetEvField({
+  id,
+  value,
+  onChange,
+  required = false,
+  className,
+}: {
+  id: string;
+  value: string;
+  onChange: (value: string) => void;
+  required?: boolean;
+  className?: string;
+}) {
+  return (
+    <Field id={id} label="Target enterprise value" optional={!required} className={className}>
+      <select id={id} required={required} value={value} onChange={(e) => onChange(e.target.value)} className="field">
+        <option value="">Select range</option>
+        {TARGET_EV_BANDS.map((b) => (
+          <option key={b.value} value={b.value}>
+            {b.label}
+          </option>
+        ))}
+      </select>
+    </Field>
   );
 }
 
