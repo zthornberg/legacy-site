@@ -8,7 +8,7 @@
     "lede": "Legacy pairs senior M&A advisors with AI-assisted research to run a confidential, competitive sale process for $1M–⁠$50M companies.",
     "primary": {
       "label": "Request a confidential valuation",
-      "to": "/contact"
+      "to": "/contact?intent=sell"
     },
     "secondary": {
       "label": "Explore the licensing program",
@@ -21,11 +21,11 @@
       "label": "Transaction value closed"
     },
     {
-      "value": "2,417+",
-      "label": "Buyer profiles"
+      "value": "2,400+",
+      "label": "Registered buyers"
     },
     {
-      "value": "97%+",
+      "value": "97%",
       "label": "Client satisfaction"
     },
     {
@@ -79,127 +79,7 @@
     "link": {
       "label": "All closed transactions",
       "to": "/sell/case-studies"
-    },
-    "items": [
-      {
-        "id": "construction",
-        "title": "Home-builder construction company",
-        "region": "Southwest US",
-        "image": "/media/Home Builder Construction Case Study.webp",
-        "alt": "Framed houses under construction on a residential development site",
-        "summary": "Multiple above-ask offers; strong asset base and scale efficiencies.",
-        "facts": [
-          {
-            "label": "Revenue",
-            "value": "$40M"
-          },
-          {
-            "label": "EBITDA",
-            "value": "$5.5M"
-          },
-          {
-            "label": "FF&E",
-            "value": "$12M"
-          },
-          {
-            "label": "Employees",
-            "value": "60+"
-          }
-        ]
-      },
-      {
-        "id": "elevator",
-        "title": "Elevator manufacturing company",
-        "region": "Midwest US",
-        "image": "/media/Elevator Manufacturing Pic.webp",
-        "alt": "Technicians on a steel elevator test tower inside a manufacturing plant",
-        "summary": "Strategic buyer demand from the installed base and recurring parts and service.",
-        "facts": [
-          {
-            "label": "Revenue",
-            "value": "$3M+"
-          },
-          {
-            "label": "EBITDA",
-            "value": "$700K"
-          },
-          {
-            "label": "Employees",
-            "value": "15+"
-          },
-          {
-            "label": "Client base",
-            "value": "Diversified"
-          }
-        ]
-      },
-      {
-        "id": "flooring",
-        "title": "Flooring distribution company",
-        "region": "Southwest US",
-        "image": "/media/Flooring Distributor Pic.webp",
-        "alt": "Flooring showroom with sample racks and a front counter",
-        "summary": "Lean operations and strong supplier terms; fast diligence from clear documentation.",
-        "facts": [
-          {
-            "label": "Revenue",
-            "value": "$6.5M+"
-          },
-          {
-            "label": "EBITDA",
-            "value": "$950K"
-          },
-          {
-            "label": "Employees",
-            "value": "5+"
-          }
-        ]
-      },
-      {
-        "id": "oil",
-        "title": "Oil pressure pumping company",
-        "region": "Midwest US",
-        "image": "/media/Oil Pressure Pumping Company.webp",
-        "alt": "Pressure pumping trucks and crew at a well site at dusk",
-        "summary": "Process tailored to commodity cycles; generated sponsor competition.",
-        "facts": [
-          {
-            "label": "Revenue",
-            "value": "$15M+"
-          },
-          {
-            "label": "EBITDA",
-            "value": "$4M"
-          },
-          {
-            "label": "Employees",
-            "value": "20+"
-          }
-        ]
-      },
-      {
-        "id": "electrical",
-        "title": "Commercial electrical contractor",
-        "region": "Southeast US",
-        "image": "/media/Commercial Electrical Contractor pic.webp",
-        "alt": "Electricians wiring a panel on a commercial construction site",
-        "summary": "Backlog and safety record highlighted; culture-fit buyer prioritized.",
-        "facts": [
-          {
-            "label": "Revenue",
-            "value": "$3.5M+"
-          },
-          {
-            "label": "EBITDA",
-            "value": "$950K"
-          },
-          {
-            "label": "Employees",
-            "value": "10+"
-          }
-        ]
-      }
-    ]
+    }
   },
   "approach": {
     "eyebrow": "Our approach",
@@ -233,11 +113,11 @@
     }
   },
   "cta": {
-    "title": "Thinking about a sale in the next 6–18 months?",
+    "title": "Start planning your sale 6–18 months out.",
     "body": "A 20-minute call to audit your add-backs and map the likely buyers. Confidential, no obligation.",
     "primary": {
       "label": "Request a confidential valuation",
-      "to": "/contact"
+      "to": "/contact?intent=sell"
     },
     "secondary": {
       "label": "See closed transactions",

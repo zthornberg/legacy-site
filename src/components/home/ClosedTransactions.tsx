@@ -1,20 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
-import { Container, Reveal, Section, SectionHeading, TextLink } from '../ui';
+import { Badge, Container, Reveal, Section, SectionHeading, TextLink } from '../ui';
 import { cn } from '../../lib/utils';
 import { EASE } from '../../lib/motion';
+import { TRANSACTIONS, type Transaction } from '../sell/transactions';
 import home from '../../content/home.json';
 
 const AUTOPLAY_MS = 7000;
 
+const fact = (t: Transaction, label: string) => t.facts.find((f) => f.label === label)?.value;
+
 /**
  * Five anonymized outcomes as a selectable list (left) and a figure (right).
+ * Data comes from src/components/sell/transactions.ts, the same source as /sell/case-studies.
  * Gentle autoplay while in view; pauses on hover/focus, stops once the reader picks one,
- * and is off entirely under prefers-reduced-motion.
+ * and is off entirely under prefers-reduced-motion. The caption is only announced after a pick.
  */
 export default function ClosedTransactions() {
   const { transactions } = home;
-  const items = transactions.items;
+  const items = TRANSACTIONS;
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [picked, setPicked] = useState(false);
@@ -109,8 +113,8 @@ export default function ClosedTransactions() {
                         <span className="mt-0.5 block text-[13px] text-mute">{t.region}</span>
                       </span>
                       <span className="hidden shrink-0 text-right text-[13px] tabular leading-snug text-mute sm:block">
-                        <span className="block">{t.facts[0].value} revenue</span>
-                        <span className="mt-0.5 block">{t.facts[1].value} EBITDA</span>
+                        <span className="block">{fact(t, 'Revenue')} revenue</span>
+                        <span className="mt-0.5 block">{fact(t, 'EBITDA')} EBITDA</span>
                       </span>
                     </button>
                   </li>
@@ -137,7 +141,7 @@ export default function ClosedTransactions() {
                   />
                 </AnimatePresence>
               </div>
-              <figcaption className="mt-6" aria-live="polite">
+              <figcaption className="mt-6" aria-live={picked ? 'polite' : 'off'}>
                 <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
                   <h3 className="font-display text-display-sm text-ink">{current.title}</h3>
                   <span className="text-[13px] text-mute">{current.region}</span>
@@ -150,7 +154,15 @@ export default function ClosedTransactions() {
                     </div>
                   ))}
                 </dl>
-                <p className="mt-4 min-h-[2.75rem] text-[14px] leading-relaxed text-mute">{current.summary}</p>
+                <ul className="mt-4 flex min-h-[3.625rem] flex-wrap content-start gap-2 sm:min-h-0" aria-label="Outcome">
+                  {current.outcomes.map((o) => (
+                    <li key={o}>
+                      <Badge tone="brass" className="tabular">
+                        {o}
+                      </Badge>
+                    </li>
+                  ))}
+                </ul>
               </figcaption>
             </figure>
           </Reveal>

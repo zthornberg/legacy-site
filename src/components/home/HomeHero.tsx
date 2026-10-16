@@ -37,7 +37,8 @@ export default function HomeHero() {
             src="/media/hero-table.webp"
             alt=""
             className="h-full w-full object-cover object-[68%_42%]"
-            fetchPriority="high"
+            // React 18 does not know fetchPriority; the lowercase attribute passes straight to the DOM.
+            {...{ fetchpriority: 'high' }}
             decoding="async"
             draggable={false}
           />

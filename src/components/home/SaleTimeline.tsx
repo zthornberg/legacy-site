@@ -1,6 +1,9 @@
 import { Container, Eyebrow, Reveal, Section, SectionHeading, TextLink } from '../ui';
 import { sellProcess } from '../../content/process';
 
+/** Bind "&" to the word before it so a narrow column breaks as "Preparation & / recast", never before the "&". */
+const keepAmpersand = (title: string) => title.replace(/ & /g, '\u00A0& ');
+
 /**
  * The five sell-side phases as a horizontal rail on lg (numbered, duration, title, one line)
  * and a vertical rail on smaller screens. Reads from src/content/process.ts.
@@ -32,7 +35,7 @@ export default function SaleTimeline() {
               <Eyebrow index={i + 1} tone="mute">
                 {s.duration}
               </Eyebrow>
-              <h3 className="mt-3 font-display text-display-sm text-ink">{s.title}</h3>
+              <h3 className="mt-3 text-balance font-display text-display-sm text-ink">{keepAmpersand(s.title)}</h3>
               <p className="mt-2.5 max-w-sm text-[14px] leading-relaxed text-mute">{s.details[0]}</p>
               {s.artifacts && s.artifacts.length > 0 && (
                 <p className="mt-4 max-w-sm text-[12px] leading-relaxed text-mute-soft">{s.artifacts.join(' · ')}</p>

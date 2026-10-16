@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Container, Eyebrow, Reveal, Section, TextLink } from '../ui';
+import { ArrowRight } from 'lucide-react';
+import { Container, Eyebrow, Reveal, Section } from '../ui';
 import { team } from '../../data/team';
 import home from '../../content/home.json';
 
@@ -33,9 +34,10 @@ export default function Approach() {
               </ul>
               <span className="flex flex-col">
                 <span className="text-sm font-medium text-ink">The advisors on every mandate</span>
-                <TextLink to="/company/team" tone="mute" className="text-[13px]">
+                <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-mute underline decoration-mute/30 underline-offset-[5px] decoration-1 transition-colors duration-200 group-hover:text-ink group-hover:decoration-ink">
                   Meet the team
-                </TextLink>
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
+                </span>
               </span>
             </Link>
           </div>
