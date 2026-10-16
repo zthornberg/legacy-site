@@ -110,8 +110,8 @@ export default function BlogIndex() {
       <PageHero
         tone="paper"
         size="sm"
-        eyebrow="Company"
-        title="Insights"
+        eyebrow="Company · Insights"
+        title="Notes from the deal desk."
         lede="Practical M&A playbooks, valuation notes, and market commentary from the Legacy team."
       />
 

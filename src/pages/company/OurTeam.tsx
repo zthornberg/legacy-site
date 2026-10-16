@@ -27,7 +27,7 @@ export default function OurTeam() {
         tone="paper"
         eyebrow="Company · Team"
         title="The people behind every mandate."
-        lede="Our team is your team. Legacy's leadership brings together entrepreneurs, finance professionals, and marketers united by a commitment to service, drawing on 35+ years of combined experience to guide owners and brokers through consequential transactions."
+        lede="Operators, advisors and marketers with 35+ years of combined experience, on the owner's side of every mandate."
       />
 
       <Section tone="paper" aria-labelledby="leadership-heading" className="pt-12 md:pt-16">
@@ -39,18 +39,18 @@ export default function OurTeam() {
             <span className="tabular text-[13px] text-mute">{String(team.length).padStart(2, '0')} people</span>
           </div>
 
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+          <ul className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
             {team.map((member, i) => (
               <Reveal as="li" key={member.id} delay={(i % 3) * 0.06} className="h-full">
                 <TeamCard member={member} priority={i < 3} />
               </Reveal>
             ))}
-            <Reveal as="li" delay={0.12} className="h-full">
-              <Card tone="deep" padding="lg" className="flex h-full min-h-[18rem] flex-col justify-between rounded-2xl">
+            <Reveal as="li" delay={0.12} className="col-span-2 h-full lg:col-span-1">
+              <Card tone="deep" padding="lg" className="flex h-full flex-col justify-between lg:min-h-[18rem]">
                 <Eyebrow tone="mute">Beyond the leadership team</Eyebrow>
-                <div className="mt-10">
+                <div className="mt-8 lg:mt-10">
                   <h3 className="font-display text-display-sm text-ink">A national network of licensed brokers.</h3>
-                  <p className="mt-3 text-[15px] leading-relaxed text-mute">
+                  <p className="mt-3 max-w-md text-[15px] leading-relaxed text-mute">
                     Independent brokers build their own M&amp;A practices on the Legacy platform, with this team behind
                     their process, marketing, and software.
                   </p>

@@ -7,6 +7,7 @@ import { Badge, Button, Container, CtaBand, PageHero, Section, TextLink } from '
 import PostRow from '../components/company/PostRow';
 import Breadcrumbs from '../components/company/Breadcrumbs';
 import TeamAvatar from '../components/team/TeamAvatar';
+import { usePageMeta } from '../lib/seo';
 
 function ShareLinks({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
@@ -51,6 +52,7 @@ function ShareLinks({ title }: { title: string }) {
 export default function BlogPost() {
   const { slug } = useParams();
   const post = slug ? getBySlug(slug) : undefined;
+  usePageMeta(post?.title, post?.excerpt);
 
   if (!post) {
     return (
@@ -78,7 +80,7 @@ export default function BlogPost() {
       <article>
         <header className="border-b border-line bg-paper">
           <Container size="prose" className="pb-12 pt-10 md:pb-16 md:pt-12">
-            <Breadcrumbs items={[{ label: 'Company' }, { label: 'Insights', to: '/company/blog' }, { label: 'Article' }]} />
+            <Breadcrumbs items={[{ label: 'Company' }, { label: 'Insights', to: '/company/blog' }, { label: post.title }]} />
             <p className="tabular mt-12 text-[13px] text-mute md:mt-16">
               <time dateTime={post.date}>{formatPostDate(post.date)}</time>
               <span aria-hidden> · </span>

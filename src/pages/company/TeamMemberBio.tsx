@@ -4,6 +4,7 @@ import { Button, Card, Container, CtaBand, Eyebrow, PageHero, Reveal, Section, T
 import TeamAvatar from '../../components/team/TeamAvatar';
 import Breadcrumbs from '../../components/company/Breadcrumbs';
 import { cn } from '../../lib/utils';
+import { usePageMeta } from '../../lib/seo';
 
 const CONTACT_EMAIL = 'info@legacybrokers.com';
 
@@ -11,10 +12,23 @@ function paragraphs(text: string) {
   return text.split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
 }
 
-function SiblingLink({ member, direction }: { member: TeamMember; direction: 'prev' | 'next' }) {
+function SiblingLink({
+  member,
+  direction,
+  className,
+}: {
+  member: TeamMember;
+  direction: 'prev' | 'next';
+  className?: string;
+}) {
   const next = direction === 'next';
   return (
-    <Card hover to={`/company/team/${member.id}`} padding="sm" className={cn('flex items-center gap-4', next && 'sm:flex-row-reverse sm:text-right')}>
+    <Card
+      hover
+      to={`/company/team/${member.id}`}
+      padding="sm"
+      className={cn('flex items-center gap-4', next && 'sm:flex-row-reverse sm:text-right', className)}
+    >
       <TeamAvatar name={member.name} src={member.headshot} focus={member.portrait} shape="circle" decorative />
       <div className="min-w-0">
         <div className="text-[12px] text-mute">{next ? 'Next' : 'Previous'}</div>
@@ -29,6 +43,8 @@ export default function TeamMemberBio() {
   const { name } = useParams<{ name: string }>();
   const index = team.findIndex((m) => m.id === name);
   const member = index >= 0 ? team[index] : undefined;
+  const about = member?.sections.find((s) => s.label === 'About') ?? member?.sections[0];
+  usePageMeta(member ? `${member.name}, ${member.title}` : undefined, about ? paragraphs(about.text)[0] : undefined);
 
   if (!member) {
     return (
@@ -49,14 +65,15 @@ export default function TeamMemberBio() {
     );
   }
 
-  const prev = team[(index - 1 + team.length) % team.length];
-  const next = team[(index + 1) % team.length];
+  // No wrap-around: the first profile has no "Previous", the last has no "Next".
+  const prev = index > 0 ? team[index - 1] : undefined;
+  const next = index < team.length - 1 ? team[index + 1] : undefined;
   const firstName = member.name.split(' ')[0];
   const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`For ${member.name}`)}`;
 
   return (
     <>
-      <Section tone="paper" size="none" className="border-b border-line">
+      <Section tone="paper" size="none">
         <Container className="pb-20 pt-10 md:pb-28 md:pt-12">
           <Breadcrumbs items={[{ label: 'Company' }, { label: 'Team', to: '/company/team' }, { label: member.name }]} />
 
@@ -93,15 +110,19 @@ export default function TeamMemberBio() {
             <div className="lg:col-span-8">
               {member.sections.map((section, si) => {
                 const paras = paragraphs(section.text);
-                const statement = paras.length === 1 && paras[0].length < 160;
+                // Serif is reserved for the short closing statement; everything else is Inter body copy.
+                const statement = section.label === 'Why this work' && paras.length === 1 && paras[0].length < 160;
                 return (
                   <Reveal
                     as="section"
                     key={section.label}
                     className={cn(si > 0 && 'mt-12 border-t border-line pt-10 md:mt-14 md:pt-12')}
                   >
-                    <h2>
-                      <Eyebrow index={si + 1}>{section.label}</Eyebrow>
+                    <h2 className="eyebrow inline-flex items-center gap-2.5 text-brass-deep">
+                      <span aria-hidden className="tabular text-mute-soft">
+                        {String(si + 1).padStart(2, '0')}{' '}
+                      </span>
+                      {section.label}
                     </h2>
                     {statement ? (
                       <p className="mt-6 max-w-2xl font-display text-display-sm text-ink md:text-[1.75rem] md:leading-[1.3]">
@@ -113,9 +134,7 @@ export default function TeamMemberBio() {
                           <p
                             key={pi}
                             className={cn(
-                              si === 0 && pi === 0
-                                ? 'font-display text-[1.375rem] leading-[1.4] text-ink md:text-[1.625rem] md:leading-[1.35]'
-                                : 'text-[17px] leading-relaxed text-ink/80'
+                              si === 0 && pi === 0 ? 'text-lede-lg text-ink' : 'text-[17px] leading-relaxed text-ink/80'
                             )}
                           >
                             {p}
@@ -127,10 +146,10 @@ export default function TeamMemberBio() {
                 );
               })}
 
-              {team.length > 1 && (
+              {(prev || next) && (
                 <nav aria-label="More of the team" className="mt-16 grid gap-4 border-t border-line pt-10 sm:grid-cols-2 md:mt-20">
-                  <SiblingLink member={prev} direction="prev" />
-                  <SiblingLink member={next} direction="next" />
+                  {prev && <SiblingLink member={prev} direction="prev" />}
+                  {next && <SiblingLink member={next} direction="next" className={cn(!prev && 'sm:col-start-2')} />}
                 </nav>
               )}
             </div>
