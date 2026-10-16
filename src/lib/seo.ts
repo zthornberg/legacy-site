@@ -18,7 +18,7 @@ const ROUTES: Record<string, Meta> = {
   },
   '/sell/ma-services': {
     title: 'M&A Advisory',
-    description: 'Sell-side M&A advisory for complex lower-middle-market mandates: recapitalizations, strategic sales and management buyouts.',
+    description: 'Sell-side M&A advisory for larger, more complex lower-middle-market mandates, typically above $25M: recapitalizations, strategic sales and management buyouts.',
   },
   '/sell/case-studies': {
     title: 'Closed Transactions',
@@ -59,6 +59,7 @@ const ROUTES: Record<string, Meta> = {
   '/contact': { title: 'Contact', description: 'Start a confidential conversation with a Legacy advisor. We reply within one business day.' },
   '/portal/login': { title: 'Broker Portal Sign In' },
   '/portal': { title: 'Broker Portal' },
+  '/404': { title: 'Page not found', description: 'That address does not exist on the Legacy site.' },
 };
 
 const SECTION_FALLBACKS: Record<string, string> = {

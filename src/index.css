@@ -92,6 +92,12 @@
   .field:focus {
     @apply outline-none border-ink ring-2 ring-ink/10;
   }
+  .field[aria-invalid='true'] {
+    @apply border-red-700;
+  }
+  .field[aria-invalid='true']:focus {
+    @apply border-red-700 ring-red-700/10;
+  }
   textarea.field {
     @apply h-auto py-3 leading-relaxed;
   }

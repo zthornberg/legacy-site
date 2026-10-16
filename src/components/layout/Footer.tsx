@@ -9,7 +9,7 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: 'Brokerage services', href: '/sell/brokerage' },
       { label: 'M&A advisory', href: '/sell/ma-services' },
       { label: 'Closed transactions', href: '/sell/case-studies' },
-      { label: 'Request a valuation', href: '/contact' },
+      { label: 'Request a valuation', href: '/contact?intent=sell' },
     ],
   },
   {
@@ -62,10 +62,10 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-8">
+          <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-8">
             {COLUMNS.map((col) => (
               <div key={col.title}>
-                <h3 className="eyebrow text-brass-light">{col.title}</h3>
+                <h2 className="eyebrow text-brass-light">{col.title}</h2>
                 <ul className="mt-5 space-y-3">
                   {col.links.map((l) => (
                     <li key={l.href + l.label}>
@@ -77,7 +77,7 @@ export default function Footer() {
                 </ul>
               </div>
             ))}
-          </div>
+          </nav>
         </div>
 
         <div className="mt-16 border-t border-line-inverse pt-8">

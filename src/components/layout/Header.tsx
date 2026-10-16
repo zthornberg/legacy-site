@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
@@ -25,7 +25,7 @@ const NAV: NavGroup[] = [
     match: ['/case-studies'],
     items: [
       { label: 'Brokerage services', href: '/sell/brokerage', desc: 'A confidential, competitive sale process for $1M–$25M companies' },
-      { label: 'M&A advisory', href: '/sell/ma-services', desc: 'Sell-side advisory for larger and more complex mandates' },
+      { label: 'M&A advisory', href: '/sell/ma-services', desc: 'Sell-side advisory for larger, more complex mandates, typically above $25M' },
       { label: 'Closed transactions', href: '/sell/case-studies', desc: 'Representative outcomes across industries' },
     ],
   },
@@ -108,21 +108,32 @@ function DesktopGroup({
   const reduce = useReducedMotion();
   const timer = useRef<number | null>(null);
 
+  const panelId = `nav-panel-${group.label.toLowerCase().replace(/\s+/g, '-')}`;
+
+  // Open only once the pointer rests on the trigger; close with a short grace period.
   const enter = () => {
     if (timer.current) window.clearTimeout(timer.current);
-    onOpen();
+    timer.current = window.setTimeout(onOpen, 70);
   };
   const leave = () => {
+    if (timer.current) window.clearTimeout(timer.current);
     timer.current = window.setTimeout(onClose, 140);
+  };
+  const blur = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) onClose();
   };
 
   return (
-    <div className="relative" onMouseEnter={enter} onMouseLeave={leave}>
+    <div className="relative" onMouseEnter={enter} onMouseLeave={leave} onBlur={blur}>
       <button
         type="button"
         aria-expanded={open}
-        aria-haspopup="menu"
-        onClick={() => (open ? onClose() : onOpen())}
+        aria-controls={panelId}
+        onClick={() => {
+          if (timer.current) window.clearTimeout(timer.current);
+          if (open) onClose();
+          else onOpen();
+        }}
         className={cn(
           'inline-flex h-9 items-center gap-1 rounded-md px-3 text-sm font-medium transition-colors duration-200',
           inverse
@@ -141,7 +152,7 @@ function DesktopGroup({
       <AnimatePresence>
         {open && (
           <motion.div
-            role="menu"
+            id={panelId}
             initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6, scale: 0.985 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: 4, scale: 0.985 }}
@@ -152,12 +163,11 @@ function DesktopGroup({
             )}
           >
             <div className="rounded-xl border border-line bg-white p-2 shadow-lift">
-              <div className={cn('grid gap-0.5', group.columns === 2 && 'grid-cols-2')}>
+              <ul className={cn('grid gap-0.5', group.columns === 2 && 'grid-cols-2')}>
                 {group.items.map((item) => (
+                  <li key={item.href}>
                   <Link
-                    key={item.href}
                     to={item.href}
-                    role="menuitem"
                     onClick={onClose}
                     className="group/item block rounded-lg px-3 py-2.5 transition-colors duration-150 hover:bg-paper-deep"
                   >
@@ -169,13 +179,13 @@ function DesktopGroup({
                     </div>
                     {item.desc && <div className="mt-0.5 text-[13px] leading-snug text-mute">{item.desc}</div>}
                   </Link>
+                  </li>
                 ))}
-              </div>
+              </ul>
               {group.footer && (
                 <div className="mt-1 border-t border-line pt-1">
                   <Link
                     to={group.footer.href}
-                    role="menuitem"
                     onClick={onClose}
                     className="flex items-center justify-between rounded-lg px-3 py-2.5 text-[13px] font-medium text-brass-deep transition-colors hover:bg-paper-deep"
                   >
@@ -194,18 +204,37 @@ function DesktopGroup({
 
 /* ------------------------------------------------------------------ mobile */
 
-function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+function MobileMenu({
+  open,
+  onClose,
+  returnFocusTo,
+}: {
+  open: boolean;
+  onClose: () => void;
+  returnFocusTo: React.RefObject<HTMLButtonElement>;
+}) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const reduce = useReducedMotion();
+  const closeRef = useRef<HTMLButtonElement>(null);
 
+  // Lock scroll, make the page behind the sheet inert, move focus in, and return it on close.
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    const behind = [document.querySelector('header'), document.getElementById('main'), document.querySelector('footer')].filter(
+      (el): el is HTMLElement => !!el
+    );
+    behind.forEach((el) => el.setAttribute('inert', ''));
+    const t = window.setTimeout(() => closeRef.current?.focus(), 30);
+    const opener = returnFocusTo.current;
     return () => {
+      window.clearTimeout(t);
       document.body.style.overflow = prev;
+      behind.forEach((el) => el.removeAttribute('inert'));
+      opener?.focus();
     };
-  }, [open]);
+  }, [open, returnFocusTo]);
 
   return (
     <AnimatePresence>
@@ -224,6 +253,7 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
           <div className="flex h-16 items-center justify-between border-b border-line px-5">
             <Logo />
             <button
+              ref={closeRef}
               type="button"
               onClick={onClose}
               aria-label="Close menu"
@@ -285,8 +315,8 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
               })}
             </ul>
             <div className="mt-auto space-y-3 pt-8">
-              <Button to="/contact" full size="lg" onClick={onClose} arrow>
-                Request a confidential valuation
+              <Button to="/contact?intent=sell" full size="lg" onClick={onClose} arrow>
+                Request a valuation
               </Button>
               <Button to="/licensing/program" variant="secondary" full size="lg" onClick={onClose}>
                 Explore the licensing program
@@ -312,6 +342,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [overHero, setOverHero] = useState(false);
   const rootRef = useRef<HTMLElement>(null);
+  const openerRef = useRef<HTMLButtonElement>(null);
 
   const isPortal = location.pathname.startsWith('/portal');
   const isHome = location.pathname === '/';
@@ -385,10 +416,10 @@ export default function Header() {
 
           {isPortal ? (
             <div className="ml-auto flex items-center gap-4">
-              <span className="hidden text-sm text-mute sm:inline">Broker portal</span>
-              <NavLink to="/" className="text-sm text-mute-strong hover:text-ink">
+              <span className="eyebrow hidden text-mute sm:inline">Broker portal</span>
+              <Button to="/" variant="ghost" size="sm" arrow>
                 Public site
-              </NavLink>
+              </Button>
               {user && (
                 <Button size="sm" variant="secondary" onClick={logout}>
                   Sign out
@@ -414,18 +445,19 @@ export default function Header() {
                 <Link
                   to="/portal/login"
                   className={cn(
-                    'px-3 text-sm font-medium transition-colors',
+                    'inline-flex h-9 items-center px-3 text-sm font-medium transition-colors',
                     overHero ? 'text-paper/75 hover:text-paper' : 'text-mute-strong hover:text-ink'
                   )}
                 >
                   Broker login
                 </Link>
-                <Button to="/contact" size="sm" arrow variant={overHero ? 'inverse' : 'primary'}>
-                  Get a valuation
+                <Button to="/contact?intent=sell" size="sm" arrow variant={overHero ? 'inverse' : 'primary'}>
+                  Request a valuation
                 </Button>
               </div>
 
               <button
+                ref={openerRef}
                 type="button"
                 onClick={() => setMobileOpen(true)}
                 aria-label="Open menu"
@@ -440,7 +472,7 @@ export default function Header() {
           )}
         </div>
       </header>
-      {!isPortal && <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />}
+      {!isPortal && <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} returnFocusTo={openerRef} />}
     </>
   );
 }

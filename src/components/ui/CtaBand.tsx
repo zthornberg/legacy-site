@@ -7,6 +7,7 @@ import Reveal from './Reveal';
 /**
  * Closing call-to-action band. One per page, at the bottom, above the footer.
  * Default tone is `brass` (warm, light) so it separates cleanly from the ink footer.
+ * Actions sit beneath the copy in a row, so long labels never fight the title for width.
  */
 export default function CtaBand({
   eyebrow,
@@ -28,6 +29,7 @@ export default function CtaBand({
   className?: string;
 }) {
   const inverse = tone === 'ink';
+  const centered = align === 'center';
   return (
     <section
       className={cn(
@@ -40,31 +42,22 @@ export default function CtaBand({
     >
       {inverse && <div className="pointer-events-none absolute inset-0 ink-glow" aria-hidden />}
       <Container className="relative section">
-        <Reveal
-          className={cn(
-            align === 'center' ? 'mx-auto max-w-3xl text-center' : 'grid gap-10 lg:grid-cols-12 lg:items-end'
+        <Reveal className={cn(centered ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl')}>
+          {eyebrow && (
+            <Eyebrow tone={inverse ? 'inverse' : 'brass'} className="mb-4">
+              {eyebrow}
+            </Eyebrow>
           )}
-        >
-          <div className={cn(align === 'left' && 'lg:col-span-7')}>
-            {eyebrow && (
-              <Eyebrow tone={inverse ? 'inverse' : 'brass'} className="mb-4">
-                {eyebrow}
-              </Eyebrow>
-            )}
-            <h2 className={cn('font-display text-display-lg', inverse ? 'text-paper' : 'text-ink')}>{title}</h2>
-            {body && (
-              <p className={cn('mt-5 text-lede max-w-2xl', inverse ? 'text-paper/70' : 'text-mute', align === 'center' && 'mx-auto')}>
-                {body}
-              </p>
-            )}
-            {align === 'center' && actions && <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">{actions}</div>}
-          </div>
-          {align === 'left' && actions && (
-            <div className="lg:col-span-5 flex flex-col sm:flex-row sm:flex-wrap gap-3 lg:justify-end">{actions}</div>
+          <h2 className={cn('font-display text-display-lg', inverse ? 'text-paper' : 'text-ink')}>{title}</h2>
+          {body && (
+            <p className={cn('mt-5 text-lede max-w-2xl', inverse ? 'text-paper/70' : 'text-mute', centered && 'mx-auto')}>{body}</p>
+          )}
+          {actions && (
+            <div className={cn('mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap', centered && 'justify-center')}>{actions}</div>
           )}
         </Reveal>
         {footnote && (
-          <p className={cn('mt-8 text-xs max-w-3xl', inverse ? 'text-paper/40' : 'text-mute-soft', align === 'center' && 'mx-auto text-center')}>
+          <p className={cn('mt-8 text-xs max-w-3xl', inverse ? 'text-paper/40' : 'text-mute-soft', centered && 'mx-auto text-center')}>
             {footnote}
           </p>
         )}

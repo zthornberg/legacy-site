@@ -30,9 +30,8 @@ const BrokerLogin: React.FC = () => {
     <div className="flex min-h-[calc(100svh-4rem)] flex-col items-center justify-center bg-paper-deep px-5 py-16 sm:px-6 md:py-24">
       <div className="w-full max-w-md">
         <Card padding="lg">
-          <img src="/media/Horizontal Logo High Res.png" alt="Legacy Business Brokers" className="h-7 w-auto" draggable={false} />
 
-          <Eyebrow as="p" className="mt-10">
+          <Eyebrow as="p" className="">
             Broker portal
           </Eyebrow>
           <h1 className="mt-3 font-display text-display-md text-ink">Sign in</h1>
