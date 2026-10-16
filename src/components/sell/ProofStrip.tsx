@@ -3,10 +3,10 @@ import { Reveal, Stat } from '../ui';
 export type ProofItem = { value: string; label: string };
 
 const SELL_PROOF: ProofItem[] = [
-  { value: '2,400+', label: 'Registered buyers in the Legacy network' },
+  { value: '2,400+', label: 'Registered buyers' },
   { value: '$60M+', label: 'Transaction value closed' },
   { value: '35+', label: 'Years of combined team experience' },
-  { value: '97%+', label: 'Client satisfaction' },
+  { value: '97%', label: 'Client satisfaction' },
 ];
 
 // Explicit per-cell dividers: 2×2 on small screens, one row of four on large.

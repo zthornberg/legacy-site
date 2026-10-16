@@ -45,6 +45,10 @@ export const sellProcess: ProcessPage = {
   cta: "Thinking 6–18 months ahead? We'll audit your add-backs and buyer map in a 20-minute fit call."
 };
 
+/** Shown under the sell timeline so the week ranges read against the closed-deal timelines. */
+export const sellTimelineNote =
+  "Week ranges cover the marketed phase; engagement to close has run 6–12 months on recent mandates.";
+
 export const buyProcess: ProcessPage = {
   slug: "buy",
   title: "Five phases from mandate to close.",

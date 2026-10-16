@@ -1,7 +1,6 @@
 import { BarChart3, Briefcase, Network, ShieldCheck } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import ProcessSection from '../../components/ProcessSection';
-import CtaActions from '../../components/sell/CtaActions';
 import {
   Badge,
   Button,
@@ -19,7 +18,7 @@ const SERVICES: { label: string; title: string; body: string; icon: LucideIcon }
   {
     label: 'Planning',
     title: 'Strategic sale planning',
-    body: 'We prepare the business before it goes to market, through financial recasting and growth adjustments, so it commands top dollar.',
+    body: 'We prepare the business before it goes to market, through financial recasting and growth adjustments, so it goes to market with clean numbers and a defensible multiple.',
     icon: BarChart3,
   },
   {
@@ -53,16 +52,16 @@ const DEAL_TYPES = [
 
 const AUDIENCE: { title: string; body: string }[] = [
   {
-    title: 'Lower middle-market owners',
-    body: 'Owners weighing a strategic sale, a management buyout or a private equity partnership, and looking for the right partner for the company’s next stage.',
+    title: 'Owners weighing a recapitalization',
+    body: 'You want liquidity now and a stake in the next stage of growth. We run the process with private equity groups and negotiate the rollover terms.',
   },
   {
-    title: 'Complex structures',
-    body: 'Earn-outs, equity rollovers and regulatory approvals, handled by finance professionals with Series 79 licensing and structured to maximize value for every stakeholder.',
+    title: 'Founders planning a management buyout',
+    body: 'Your leadership team wants to own the company. We structure the financing, any seller note and the transition so the deal holds up for both sides.',
   },
   {
-    title: 'Boutique attention',
-    body: 'Personal attention with investment banking-level expertise, direct relationships with PE firms and strategic buyers, and rigorous due diligence support.',
+    title: 'Companies with cross-border or regulatory complexity',
+    body: 'International buyers, licensed operations or approvals that gate the closing. We map those conditions early and sequence the process around them.',
   },
 ];
 
@@ -102,7 +101,13 @@ export default function MAServices() {
         crumbs={[{ label: 'Sell', to: '/sell/brokerage' }, { label: 'M&A advisory' }]}
         eyebrow="Sell · M&A advisory"
         title="Investment-bank rigor, boutique attention."
-        lede="Our M&A division pairs the analytical rigor of a top investment bank with the personal service of a boutique. We specialize in complex transactions for lower middle-market companies seeking strategic partners."
+        lede={
+          <>
+            Our M&amp;A division pairs the analytical rigor of a top investment bank with the personal service of a
+            boutique. We take on larger and more complex lower-middle-market mandates, typically above the{' '}
+            <span className="whitespace-nowrap">$25M brokerage</span> range.
+          </>
+        }
         actions={
           <>
             <Button to="/contact?intent=ma" variant="inverse" size="lg" arrow>
@@ -124,7 +129,7 @@ export default function MAServices() {
             id="ma-services"
             eyebrow="M&A services"
             title="From sale planning to a signed agreement."
-            lede="Wall Street-grade work for mid-sized companies, from pre-sale planning through deal execution."
+            lede="Sell-side work to an investment-bank standard, for lower-middle-market companies, from pre-sale planning through signing."
           />
           <div className="mt-14 grid md:mt-20 md:grid-cols-2">
             {SERVICES.map((s, i) => (
@@ -152,8 +157,8 @@ export default function MAServices() {
         compact
         tone="white"
         eyebrow="How we run a process"
-        title="Five disciplined phases, run to an investment-bank standard."
-        subtitle="The same sequence behind every Legacy sale, from recast and CIM to LOI and closing, scaled to the size and complexity of the mandate."
+        title="Five disciplined phases, scaled to the mandate."
+        subtitle="The same sequence behind every Legacy sale, from recast and CIM to LOI and closing. Depth and timing move with the size and complexity of the deal."
         ctaTo="/contact?intent=ma"
       />
 
@@ -193,14 +198,14 @@ export default function MAServices() {
         title="Weigh a strategic exit, confidentially."
         body="Whether you’re considering a strategic sale, a management buyout or a private equity partnership, our M&A advisors can help you explore the options."
         actions={
-          <CtaActions>
+          <>
             <Button to="/contact?intent=ma" size="lg" arrow>
               Talk to an M&amp;A advisor
             </Button>
             <Button to="/sell/case-studies" size="lg" variant="secondary">
               Closed transactions
             </Button>
-          </CtaActions>
+          </>
         }
       />
     </>

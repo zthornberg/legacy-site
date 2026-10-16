@@ -1,5 +1,4 @@
 import { Badge, Button, Card, Container, CtaBand, Eyebrow, PageHero, Reveal, Section, SectionHeading } from '../ui';
-import CtaActions from './CtaActions';
 import { MORE_ENGAGEMENTS, TRANSACTIONS, type Transaction } from './transactions';
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -47,7 +46,7 @@ function TransactionIndex() {
         ))}
       </ol>
       <div className="flex items-center justify-between border-t border-line bg-paper px-5 py-3 text-[12px] text-mute">
-        <span>Time to close</span>
+        <span>Engagement to close</span>
         <span className="tabular">
           {Math.min(...months)}–{Math.max(...months)} months
         </span>
@@ -69,7 +68,7 @@ function TransactionRow({ t, index }: { t: Transaction; index: number }) {
     >
       <div className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-16">
         <Reveal className={`lg:col-span-5 ${flip ? 'lg:order-2' : ''}`}>
-          <figure className="relative aspect-[4/3] overflow-hidden rounded-xl border border-line bg-paper-deep">
+          <figure className="aspect-[4/3] overflow-hidden rounded-xl border border-line bg-paper-deep">
             <img
               src={t.image}
               alt={t.alt}
@@ -79,9 +78,6 @@ function TransactionRow({ t, index }: { t: Transaction; index: number }) {
               decoding="async"
               className="h-full w-full object-cover"
             />
-            <Badge tone="ink" dot className="absolute left-4 top-4">
-              Closed
-            </Badge>
           </figure>
         </Reveal>
 
@@ -89,7 +85,7 @@ function TransactionRow({ t, index }: { t: Transaction; index: number }) {
           <Eyebrow index={index + 1}>
             {t.industry} · {t.region}
           </Eyebrow>
-          <h2 id={headingId} className="mt-4 font-display text-display-md text-ink">
+          <h2 id={headingId} className="mt-4 font-display text-display-lg text-ink">
             {t.title}
           </h2>
           <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink/80">{t.summary}</p>
@@ -132,8 +128,8 @@ export default function ClosedTransactions() {
         tone="paper"
         crumbs={[{ label: 'Sell', to: '/sell/brokerage' }, { label: 'Closed transactions' }]}
         eyebrow="Sell · Closed transactions"
-        title="Closed transactions"
-        lede="Representative sell-side outcomes across construction, manufacturing, distribution, energy and electrical contracting. Company names and identifying details are withheld to protect client confidentiality."
+        title="Representative sales, closed on the owner’s terms."
+        lede="Sell-side outcomes across construction, manufacturing, distribution, energy and electrical contracting. Company names and identifying details are withheld to protect client confidentiality."
         actions={
           <>
             <Button to="/contact?intent=sell" size="lg" arrow>
@@ -210,14 +206,14 @@ export default function ClosedTransactions() {
         title="Every outcome here began with a confidential conversation."
         body="Tell us about your company and your timing. We'll show you how buyers are likely to see it, and what a sale would involve."
         actions={
-          <CtaActions>
+          <>
             <Button to="/contact?intent=sell" size="lg" arrow>
               Request a confidential valuation
             </Button>
             <Button to="/sell/brokerage" size="lg" variant="secondary">
-              Brokerage services
+              How we sell
             </Button>
-          </CtaActions>
+          </>
         }
         footnote="Transaction examples are illustrative and anonymized, and are not a promise of future results."
       />

@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import { buyProcess, sellProcess } from '../content/process';
+import { buyProcess, sellProcess, sellTimelineNote } from '../content/process';
 import type { ProcessStep } from '../content/types';
 import { Badge, Button, Container, Reveal, Section, SectionHeading } from './ui';
 
@@ -15,6 +15,8 @@ type Props = {
   eyebrow?: string;
   title?: string;
   subtitle?: string;
+  /** One-line qualifier under the timeline. Sell mode defaults to the timing note; pass "" to hide it. */
+  note?: string;
   /** Where the closing button points. */
   ctaTo?: string;
   id?: string;
@@ -105,13 +107,9 @@ function FullTimeline({ steps, tone }: { steps: ProcessStep[]; tone: Tone }) {
             className={`grid gap-6 lg:grid-cols-12 lg:gap-10 ${i > 0 ? 'border-t border-line pt-12' : ''} ${i < last ? 'pb-12' : ''}`}
           >
             <div className="lg:col-span-5">
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 pt-1.5">
+              <div className="pt-1.5">
                 <h3 className="font-display text-[1.75rem] leading-[1.15] text-ink">{s.title}</h3>
-                {s.duration && (
-                  <Badge tone="brass" className="tabular">
-                    {s.duration}
-                  </Badge>
-                )}
+                {s.duration && <p className="mt-2 text-[13px] text-mute tabular">{s.duration}</p>}
               </div>
               {s.artifacts && s.artifacts.length > 0 && (
                 <div className="mt-6">
@@ -192,6 +190,7 @@ export default function ProcessSection({
   eyebrow,
   title,
   subtitle,
+  note,
   ctaTo,
   id,
 }: Props) {
@@ -199,6 +198,7 @@ export default function ProcessSection({
   const headingId = useId();
   const ctaLabel = mode === 'sell' ? 'Book a fit call' : 'Start a mandate';
   const href = ctaTo ?? (mode === 'sell' ? '/contact?intent=sell' : '/contact?intent=buy');
+  const timingNote = note ?? (mode === 'sell' ? sellTimelineNote : undefined);
 
   return (
     <Section tone={tone} id={id} aria-labelledby={headingId} divider={tone !== 'white'}>
@@ -212,6 +212,17 @@ export default function ProcessSection({
         />
 
         {compact ? <CompactTimeline steps={p.steps} tone={tone} /> : <FullTimeline steps={p.steps} tone={tone} />}
+
+        {timingNote && (
+          <Reveal>
+            {/* Indented to the step content column (node 2.75rem + column gap). */}
+            <p
+              className={`mt-12 max-w-2xl text-sm leading-relaxed text-mute md:mt-14 ${compact ? 'pl-16 lg:pl-0' : 'pl-16 sm:pl-[4.75rem]'}`}
+            >
+              {timingNote}
+            </p>
+          </Reveal>
+        )}
 
         <Reveal className="mt-16 flex flex-col gap-6 border-t border-line pt-10 md:mt-20 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
           <p className="max-w-2xl font-display text-display-sm text-ink">{keepHyphens(p.cta)}</p>

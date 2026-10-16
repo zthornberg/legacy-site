@@ -3,7 +3,6 @@ import type { LucideIcon } from 'lucide-react';
 import ProcessSection from '../../components/ProcessSection';
 import ProofStrip from '../../components/sell/ProofStrip';
 import TeaserCard from '../../components/sell/TeaserCard';
-import CtaActions from '../../components/sell/CtaActions';
 import {
   Button,
   Card,
@@ -48,7 +47,7 @@ const SERVICES: { label: string; title: string; body: string; icon: LucideIcon }
 const BENEFITS = [
   'Comprehensive business valuation',
   'Professional marketing materials',
-  'Access to 2,400+ qualified buyers',
+  'Access to 2,400+ registered buyers',
   'Confidential marketing process',
   'Expert negotiation support',
   'Due diligence guidance',
@@ -64,7 +63,7 @@ export default function BrokerageServices() {
     <>
       <PageHero
         tone="paper"
-        crumbs={[{ label: 'Sell', to: '/sell/brokerage' }, { label: 'Brokerage services' }]}
+        crumbs={[{ label: 'Sell' }, { label: 'Brokerage services' }]}
         eyebrow="Sell · Brokerage services"
         title="A confidential, competitive sale for your company."
         lede={
@@ -127,32 +126,33 @@ export default function BrokerageServices() {
             <div className="lg:col-span-7">
               <SectionHeading
                 id="bk-why"
-                eyebrow="Why Legacy"
-                title="Why owners choose Legacy"
-                lede="Traditional brokerage discipline, modern tools and a client-first standard of service, from the first call to the last signature."
+                eyebrow="What you get"
+                title="Brokerage discipline, end to end."
+                lede="Modern tools and a client-first standard of service, from the first call to the last signature."
               />
               <Reveal delay={0.08} className="mt-10 border-t border-line pt-10">
                 <CheckList items={BENEFITS} columns={2} />
               </Reveal>
             </div>
 
-            <Reveal delay={0.12} className="lg:col-span-4 lg:col-start-9 lg:pt-2">
-              <Card tone="brass" padding="lg">
+            <Reveal delay={0.12} className="lg:col-span-5 lg:col-start-8 lg:pt-2 xl:col-span-4 xl:col-start-9">
+              <Card tone="brass" padding="lg" className="xl:p-8">
                 <Eyebrow>Complimentary</Eyebrow>
                 <h3 className="mt-4 font-display text-display-md text-ink">Start with a valuation</h3>
                 <p className="mt-4 text-[15px] leading-relaxed text-mute-strong">
                   A complimentary business valuation and consultation with one of our experienced advisors. Confidential
                   from the first conversation.
                 </p>
-                <div className="mt-8 space-y-5">
+                <div className="mt-8 space-y-3">
                   <Button to="/contact?intent=sell" arrow full>
-                    Request a valuation
+                    Request a confidential valuation
                   </Button>
-                  <div className="text-center">
-                    <TextLink to="/sell/case-studies" tone="mute">
-                      See closed transactions
+                  <p className="text-sm text-mute">
+                    Larger or more complex?{' '}
+                    <TextLink to="/sell/ma-services" className="py-2">
+                      See M&amp;A advisory
                     </TextLink>
-                  </div>
+                  </p>
                 </div>
               </Card>
             </Reveal>
@@ -168,14 +168,14 @@ export default function BrokerageServices() {
         title="Start with a confidential conversation."
         body="Tell us about your company and your timing. One of our advisors will walk you through value, buyer demand and what a sale would involve."
         actions={
-          <CtaActions>
+          <>
             <Button to="/contact?intent=sell" size="lg" arrow>
               Request a confidential valuation
             </Button>
             <Button to="/sell/ma-services" size="lg" variant="secondary">
               M&amp;A advisory
             </Button>
-          </CtaActions>
+          </>
         }
       />
     </>
