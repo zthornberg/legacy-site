@@ -1,8 +1,11 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, TrendingUp, Users, CheckCircle } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import industryContent from '../../content/industries/industries.json';
+import { industries as subsectors } from '../../content/industries';
 import IndustrySection from '../../components/IndustrySection';
+import { SECTORS, SUBSECTORS_BY_SECTOR, type Sector } from '../../components/industries/sectors';
+import { usePageMeta } from '../../lib/seo';
+import { Button, Card, CheckList, Container, CtaBand, Eyebrow, PageHero, Reveal, Section, TextLink } from '../../components/ui';
 
 interface IndustryData {
   name: string;
@@ -13,125 +16,239 @@ interface IndustryData {
   seoTerms: string[];
 }
 
-const IndustryPage: React.FC = () => {
-  const { industry } = useParams<{ industry: string }>();
-  
-  const industryData = industryContent[industry as keyof typeof industryContent] as IndustryData;
+const content = industryContent as Record<string, IndustryData>;
 
-  if (!industryData) {
+type TocItem = { id: string; index: string; label: string };
+
+const SENTENCE = /^.+?[.!?](?=\s|$)/;
+
+/** Meta description: the overview's first sentence, plus the second when the first is a short opener. */
+function metaDescription(overview: string) {
+  const first = overview.match(SENTENCE)?.[0] ?? overview;
+  if (first.length >= 60) return first;
+  // "Hospitality is consolidating." is too thin to stand alone in search results.
+  const second = overview.slice(first.length).trim().match(SENTENCE)?.[0];
+  return second ? `${first} ${second}` : first;
+}
+
+/** Hand-picked related sectors when the sector defines them; otherwise the next three in menu order. */
+function relatedSectors(key: string): Sector[] {
+  const index = SECTORS.findIndex((s) => s.key === key);
+  const picked = (SECTORS[index]?.related ?? [])
+    .map((k) => SECTORS.find((s) => s.key === k))
+    .filter((s): s is Sector => s !== undefined);
+  if (picked.length > 0) return picked;
+  return [1, 2, 3].map((n) => SECTORS[(Math.max(index, 0) + n) % SECTORS.length]);
+}
+
+function BriefContents({ items }: { items: TocItem[] }) {
+  return (
+    <Card padding="md" className="lg:ml-auto lg:max-w-sm">
+      <Eyebrow tone="mute" as="p">
+        In this brief
+      </Eyebrow>
+      <ol className="mt-5 divide-y divide-line border-t border-line">
+        {items.map((item) => (
+          <li key={item.id}>
+            <a
+              href={`#${item.id}`}
+              className="group flex items-baseline gap-4 py-3 text-[14px] text-mute-strong transition-colors hover:text-ink"
+            >
+              <span className="tabular w-7 shrink-0 text-[12px] text-mute-soft">{item.index}</span>
+              <span className="flex-1">{item.label}</span>
+              <ArrowRight
+                className="h-3.5 w-3.5 shrink-0 self-center text-mute-soft opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                aria-hidden
+              />
+            </a>
+          </li>
+        ))}
+      </ol>
+    </Card>
+  );
+}
+
+export default function IndustryPage() {
+  const { industry = '' } = useParams<{ industry: string }>();
+  // Own-property check so prototype keys like /industries/constructor cannot resolve to a function.
+  const data = Object.prototype.hasOwnProperty.call(content, industry) ? content[industry] : undefined;
+  usePageMeta(data ? `${data.name} M&A` : 'Sector not found', data ? metaDescription(data.overview) : undefined);
+
+  if (!data) {
     return (
-      <div className="pt-20 bg-white min-h-screen">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Industry Not Found</h1>
-            <Link to="/industries" className="text-purple-600 hover:text-purple-700">
-              ← Back to Industries
-            </Link>
-          </div>
-        </div>
-      </div>
+      <>
+        <PageHero
+          tone="paper"
+          crumbs={[{ label: 'Industries', to: '/industries' }, { label: 'Not found' }]}
+          eyebrow="Industry"
+          title="We couldn't find that sector."
+          lede="The link may be out of date. Every sector we cover is listed on the industries page."
+          actions={
+            <Button to="/industries" arrow>
+              View all industries
+            </Button>
+          }
+        />
+      </>
     );
   }
 
+  const briefs = (SUBSECTORS_BY_SECTOR[industry] ?? []).filter((slug) => subsectors.some((s) => s.slug === slug));
+  const related = relatedSectors(industry);
+  const isFunding = industry === 'startup-funding';
+
+  const toc: TocItem[] = [
+    { id: 'market', index: '01', label: 'Market activity' },
+    { id: 'expertise', index: '02', label: "Legacy's expertise" },
+    { id: 'drivers', index: '03', label: 'Key value drivers' },
+    ...briefs.map((slug, i) => ({
+      id: slug,
+      index: `4.${i + 1}`,
+      label: subsectors.find((s) => s.slug === slug)?.title ?? slug,
+    })),
+  ];
+
   return (
-    <div className="pt-20 bg-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Back Link */}
-        <Link 
-          to="/industries"
-          className="inline-flex items-center text-accent hover:text-accentAlt mb-8 transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Industries
-        </Link>
+    <>
+      <PageHero
+        tone="paper"
+        crumbs={[{ label: 'Industries', to: '/industries' }, { label: data.name }]}
+        eyebrow="Industry"
+        title={data.name}
+        lede={data.overview}
+        actions={
+          <>
+            <Button to={`/contact?intent=${industry === 'startup-funding' ? 'ma' : 'sell'}&industry=${industry}`} size="lg" arrow>
+              {isFunding ? 'Talk to an advisor' : 'Request a confidential valuation'}
+            </Button>
+            <Button to="/buy/listings" size="lg" variant="secondary">
+              View current listings
+            </Button>
+          </>
+        }
+        aside={<BriefContents items={toc} />}
+      />
 
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {industryData.name}
-          </h1>
-        </div>
+      {/* Market activity + Legacy's expertise */}
+      <Section tone="white">
+        <Container>
+          <div className="grid gap-12 md:grid-cols-2 lg:gap-16">
+            <Reveal as="section" className="border-t border-line-strong pt-6">
+              <div id="market" className="scroll-mt-28" />
+              <Eyebrow index={1}>Market activity</Eyebrow>
+              <h2 className="mt-6 font-display text-display-md text-ink">Why buyers are active.</h2>
+              <p className="mt-4 text-[17px] leading-relaxed text-ink/80">{data.whyActive}</p>
+            </Reveal>
+            <Reveal as="section" delay={0.06} className="border-t border-line-strong pt-6">
+              <div id="expertise" className="scroll-mt-28" />
+              <Eyebrow index={2}>Legacy&rsquo;s expertise</Eyebrow>
+              <h2 className="mt-6 font-display text-display-md text-ink">How we represent owners.</h2>
+              <p className="mt-4 text-[17px] leading-relaxed text-ink/80">{data.legacyInsight}</p>
+            </Reveal>
+          </div>
+        </Container>
+      </Section>
 
-        {/* Content Sections */}
-        <div className="space-y-12">
-          {/* Overview */}
-          <section>
-            <div className="flex items-center mb-6">
-              <TrendingUp className="h-6 w-6 text-accent mr-3" />
-              <h2 className="text-2xl font-bold text-gray-900">Industry Overview</h2>
-            </div>
-            <p className="text-gray-600 leading-relaxed text-lg">
-              {industryData.overview}
-            </p>
-          </section>
+      {/* Key value drivers */}
+      <Section tone="paper" divider id="drivers" className="scroll-mt-16">
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+            <Reveal className="lg:col-span-4">
+              <Eyebrow index={3}>Key value drivers</Eyebrow>
+              <h2 className="mt-6 font-display text-display-lg text-ink">What buyers pay for.</h2>
+              <p className="mt-5 max-w-sm text-lede text-mute">
+                The factors that most often move price and terms in {data.name.toLowerCase()} transactions.
+              </p>
+            </Reveal>
+            <Reveal delay={0.06} className="lg:col-span-8">
+              <Card tone="deep" padding="lg">
+                <CheckList items={data.keyDrivers} columns={2} />
+              </Card>
+            </Reveal>
+          </div>
+        </Container>
+      </Section>
 
-          {/* Why It's Active */}
-          <section>
-            <div className="flex items-center mb-6">
-              <Users className="h-6 w-6 text-slate-600 mr-3" />
-              <h2 className="text-2xl font-bold text-gray-900">Market Activity</h2>
-            </div>
-            <p className="text-gray-600 leading-relaxed text-lg">
-              {industryData.whyActive}
-            </p>
-          </section>
-
-          {/* Key Value Drivers */}
-          <section className="bg-gray-50 rounded-xl p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Key Value Drivers</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              {industryData.keyDrivers.map((driver, index) => (
-                <div key={index} className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-1 flex-shrink-0" />
-                  <span className="text-gray-700">{driver}</span>
-                </div>
+      {/* Sub-sector briefs */}
+      {briefs.length > 0 && (
+        <Section tone="white" divider aria-labelledby="briefs-heading">
+          <Container>
+            <Reveal className="grid gap-6 lg:grid-cols-12 lg:items-end">
+              <div className="lg:col-span-7">
+                <Eyebrow index={4}>Sub-sector briefs</Eyebrow>
+                <h2 id="briefs-heading" className="mt-4 font-display text-display-lg text-ink">
+                  Where we go deeper.
+                </h2>
+              </div>
+              <p className="max-w-md text-lede text-mute lg:col-span-5 lg:pb-1">
+                Illustrative multiples, likely buyers, and the diligence issues we resolve before a teaser goes out.
+              </p>
+            </Reveal>
+            <div className="mt-14 space-y-16 md:mt-16 md:space-y-20">
+              {briefs.map((slug, i) => (
+                <IndustrySection key={slug} slug={slug} index={`4.${i + 1}`} />
               ))}
             </div>
-          </section>
-
-          {/* Legacy's Insight */}
-          <section>
-            <div className="flex items-center mb-6">
-              <CheckCircle className="h-6 w-6 text-green-600 mr-3" />
-              <h2 className="text-2xl font-bold text-gray-900">Legacy's Expertise</h2>
-            </div>
-            <p className="text-gray-600 leading-relaxed text-lg">
-              {industryData.legacyInsight}
+            <p className="mt-16 max-w-3xl border-t border-line pt-6 text-xs leading-relaxed text-mute-soft">
+              Valuation ranges are illustrative for lower-middle-market transactions and vary by quality, durability of
+              earnings, growth, and structure. Not an offer to sell or a solicitation of an offer to buy securities.
             </p>
-          </section>
-        </div>
+          </Container>
+        </Section>
+      )}
 
-        {/* Enhanced Industry Content */}
-        <IndustrySection slug={industry || ''} />
-        <IndustrySection slug={industry || ''} />
-
-        {/* CTA Section */}
-        <div className="mt-16 bg-slate-50 rounded-2xl p-8 text-center">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">
-            Ready to Explore Opportunities in {industryData.name}?
-          </h3>
-          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-            Whether you're looking to buy or sell in this industry, Legacy's specialized 
-            knowledge can help you achieve your goals.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/buy/listings"
-              className="bg-accent text-white px-6 py-3 rounded-xl hover:bg-accentAlt motion-safe font-semibold"
-            >
-              View Available Businesses
-            </Link>
-            <Link
-              to="/sell/brokerage"
-              className="border-2 border-accent text-accent px-6 py-3 rounded-xl hover:bg-accent hover:text-white motion-safe font-semibold"
-            >
-              Get Free Valuation
-            </Link>
+      {/* Related sectors */}
+      <Section tone="deep" size="sm" aria-labelledby="related-heading">
+        <Container>
+          <div className="flex items-end justify-between gap-6">
+            <h2 id="related-heading" className="eyebrow text-brass-deep">
+              Other sectors
+            </h2>
+            <TextLink to="/industries" tone="mute">
+              All industries
+            </TextLink>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+          <ul className="mt-6 grid gap-4 md:grid-cols-3">
+            {related.map((s) => {
+              const Icon = s.icon;
+              return (
+                <li key={s.key}>
+                  <Card hover to={`/industries/${s.key}`} padding="sm" className="flex h-full items-start justify-between gap-4">
+                    <div>
+                      <h3 className="font-display text-display-sm text-ink">{s.name}</h3>
+                      <p className="mt-1.5 text-[14px] leading-relaxed text-mute">{s.description}</p>
+                    </div>
+                    <Icon className="mt-1 h-[18px] w-[18px] shrink-0 text-mute" strokeWidth={1.75} aria-hidden />
+                  </Card>
+                </li>
+              );
+            })}
+          </ul>
+        </Container>
+      </Section>
 
-export default IndustryPage;
+      <CtaBand
+        title={
+          isFunding
+            ? 'Raise capital or sell, with advisors who know founders.'
+            : `Sell with advisors who know ${data.name.toLowerCase()}.`
+        }
+        body={
+          isFunding
+            ? 'Start with a confidential conversation about minority investment, a majority sale, or both, and what each would mean for you as a founder.'
+            : 'Start with a confidential conversation. We will pressure-test value, buyer fit, and timing before anything goes to market.'
+        }
+        actions={
+          <>
+            <Button to={`/contact?intent=${industry === 'startup-funding' ? 'ma' : 'sell'}&industry=${industry}`} size="lg" arrow>
+              {isFunding ? 'Talk to an advisor' : 'Request a valuation'}
+            </Button>
+            <Button to="/industries" size="lg" variant="secondary">
+              All industries
+            </Button>
+          </>
+        }
+      />
+    </>
+  );
+}

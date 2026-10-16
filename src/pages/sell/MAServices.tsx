@@ -1,192 +1,213 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { BarChart3, Users, Shield, Briefcase, TrendingUp, Target } from 'lucide-react';
+import { BarChart3, Briefcase, Network, ShieldCheck } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import ProcessSection from '../../components/ProcessSection';
+import {
+  Badge,
+  Button,
+  CheckList,
+  Container,
+  CtaBand,
+  Eyebrow,
+  PageHero,
+  Reveal,
+  Section,
+  SectionHeading,
+} from '../../components/ui';
 
-const MAServices: React.FC = () => {
-  const services = [
-    {
-      icon: BarChart3,
-      title: 'Strategic Sale Planning',
-      description: 'We help optimize your business pre-sale through financial recasting and growth adjustments to command top dollar in the marketplace.'
-    },
-    {
-      icon: Users,
-      title: 'Buyer Network & PE Relationships',
-      description: 'Access our relationships with private equity groups and corporate buyers, enabling nationwide and international reach for your transaction.'
-    },
-    {
-      icon: Shield,
-      title: 'Confidential Auction Process',
-      description: 'We run targeted auctions or broad outreach while maintaining strict confidentiality, generating competitive offers for your business.'
-    },
-    {
-      icon: Briefcase,
-      title: 'Deal Expertise',
-      description: 'Our finance professionals navigate complex issues like earn-outs, equity rollovers, and regulatory approvals with Series 79 licensing.'
-    }
-  ];
+const SERVICES: { label: string; title: string; body: string; icon: LucideIcon }[] = [
+  {
+    label: 'Planning',
+    title: 'Strategic sale planning',
+    body: 'We prepare the business before launch, through financial recasting and growth adjustments, so it goes to market with clean numbers and a defensible multiple.',
+    icon: BarChart3,
+  },
+  {
+    label: 'Reach',
+    title: 'Buyer network & PE relationships',
+    body: 'Relationships with private equity groups and corporate buyers give your transaction nationwide and international reach.',
+    icon: Network,
+  },
+  {
+    label: 'Process',
+    title: 'Confidential auction process',
+    body: 'Targeted auctions or broad outreach, run under strict confidentiality, to generate competing offers for your company.',
+    icon: ShieldCheck,
+  },
+  {
+    label: 'Structure',
+    title: 'Deal expertise',
+    body: 'Our finance professionals navigate earn-outs, equity rollovers and regulatory approvals, backed by Series 79 licensing.',
+    icon: Briefcase,
+  },
+];
 
-  const dealTypes = [
-    'Management buyouts',
-    'Private equity recapitalizations', 
-    'Strategic acquisitions',
-    'Corporate divestitures',
-    'International transactions',
-    'Complex deal structures'
-  ];
+const DEAL_TYPES = [
+  'Management buyouts',
+  'Private equity recapitalizations',
+  'Strategic acquisitions',
+  'Corporate divestitures',
+  'International transactions',
+  'Complex deal structures',
+];
 
+const AUDIENCE: { title: string; body: string }[] = [
+  {
+    title: 'Owners weighing a recapitalization',
+    body: 'You want liquidity now and a stake in the next stage of growth. We run the process with private equity groups and negotiate the rollover terms.',
+  },
+  {
+    title: 'Founders planning a management buyout',
+    body: 'Your leadership team wants to own the company. We structure the financing, any seller note and the transition so the deal holds up for both sides.',
+  },
+  {
+    title: 'Companies with cross-border or regulatory complexity',
+    body: 'International buyers, licensed operations or approvals that gate the closing. We map those conditions early and sequence the process around them.',
+  },
+];
+
+function MandateLedger() {
   return (
-    <div className="pt-20 bg-white">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-ink via-slate-900 to-ink text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="max-w-4xl">
-            <h1 className="text-4xl lg:text-6xl font-bold mb-8">
-              M&A Advisory Services
-            </h1>
-            <p className="text-xl lg:text-2xl opacity-90 mb-12 leading-relaxed">
-              Our M&A division combines the analytical rigor of top investment banks with 
-              the personalized service of a boutique consultancy. We specialize in complex 
-              transactions for lower middle-market companies seeking strategic partners.
-            </p>
-            <Link
-              to="/contact"
-              className="bg-white text-ink px-8 py-4 rounded-xl hover:bg-white/90 motion-safe hover-lift hover-press font-semibold inline-block"
-            >
-              Contact Our M&A Advisors
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Grid */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Comprehensive M&A Services
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              From strategic planning to deal execution, we provide Wall Street-grade 
-              service for mid-sized businesses seeking optimal outcomes.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {services.map((service, index) => (
-              <div key={index} className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-all">
-                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <service.icon className="h-8 w-8 text-accent" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  {service.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {service.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Deal Types */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-8">
-                Transaction Expertise
-              </h2>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                From management buyouts to private equity recapitalizations, our team has 
-                the connections to find the right partner for your company's next stage. 
-                We handle complex deal structures that maximize value for all stakeholders.
-              </p>
-              
-              <div className="grid grid-cols-1 gap-4">
-                {dealTypes.map((dealType, index) => (
-                  <div key={index} className="flex items-center">
-                    <Target className="h-5 w-5 text-purple-600 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700 font-medium">{dealType}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                Why Choose Legacy M&A?
-              </h3>
-              
-              <div className="space-y-6">
-                <div className="flex items-start">
-                  <div className="bg-blue-100 rounded-lg p-2 mr-4 mt-1">
-                    <TrendingUp className="h-5 w-5 text-accent" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Boutique Focus</h4>
-                    <p className="text-gray-600 text-sm">
-                      Personalized attention with investment banking-level expertise
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="bg-slate-100 rounded-lg p-2 mr-4 mt-1">
-                    <Users className="h-5 w-5 text-slate-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Extensive Network</h4>
-                    <p className="text-gray-600 text-sm">
-                      Direct relationships with PE firms and strategic buyers
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="bg-green-100 rounded-lg p-2 mr-4 mt-1">
-                    <Shield className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Proven Process</h4>
-                    <p className="text-gray-600 text-sm">
-                      Systematic approach with rigorous due diligence support
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 bg-gray-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold mb-8">Ready for a Strategic Exit?</h2>
-          <p className="text-xl mb-12 max-w-2xl mx-auto opacity-90">
-            Whether you're considering a strategic sale, management buyout, or private equity 
-            partnership, our M&A advisors can help you explore your options.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/contact"
-              className="bg-white text-gray-900 px-8 py-4 rounded-lg hover:bg-gray-100 transition-all transform hover:scale-105 font-semibold"
-            >
-              Schedule Confidential Consultation
-            </Link>
-            <Link
-              to="/sell/case-studies"
-              className="border-2 border-white text-white px-8 py-4 rounded-lg hover:bg-white hover:text-gray-900 transition-all transform hover:scale-105 font-semibold"
-            >
-              View More Success Stories
-            </Link>
-          </div>
-        </div>
-      </section>
+    <div className="overflow-hidden rounded-xl border border-line-inverse bg-ink-800/80">
+      <div className="flex items-center justify-between gap-4 border-b border-line-inverse px-6 py-4">
+        <span className="eyebrow text-paper/60">Mandate types</span>
+        <Badge tone="inverse" dot>
+          Confidential
+        </Badge>
+      </div>
+      <div className="px-6 py-7">
+        <CheckList items={DEAL_TYPES} tone="inverse" />
+      </div>
+      <div className="flex items-center justify-between gap-4 border-t border-line-inverse px-6 py-3.5 text-[12px] text-paper/50">
+        <span>Nationwide and international reach</span>
+        <span>Series 79</span>
+      </div>
     </div>
   );
-};
+}
 
-export default MAServices;
+// Hairline dividers for the 1 → 2 column services grid.
+const serviceCell = [
+  'md:pr-10',
+  'md:border-l md:border-line md:pl-10',
+  'md:pr-10',
+  'md:border-l md:border-line md:pl-10',
+];
+
+export default function MAServices() {
+  return (
+    <>
+      <PageHero
+        tone="ink"
+        crumbs={[{ label: 'Sell', to: '/sell/brokerage' }, { label: 'M&A advisory' }]}
+        eyebrow="Sell · M&A advisory"
+        title="Investment-bank rigor, boutique attention."
+        lede={
+          <>
+            Our M&amp;A division pairs the analytical rigor of a top investment bank with the personal service of a
+            boutique. We take on larger and more complex lower-middle-market mandates, typically above the{' '}
+            <span className="whitespace-nowrap">$25M brokerage</span> range.
+          </>
+        }
+        actions={
+          <>
+            <Button to="/contact?intent=ma" variant="inverse" size="lg" arrow>
+              Talk to an M&amp;A advisor
+            </Button>
+            <Button to="/sell/brokerage" variant="inverse-outline" size="lg">
+              Brokerage services
+            </Button>
+          </>
+        }
+        aside={<MandateLedger />}
+      />
+
+      {/* Services */}
+      <Section tone="paper" aria-labelledby="ma-services">
+        <Container>
+          <SectionHeading
+            split
+            id="ma-services"
+            eyebrow="M&A services"
+            title="From sale planning to a signed agreement."
+            lede="Sell-side work to an investment-bank standard, for lower-middle-market companies, from pre-sale planning through signing."
+          />
+          <div className="mt-14 grid md:mt-20 md:grid-cols-2">
+            {SERVICES.map((s, i) => (
+              <Reveal
+                key={s.title}
+                delay={i * 0.06}
+                className={`border-t border-line py-9 md:py-12 ${serviceCell[i]} ${i > 1 ? 'md:border-b-0' : ''}`}
+              >
+                <div className="flex items-center justify-between">
+                  <Eyebrow index={i + 1} tone="mute">
+                    {s.label}
+                  </Eyebrow>
+                  <s.icon className="h-[18px] w-[18px] text-ink/70" strokeWidth={1.75} aria-hidden />
+                </div>
+                <h3 className="mt-6 font-display text-display-md text-ink md:mt-8">{s.title}</h3>
+                <p className="mt-3 max-w-md text-[15px] leading-relaxed text-mute">{s.body}</p>
+              </Reveal>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      <ProcessSection
+        mode="sell"
+        compact
+        tone="white"
+        eyebrow="How we run a process"
+        title="Five disciplined phases, scaled to the mandate."
+        subtitle="The same sequence behind every Legacy sale, from recast and CIM to LOI and closing. Depth and timing move with the size and complexity of the deal."
+        ctaTo="/contact?intent=ma"
+      />
+
+      {/* Who this is for */}
+      <Section tone="deep" aria-labelledby="ma-audience">
+        <Container>
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
+            <Reveal className="lg:col-span-5">
+              <Eyebrow>Who this is for</Eyebrow>
+              <h2 id="ma-audience" className="mt-4 font-display text-display-lg text-ink">
+                Complex mandates in the lower middle market.
+              </h2>
+              <p className="mt-5 max-w-md text-lede text-mute">
+                From management buyouts to private equity recapitalizations, our team has the connections to find the
+                right partner for your company’s next stage.
+              </p>
+            </Reveal>
+            <dl className="lg:col-span-6 lg:col-start-7">
+              {AUDIENCE.map((a, i) => (
+                <Reveal
+                  key={a.title}
+                  delay={i * 0.06}
+                  className="border-t border-line-strong py-7 first:pt-7 last:pb-0"
+                >
+                  <dt className="font-display text-display-sm text-ink">{a.title}</dt>
+                  <dd className="mt-2 text-[15px] leading-relaxed text-mute">{a.body}</dd>
+                </Reveal>
+              ))}
+            </dl>
+          </div>
+        </Container>
+      </Section>
+
+      <CtaBand
+        tone="brass"
+        eyebrow="M&A advisory"
+        title="Weigh a strategic exit, confidentially."
+        body="Whether you’re considering a strategic sale, a management buyout or a private equity partnership, our M&A advisors can help you explore the options."
+        actions={
+          <>
+            <Button to="/contact?intent=ma" size="lg" arrow>
+              Talk to an M&amp;A advisor
+            </Button>
+            <Button to="/sell/case-studies" size="lg" variant="secondary">
+              Closed transactions
+            </Button>
+          </>
+        }
+      />
+    </>
+  );
+}

@@ -1,156 +1,139 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
-import Home from './pages/Home';
-import BusinessListings from './pages/buy/BusinessListings';
-import BuyerRegistration from './pages/buy/BuyerRegistration';
-import BrokerageServices from './pages/sell/BrokerageServices';
-import MAServices from './pages/sell/MAServices';
-import CaseStudies from './pages/sell/CaseStudies';
-import ProgramSummary from './pages/licensing/ProgramSummary';
-import Pricing from './pages/licensing/Pricing';
-import Testimonials from './pages/licensing/Testimonials';
-import OurTeam from './pages/company/OurTeam';
-import TeamMemberBio from './pages/company/TeamMemberBio';
-import IndustryPage from './pages/industries/IndustryPage';
-import IndustriesOverview from './pages/industries/IndustriesOverview';
-import BrokerLogin from './pages/portal/BrokerLogin';
-import BrokerDashboard from './pages/portal/BrokerDashboard';
-import DocumentLibrary from './pages/portal/DocumentLibrary';
-import ListingSubmission from './pages/portal/ListingSubmission';
-import BuyerNetworkSearch from './pages/portal/BuyerNetworkSearch';
-import PrivateEquityRequest from './pages/portal/PrivateEquityRequest';
-import MarketResearchRequest from './pages/portal/MarketResearchRequest';
-import ProtectedRoute from './components/auth/ProtectedRoute';
-import { AuthProvider } from './contexts/AuthContext';
-import Contact from './pages/Contact';
-import AutoIndustryInjector from './components/AutoIndustryInjector';
-import BlogIndex from './pages/BlogIndex';
-import BlogPost from './pages/BlogPost';
-import GeneralCaseStudies from './pages/CaseStudies';
-import Representation from './pages/buy/Representation';
+import { lazy, Suspense, type ReactNode } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
+import ScrollToTop from "./components/layout/ScrollToTop";
+import PageMeta from "./components/layout/PageMeta";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import { AuthProvider } from "./contexts/AuthContext";
 
-// Page transition variants
-const pageVariants = {
-  initial: { opacity: 0, y: 8 },
-  in: { opacity: 1, y: 0 },
-  out: { opacity: 0, y: -8 }
-};
+import Home from "./pages/Home";
 
-const pageTransition = {
-  type: 'tween',
-  ease: 'anticipate',
-  duration: 0.15
-};
-
-// Wrapper component for page transitions
-const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <motion.div
-    initial="initial"
-    animate="in"
-    exit="out"
-    variants={pageVariants}
-    transition={pageTransition}
-  >
-    {children}
-  </motion.div>
+// Route-level code splitting: only the home page ships in the initial bundle.
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Contact = lazy(() => import("./pages/Contact"));
+const BusinessListings = lazy(() => import("./pages/buy/BusinessListings"));
+const BuyerRegistration = lazy(() => import("./pages/buy/BuyerRegistration"));
+const Representation = lazy(() => import("./pages/buy/Representation"));
+const BrokerageServices = lazy(() => import("./pages/sell/BrokerageServices"));
+const MAServices = lazy(() => import("./pages/sell/MAServices"));
+const CaseStudies = lazy(() => import("./pages/sell/CaseStudies"));
+const GeneralCaseStudies = lazy(() => import("./pages/CaseStudies"));
+const ProgramSummary = lazy(() => import("./pages/licensing/ProgramSummary"));
+const Pricing = lazy(() => import("./pages/licensing/Pricing"));
+const Testimonials = lazy(() => import("./pages/licensing/Testimonials"));
+const OurTeam = lazy(() => import("./pages/company/OurTeam"));
+const TeamMemberBio = lazy(() => import("./pages/company/TeamMemberBio"));
+const IndustryPage = lazy(() => import("./pages/industries/IndustryPage"));
+const IndustriesOverview = lazy(
+  () => import("./pages/industries/IndustriesOverview"),
 );
+const BlogIndex = lazy(() => import("./pages/BlogIndex"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
+const BrokerLogin = lazy(() => import("./pages/portal/BrokerLogin"));
+const BrokerDashboard = lazy(() => import("./pages/portal/BrokerDashboard"));
+const DocumentLibrary = lazy(() => import("./pages/portal/DocumentLibrary"));
+const ListingSubmission = lazy(
+  () => import("./pages/portal/ListingSubmission"),
+);
+const BuyerNetworkSearch = lazy(
+  () => import("./pages/portal/BuyerNetworkSearch"),
+);
+const PrivateEquityRequest = lazy(
+  () => import("./pages/portal/PrivateEquityRequest"),
+);
+const MarketResearchRequest = lazy(
+  () => import("./pages/portal/MarketResearchRequest"),
+);
+
+const guard = (el: ReactNode) => <ProtectedRoute>{el}</ProtectedRoute>;
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-white">
+        <ScrollToTop />
+        <PageMeta />
+        <div className="flex min-h-screen flex-col bg-paper">
           <Header />
-          <main className="relative">
-            <AnimatePresence mode="wait">
+          <main id="main" className="relative flex-1">
+            <Suspense
+              fallback={
+                <div role="status" className="flex min-h-[60vh] items-center justify-center text-sm text-mute">
+                  Loading…
+                </div>
+              }
+            >
               <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
-                
-                {/* Buy Section */}
-                <Route path="/buy/listings" element={<PageWrapper><BusinessListings /></PageWrapper>} />
-                <Route path="/buy/representation" element={<PageWrapper><Representation /></PageWrapper>} />
-                <Route path="/buy/registration" element={<PageWrapper><BuyerRegistration /></PageWrapper>} />
-                
-                {/* Sell Section */}
-                <Route path="/sell/brokerage" element={<PageWrapper><BrokerageServices /></PageWrapper>} />
-                <Route path="/sell/ma-services" element={<PageWrapper><MAServices /></PageWrapper>} />
-                <Route path="/sell/case-studies" element={<PageWrapper><CaseStudies /></PageWrapper>} />
-                
-                {/* Case Studies */}
-                <Route path="/case-studies" element={<PageWrapper><GeneralCaseStudies /></PageWrapper>} />
-                
-                {/* Licensing Program */}
-                <Route path="/licensing/program" element={<PageWrapper><ProgramSummary /></PageWrapper>} />
-                <Route path="/licensing/pricing" element={<PageWrapper><Pricing /></PageWrapper>} />
-                <Route path="/licensing/testimonials" element={<PageWrapper><Testimonials /></PageWrapper>} />
-                
+                <Route path="/" element={<Home />} />
+
+                {/* Sell */}
+                <Route path="/sell/brokerage" element={<BrokerageServices />} />
+                <Route path="/sell/ma-services" element={<MAServices />} />
+                <Route path="/sell/case-studies" element={<CaseStudies />} />
+                <Route path="/case-studies" element={<GeneralCaseStudies />} />
+
+                {/* Buy */}
+                <Route path="/buy/listings" element={<BusinessListings />} />
+                <Route
+                  path="/buy/representation"
+                  element={<Representation />}
+                />
+                <Route
+                  path="/buy/registration"
+                  element={<BuyerRegistration />}
+                />
+
+                {/* Licensing */}
+                <Route path="/licensing/program" element={<ProgramSummary />} />
+                <Route path="/licensing/pricing" element={<Pricing />} />
+                <Route
+                  path="/licensing/testimonials"
+                  element={<Testimonials />}
+                />
+
                 {/* Company */}
-                <Route path="/company/team" element={<PageWrapper><OurTeam /></PageWrapper>} />
-                <Route path="/company/team/:name" element={<PageWrapper><TeamMemberBio /></PageWrapper>} />
-                
-                {/* Contact */}
-                <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
-                
+                <Route path="/company/team" element={<OurTeam />} />
+                <Route path="/company/team/:name" element={<TeamMemberBio />} />
+                <Route path="/company/blog" element={<BlogIndex />} />
+                <Route path="/company/blog/:slug" element={<BlogPost />} />
+                <Route path="/blog" element={<BlogIndex />} />
+                <Route path="/contact" element={<Contact />} />
+
                 {/* Industries */}
-                <Route path="/industries" element={<PageWrapper><IndustriesOverview /></PageWrapper>} />
-                <Route path="/industries/:industry" element={<PageWrapper><IndustryPage /></PageWrapper>} />
-                
-                {/* Blog */}
-                <Route path="/company/blog" element={<PageWrapper><BlogIndex /></PageWrapper>} />
-                <Route path="/company/blog/:slug" element={<PageWrapper><BlogPost /></PageWrapper>} />
-                
+                <Route path="/industries" element={<IndustriesOverview />} />
+                <Route
+                  path="/industries/:industry"
+                  element={<IndustryPage />}
+                />
+
                 {/* Portal */}
-                <Route path="/portal/login" element={<PageWrapper><BrokerLogin /></PageWrapper>} />
-                <Route path="/portal" element={
-                  <PageWrapper>
-                    <ProtectedRoute>
-                      <BrokerDashboard />
-                    </ProtectedRoute>
-                  </PageWrapper>
-                } />
-                <Route path="/portal/documents" element={
-                  <PageWrapper>
-                    <ProtectedRoute>
-                      <DocumentLibrary />
-                    </ProtectedRoute>
-                  </PageWrapper>
-                } />
-                <Route path="/portal/listing-submission" element={
-                  <PageWrapper>
-                    <ProtectedRoute>
-                      <ListingSubmission />
-                    </ProtectedRoute>
-                  </PageWrapper>
-                } />
-                <Route path="/portal/buyer-search" element={
-                  <PageWrapper>
-                    <ProtectedRoute>
-                      <BuyerNetworkSearch />
-                    </ProtectedRoute>
-                  </PageWrapper>
-                } />
-                <Route path="/portal/pe-request" element={
-                  <PageWrapper>
-                    <ProtectedRoute>
-                      <PrivateEquityRequest />
-                    </ProtectedRoute>
-                  </PageWrapper>
-                } />
-                <Route path="/portal/market-research" element={
-                  <PageWrapper>
-                    <ProtectedRoute>
-                      <MarketResearchRequest />
-                    </ProtectedRoute>
-                  </PageWrapper>
-                } />
+                <Route path="/portal/login" element={<BrokerLogin />} />
+                <Route path="/portal" element={guard(<BrokerDashboard />)} />
+                <Route
+                  path="/portal/documents"
+                  element={guard(<DocumentLibrary />)}
+                />
+                <Route
+                  path="/portal/listing-submission"
+                  element={guard(<ListingSubmission />)}
+                />
+                <Route
+                  path="/portal/buyer-search"
+                  element={guard(<BuyerNetworkSearch />)}
+                />
+                <Route
+                  path="/portal/pe-request"
+                  element={guard(<PrivateEquityRequest />)}
+                />
+                <Route
+                  path="/portal/market-research"
+                  element={guard(<MarketResearchRequest />)}
+                />
+
+                <Route path="*" element={<NotFound />} />
               </Routes>
-            </AnimatePresence>
-            {/* Append contextual industry section below the page content */}
-            <AutoIndustryInjector />
+            </Suspense>
           </main>
           <Footer />
         </div>

@@ -1,413 +1,408 @@
-import React, { useState } from 'react';
-import { CheckCircle, User, DollarSign, Target, Shield } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { ShieldCheck } from 'lucide-react';
+import { Button, Card, CheckList, Container, Eyebrow, PageHero, Section, TextLink } from '../../components/ui';
+import { Field, Fieldset, InlineCheck, Legend, NextSteps, OptionTile, TargetEvField } from '../../components/buy/form';
+import { InquiryError, EmailHandoffNote } from '../../components/InquiryStatus';
+import { inquiryMailto, submitInquiry } from '../../lib/inquiry';
 
-const BuyerRegistration: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+const industries = [
+  'Manufacturing & Distribution',
+  'Technology',
+  'Healthcare',
+  'Home Services',
+  'Construction',
+  'Retail & Consumer',
+  'Business Services',
+  'Energy & Sustainability',
+  'Hospitality',
+];
+
+const timeframes = [
+  { value: 'immediate', label: '1–3 months', note: 'Immediate' },
+  { value: 'short-term', label: '3–6 months', note: 'Short-term' },
+  { value: 'medium-term', label: '6–12 months', note: 'Medium-term' },
+  { value: 'long-term', label: '12+ months', note: 'Long-term' },
+];
+
+const NEXT_STEPS = [
+  {
+    title: 'An advisor reviews your criteria',
+    body: 'A Legacy M&A advisor contacts you to complete onboarding and confirm what you are looking for.',
+  },
+  {
+    title: 'NDA, countersigned',
+    body: 'We countersign an NDA before any confidential materials are shared, so you can request details on any listing.',
+  },
+  {
+    title: 'Matched opportunities, early',
+    body: 'New listings that fit your criteria, including confidential off-market opportunities, reach you before they go wide.',
+  },
+];
+
+export default function BuyerRegistration() {
   const [formData, setFormData] = useState({
-    // Step 1: Contact Info
+    // About you
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
     location: '',
-    
-    // Step 2: Investment Preferences
-    investmentRange: '',
+
+    // Acquisition criteria
+    targetEV: '',
     preferredIndustries: [] as string[],
     preferredLocations: [] as string[],
     timeframe: '',
-    
-    // Step 3: Experience & Goals
+
+    // Experience & financing
     experience: '',
     financingNeeds: '',
-    additionalNotes: ''
+    additionalNotes: '',
   });
-
-  const steps = [
-    { number: 1, title: 'Contact Information', icon: User },
-    { number: 2, title: 'Investment Preferences', icon: Target },
-    { number: 3, title: 'Experience & Goals', icon: DollarSign }
-  ];
-
-  const industries = [
-    'Manufacturing & Distribution',
-    'Technology',
-    'Healthcare', 
-    'Home Services',
-    'Construction',
-    'Retail & Consumer',
-    'Business Services',
-    'Energy & Sustainability',
-    'Hospitality'
-  ];
+  const [locationsText, setLocationsText] = useState('');
+  const [agreed, setAgreed] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [via, setVia] = useState<'endpoint' | 'email'>('endpoint');
+  const doneRef = useRef<HTMLHeadingElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
 
   const handleInputChange = (field: string, value: string | string[]) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleIndustryToggle = (industry: string) => {
     const current = formData.preferredIndustries;
-    const updated = current.includes(industry)
-      ? current.filter(i => i !== industry)
-      : [...current, industry];
+    const updated = current.includes(industry) ? current.filter((i) => i !== industry) : [...current, industry];
     handleInputChange('preferredIndustries', updated);
   };
 
-  const nextStep = () => {
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
-    }
+  const handleLocationsChange = (text: string) => {
+    setLocationsText(text);
+    handleInputChange(
+      'preferredLocations',
+      text
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    );
   };
 
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
+  const registrationFields = () => ({
+    ...formData,
+    agreedToConfidentiality: agreed,
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
-    // Show success message or redirect
+    setSending(true);
+    setFailed(false);
+    const name = `${formData.firstName} ${formData.lastName}`.trim();
+    const result = await submitInquiry('buyer-registration', registrationFields(), name);
+    setSending(false);
+    if (!result.ok) {
+      setFailed(true);
+      return;
+    }
+    setVia(result.via);
+    setSubmitted(true);
+    topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
+
+  // Move focus to the confirmation so keyboard and screen-reader users are not left on the removed form.
+  useEffect(() => {
+    if (submitted) doneRef.current?.focus({ preventScroll: true });
+  }, [submitted]);
 
   return (
-    <div className="pt-20 bg-gray-50 min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Join Our Buyer Network
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Join our buyer network to receive early access to new listings – including 
-            confidential off-market opportunities. Tell us about your ideal acquisition 
-            and we'll match you with the right deals.
-          </p>
-        </div>
+    <>
+      <PageHero
+        tone="paper"
+        size="sm"
+        crumbs={[{ label: 'Buy', to: '/buy/listings' }, { label: 'Register as a buyer' }]}
+        eyebrow="Buy · Registration"
+        title="Register as a buyer."
+        lede="Get early access to new listings, including confidential off-market opportunities. Tell us what you are looking for and a Legacy advisor will match you with the right deals and handle the NDA for each one."
+      >
+        <p className="mt-5 text-sm text-mute">All fields are required unless marked optional.</p>
+      </PageHero>
 
-        {/* Progress Steps */}
-        <div className="mb-12">
-          <div className="flex items-center justify-center space-x-8">
-            {steps.map((step) => (
-              <div key={step.number} className="flex items-center">
-                <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all ${
-                  currentStep >= step.number 
-                    ? 'bg-purple-900 border-purple-900 text-white' 
-                    : 'border-gray-300 text-gray-400'
-                }`}>
-                  {currentStep > step.number ? (
-                    <CheckCircle className="h-6 w-6" />
-                  ) : (
-                    <step.icon className="h-6 w-6" />
-                  )}
-                </div>
-                <div className="ml-3 hidden sm:block">
-                  <div className={`text-sm font-medium ${
-                    currentStep >= step.number ? 'text-purple-900' : 'text-gray-400'
-                  }`}>
-                    Step {step.number}
-                  </div>
-                  <div className={`text-sm ${
-                    currentStep >= step.number ? 'text-gray-900' : 'text-gray-400'
-                  }`}>
-                    {step.title}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Form */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <form onSubmit={handleSubmit}>
-            {/* Step 1: Contact Information */}
-            {currentStep === 1 && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
-                
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.firstName}
-                      onChange={(e) => handleInputChange('firstName', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.lastName}
-                      onChange={(e) => handleInputChange('lastName', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                  />
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number *
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Location *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="City, State"
-                      value={formData.location}
-                      onChange={(e) => handleInputChange('location', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Step 2: Investment Preferences */}
-            {currentStep === 2 && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Investment Preferences</h2>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Investment Budget *
-                  </label>
-                  <select
-                    required
-                    value={formData.investmentRange}
-                    onChange={(e) => handleInputChange('investmentRange', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                  >
-                    <option value="">Select investment range</option>
-                    <option value="under-500k">Under $500K</option>
-                    <option value="500k-1m">$500K - $1M</option>
-                    <option value="1m-2m">$1M - $2M</option>
-                    <option value="2m-5m">$2M - $5M</option>
-                    <option value="5m-plus">$5M+</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-4">
-                    Preferred Industries (select all that apply)
-                  </label>
-                  <div className="grid md:grid-cols-2 gap-3">
-                    {industries.map((industry) => (
-                      <label key={industry} className="flex items-center">
-                        <input
-                          type="checkbox"
-                          checked={formData.preferredIndustries.includes(industry)}
-                          onChange={() => handleIndustryToggle(industry)}
-                          className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"
-                        />
-                        <span className="ml-3 text-gray-700">{industry}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Timeline for Purchase
-                  </label>
-                  <select
-                    value={formData.timeframe}
-                    onChange={(e) => handleInputChange('timeframe', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                  >
-                    <option value="">Select timeframe</option>
-                    <option value="immediate">Immediate (1-3 months)</option>
-                    <option value="short-term">Short-term (3-6 months)</option>
-                    <option value="medium-term">Medium-term (6-12 months)</option>
-                    <option value="long-term">Long-term (12+ months)</option>
-                  </select>
-                </div>
-              </div>
-            )}
-
-            {/* Step 3: Experience & Goals */}
-            {currentStep === 3 && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Experience & Goals</h2>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Business Acquisition Experience
-                  </label>
-                  <select
-                    value={formData.experience}
-                    onChange={(e) => handleInputChange('experience', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                  >
-                    <option value="">Select experience level</option>
-                    <option value="first-time">First-time buyer</option>
-                    <option value="some-experience">Some experience (1-2 acquisitions)</option>
-                    <option value="experienced">Experienced (3+ acquisitions)</option>
-                    <option value="serial-acquirer">Serial acquirer (5+ acquisitions)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Financing Needs
-                  </label>
-                  <select
-                    value={formData.financingNeeds}
-                    onChange={(e) => handleInputChange('financingNeeds', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                  >
-                    <option value="">Select financing needs</option>
-                    <option value="cash">All cash purchase</option>
-                    <option value="partial-financing">Need partial financing</option>
-                    <option value="sba-loan">SBA loan assistance needed</option>
-                    <option value="seller-financing">Interested in seller financing</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Additional Notes
-                  </label>
-                  <textarea
-                    rows={4}
-                    value={formData.additionalNotes}
-                    onChange={(e) => handleInputChange('additionalNotes', e.target.value)}
-                    placeholder="Tell us more about your ideal acquisition, specific requirements, or any questions you have..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                  />
-                </div>
-
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-start">
-                    <Shield className="h-5 w-5 text-accent mt-0.5 mr-3" />
-                    <div>
-                      <h4 className="text-sm font-medium text-blue-900 mb-1">
-                        Confidentiality Agreement
-                      </h4>
-                      <p className="text-sm text-blue-700">
-                        By submitting this form, you agree to maintain confidentiality 
-                        regarding any business information shared with you by Legacy 
-                        Business Brokers and its clients.
-                      </p>
-                      <p className="text-xs text-slate-500 mt-2">
-                        *A Legacy M&A advisor will contact you to complete onboarding and countersign an NDA before sharing confidential materials.
-                      </p>
+      <Section tone="paper" size="sm" className="md:pb-28">
+        <Container>
+          <div ref={topRef} className="grid scroll-mt-24 gap-8 lg:grid-cols-12 lg:items-start lg:gap-12">
+            {/* Form */}
+            <div className="lg:col-span-7">
+              {submitted ? (
+                <Card padding="none" className="min-h-[24rem] p-6 sm:p-8 md:p-10">
+                  <div role="status">
+                    <Eyebrow>{via === 'email' ? 'Almost there' : 'Registration received'}</Eyebrow>
+                    <h2 ref={doneRef} tabIndex={-1} className="mt-5 font-display text-display-lg text-ink outline-none">
+                      Thank you, {formData.firstName || 'and welcome'}.
+                    </h2>
+                    {via === 'email' && (
+                      <EmailHandoffNote className="mt-5 max-w-lg text-[15px] leading-relaxed text-ink" />
+                    )}
+                    <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-mute">
+                      A Legacy M&amp;A advisor will contact you to complete onboarding and countersign an NDA before
+                      sharing confidential materials. Until then, the representative listings show the kind of businesses
+                      we bring to market.
+                    </p>
+                    <div className="mt-9">
+                      <TextLink to="/buy/listings">Back to listings</TextLink>
                     </div>
                   </div>
-                </div>
-              </div>
-            )}
+                </Card>
+              ) : (
+                <Card padding="none" className="overflow-hidden">
+                  <form onSubmit={handleSubmit}>
+                    <div className="space-y-12 p-6 sm:p-8 md:p-10">
+                      <Fieldset index={1} title="About you" description="How we reach you about matching opportunities.">
+                        <div className="grid gap-5 sm:grid-cols-2 sm:gap-4">
+                          <Field id="reg-first" label="First name">
+                            <input
+                              id="reg-first"
+                              type="text"
+                              required
+                              autoComplete="given-name"
+                              value={formData.firstName}
+                              onChange={(e) => handleInputChange('firstName', e.target.value)}
+                              className="field"
+                            />
+                          </Field>
+                          <Field id="reg-last" label="Last name">
+                            <input
+                              id="reg-last"
+                              type="text"
+                              required
+                              autoComplete="family-name"
+                              value={formData.lastName}
+                              onChange={(e) => handleInputChange('lastName', e.target.value)}
+                              className="field"
+                            />
+                          </Field>
+                          <Field id="reg-email" label="Email" className="sm:col-span-2">
+                            <input
+                              id="reg-email"
+                              type="email"
+                              required
+                              autoComplete="email"
+                              value={formData.email}
+                              onChange={(e) => handleInputChange('email', e.target.value)}
+                              className="field"
+                            />
+                          </Field>
+                          <Field id="reg-phone" label="Phone" optional>
+                            <input
+                              id="reg-phone"
+                              type="tel"
+                              autoComplete="tel"
+                              value={formData.phone}
+                              onChange={(e) => handleInputChange('phone', e.target.value)}
+                              className="field"
+                            />
+                          </Field>
+                          <Field id="reg-location" label="Location" optional>
+                            <input
+                              id="reg-location"
+                              type="text"
+                              placeholder="City, State"
+                              autoComplete="address-level2"
+                              value={formData.location}
+                              onChange={(e) => handleInputChange('location', e.target.value)}
+                              className="field"
+                            />
+                          </Field>
+                        </div>
+                      </Fieldset>
 
-            {/* Navigation Buttons */}
-            <div className="flex justify-between mt-8">
-              {currentStep > 1 && (
-                <button
-                  type="button"
-                  onClick={prevStep}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-                >
-                  Previous
-                </button>
+                      <div className="h-px bg-line" aria-hidden />
+
+                      <Fieldset
+                        index={2}
+                        title="Acquisition criteria"
+                        description="The more specific you are, the better the matches."
+                      >
+                        <div className="space-y-7">
+                          <fieldset>
+                            <Legend qualifier="Optional · select all that apply">Preferred industries</Legend>
+                            <div className="mt-1 grid gap-2 sm:grid-cols-2">
+                              {industries.map((industry) => (
+                                <OptionTile
+                                  key={industry}
+                                  type="checkbox"
+                                  name="preferredIndustries"
+                                  value={industry}
+                                  checked={formData.preferredIndustries.includes(industry)}
+                                  onChange={() => handleIndustryToggle(industry)}
+                                >
+                                  {industry}
+                                </OptionTile>
+                              ))}
+                            </div>
+                          </fieldset>
+
+                          <Field
+                            id="reg-geo"
+                            label="Target geographies"
+                            optional
+                            hint="Separate with commas, e.g. Arizona, Texas, Mountain West."
+                          >
+                            <input
+                              id="reg-geo"
+                              type="text"
+                              value={locationsText}
+                              onChange={(e) => handleLocationsChange(e.target.value)}
+                              aria-describedby="reg-geo-hint"
+                              className="field"
+                            />
+                          </Field>
+
+                          <fieldset>
+                            <Legend qualifier="Optional">Timeline for purchase</Legend>
+                            <div className="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                              {timeframes.map((t) => (
+                                <OptionTile
+                                  key={t.value}
+                                  type="radio"
+                                  name="timeframe"
+                                  value={t.value}
+                                  checked={formData.timeframe === t.value}
+                                  onChange={() => handleInputChange('timeframe', t.value)}
+                                  className="items-start [&>input]:mt-[3px]"
+                                >
+                                  <span className="tabular block font-medium">{t.label}</span>
+                                  <span className="mt-0.5 block text-xs text-mute">{t.note}</span>
+                                </OptionTile>
+                              ))}
+                            </div>
+                          </fieldset>
+                        </div>
+                      </Fieldset>
+
+                      <div className="h-px bg-line" aria-hidden />
+
+                      <Fieldset
+                        index={3}
+                        title="Financial capacity"
+                        description="Helps us match you with businesses you are positioned to close."
+                      >
+                        <div className="grid gap-5 sm:grid-cols-2 sm:gap-4">
+                          <TargetEvField
+                            id="reg-ev"
+                            required
+                            value={formData.targetEV}
+                            onChange={(v) => handleInputChange('targetEV', v)}
+                            className="sm:col-span-2"
+                          />
+                          <Field id="reg-financing" label="Financing" optional>
+                            <select
+                              id="reg-financing"
+                              value={formData.financingNeeds}
+                              onChange={(e) => handleInputChange('financingNeeds', e.target.value)}
+                              className="field"
+                            >
+                              <option value="">Select financing needs</option>
+                              <option value="cash">All-cash purchase</option>
+                              <option value="partial-financing">Need partial financing</option>
+                              <option value="sba-loan">SBA loan assistance needed</option>
+                              <option value="seller-financing">Interested in seller financing</option>
+                            </select>
+                          </Field>
+                          <Field id="reg-experience" label="Acquisition experience" optional>
+                            <select
+                              id="reg-experience"
+                              value={formData.experience}
+                              onChange={(e) => handleInputChange('experience', e.target.value)}
+                              className="field"
+                            >
+                              <option value="">Select experience level</option>
+                              <option value="first-time">First-time buyer</option>
+                              <option value="some-experience">Some experience (1–2 acquisitions)</option>
+                              <option value="experienced">Experienced (3+ acquisitions)</option>
+                              <option value="serial-acquirer">Serial acquirer (5+ acquisitions)</option>
+                            </select>
+                          </Field>
+                          <Field id="reg-notes" label="Additional notes" optional className="sm:col-span-2">
+                            <textarea
+                              id="reg-notes"
+                              rows={4}
+                              value={formData.additionalNotes}
+                              onChange={(e) => handleInputChange('additionalNotes', e.target.value)}
+                              placeholder="Your ideal acquisition, specific requirements, or questions for the team."
+                              className="field resize-y"
+                            />
+                          </Field>
+                        </div>
+                      </Fieldset>
+
+                      <div className="h-px bg-line" aria-hidden />
+
+                      <Fieldset index={4} title="Agreement">
+                        <div className="rounded-lg border border-line bg-paper p-5">
+                          <InlineCheck id="reg-agree" checked={agreed} onChange={setAgreed} required>
+                            I agree to keep confidential any business information shared with me by Legacy Business
+                            Brokers and its clients.
+                          </InlineCheck>
+                          <p className="mt-3 pl-7 text-xs leading-relaxed text-mute">
+                            A Legacy M&amp;A advisor will contact you to complete onboarding and countersign an NDA before
+                            sharing confidential materials.
+                          </p>
+                        </div>
+                      </Fieldset>
+                    </div>
+
+                    <div className="border-t border-line bg-paper/60 px-6 py-6 sm:px-8 md:px-10">
+                      <Button type="submit" size="lg" full arrow disabled={sending}>
+                        {sending ? 'Sending…' : 'Submit registration'}
+                      </Button>
+                      {failed && (
+                        <InquiryError
+                          mailto={inquiryMailto(
+                            'buyer-registration',
+                            registrationFields(),
+                            `${formData.firstName} ${formData.lastName}`.trim(),
+                          )}
+                        />
+                      )}
+                    </div>
+                  </form>
+                </Card>
               )}
+            </div>
 
-              <div className="ml-auto">
-                {currentStep < 3 ? (
-                  <button
-                    type="button"
-                    onClick={nextStep}
-                    className="px-6 py-3 bg-accent text-white rounded-xl hover:bg-accentAlt motion-safe font-medium"
-                  >
-                    Next Step
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    className="px-8 py-3 bg-accent text-white rounded-xl hover:bg-accentAlt motion-safe font-medium"
-                  >
-                    Submit Registration
-                  </button>
-                )}
-              </div>
-            </div>
-          </form>
-        </div>
+            {/* Sidebar */}
+            <aside className="lg:sticky lg:top-24 lg:col-span-5" aria-labelledby="reg-next-title">
+              <Card tone="deep" padding="none" className="p-6 sm:p-8">
+                <h2 id="reg-next-title" className="font-display text-display-sm text-ink">
+                  What happens next
+                </h2>
+                <NextSteps steps={NEXT_STEPS} className="mt-7" />
 
-        {/* Benefits Section */}
-        <div className="mt-16 bg-white rounded-xl p-8 shadow-lg">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            What You'll Receive
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Target className="h-8 w-8 text-accent" />
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Exclusive Access</h4>
-              <p className="text-gray-600 text-sm">
-                Early access to new listings and confidential off-market opportunities
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="bg-slate-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <User className="h-8 w-8 text-slate-600" />
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Expert Guidance</h4>
-              <p className="text-gray-600 text-sm">
-                Personal guidance from experienced advisors throughout your acquisition
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="h-8 w-8 text-green-600" />
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Vetted Opportunities</h4>
-              <p className="text-gray-600 text-sm">
-                All businesses are pre-qualified and vetted for financial accuracy
-              </p>
-            </div>
+                <div className="mt-8 border-t border-line-strong pt-7">
+                  <p className="mb-4 text-[13px] font-medium text-ink">Registration includes</p>
+                  <CheckList
+                    size="sm"
+                    items={[
+                      'Early access to new listings and off-market opportunities',
+                      'Personal guidance from an experienced advisor',
+                      'Businesses pre-qualified and vetted for financial accuracy',
+                    ]}
+                  />
+                </div>
+
+                <div className="mt-8 flex gap-3 border-t border-line-strong pt-7">
+                  <ShieldCheck className="mt-0.5 h-[18px] w-[18px] shrink-0 text-brass-deep" strokeWidth={1.75} aria-hidden />
+                  <p className="text-[13px] leading-relaxed text-mute">
+                    Confidentiality runs both ways. Seller identities and full financials are released only under a
+                    countersigned NDA.
+                  </p>
+                </div>
+              </Card>
+            </aside>
           </div>
-        </div>
-      </div>
-    </div>
+        </Container>
+      </Section>
+    </>
   );
-};
-
-export default BuyerRegistration;
+}

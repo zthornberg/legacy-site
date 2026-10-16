@@ -1,161 +1,191 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Cog, 
-  ShoppingBag, 
-  Monitor, 
-  Heart, 
-  Briefcase, 
-  Home, 
-  HardHat, 
-  Zap, 
-  Coffee,
-  Rocket
-} from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { Button, Card, Container, CtaBand, Eyebrow, PageHero, Reveal, Section, TextLink } from '../../components/ui';
+import { SECTORS, SUBSECTORS_BY_SECTOR } from '../../components/industries/sectors';
 
-const IndustriesOverview: React.FC = () => {
-  const industries = [
-    {
-      name: 'Manufacturing & Distribution',
-      slug: 'manufacturing-distribution',
-      icon: Cog,
-      description: 'Precision manufacturing, advanced materials, industrial machinery, and wholesale distribution',
-      color: 'bg-blue-50 text-blue-600'
-    },
-    {
-      name: 'Retail & Consumer',
-      slug: 'retail-consumer',
-      icon: ShoppingBag,
-      description: 'Retail stores, e-commerce, consumer services, and franchise operations',
-      color: 'bg-purple-50 text-purple-600'
-    },
-    {
-      name: 'Technology',
-      slug: 'technology',
-      icon: Monitor,
-      description: 'Software companies, SaaS platforms, IT services, and digital media',
-      color: 'bg-green-50 text-green-600'
-    },
-    {
-      name: 'Healthcare',
-      slug: 'healthcare',
-      icon: Heart,
-      description: 'Medical practices, clinics, healthcare services, and medical device companies',
-      color: 'bg-red-50 text-red-600'
-    },
-    {
-      name: 'Business Services',
-      slug: 'business-services',
-      icon: Briefcase,
-      description: 'Professional services, consulting, marketing agencies, and B2B services',
-      color: 'bg-indigo-50 text-indigo-600'
-    },
-    {
-      name: 'Home Services',
-      slug: 'home-services',
-      icon: Home,
-      description: 'HVAC, plumbing, landscaping, roofing, and residential service businesses',
-      color: 'bg-orange-50 text-orange-600'
-    },
-    {
-      name: 'Construction',
-      slug: 'construction',
-      icon: HardHat,
-      description: 'General contractors, specialty trades, and construction materials suppliers',
-      color: 'bg-yellow-50 text-yellow-600'
-    },
-    {
-      name: 'Energy & Sustainability',
-      slug: 'energy-sustainability',
-      icon: Zap,
-      description: 'Oil & gas services, renewable energy, solar installers, and sustainability firms',
-      color: 'bg-emerald-50 text-emerald-600'
-    },
-    {
-      name: 'Hospitality',
-      slug: 'hospitality',
-      icon: Coffee,
-      description: 'Hotels, restaurants, bars, and travel/tourism services',
-      color: 'bg-pink-50 text-pink-600'
-    },
-    {
-      name: 'Startup Funding',
-      slug: 'startup-funding',
-      icon: Rocket,
-      description: 'Early-stage companies, venture capital connections, and growth funding',
-      color: 'bg-teal-50 text-teal-600'
-    }
-  ];
+const PERSPECTIVES = [
+  {
+    label: 'For sellers',
+    title: 'Positioned around what buyers underwrite.',
+    body: "Knowing your industry's value drivers, market trends, and buyer preferences lets us position the business precisely and reach the acquirers who will pay for what you've built.",
+    link: { label: 'How we sell companies', to: '/sell/brokerage' },
+  },
+  {
+    label: 'For buyers',
+    title: 'Diligence that knows where to look.',
+    body: 'Sector knowledge surfaces the risks and opportunities specific to each industry, so you make acquisition decisions with a clear view of market dynamics and growth potential.',
+    link: { label: 'Buyer representation', to: '/buy/representation' },
+  },
+];
 
+function briefLabel(key: string) {
+  const n = SUBSECTORS_BY_SECTOR[key]?.length ?? 0;
+  if (n === 0) return 'Sector overview';
+  return `${n} sub-sector ${n === 1 ? 'brief' : 'briefs'}`;
+}
+
+function briefCount(key: string) {
+  const n = SUBSECTORS_BY_SECTOR[key]?.length ?? 0;
+  if (n === 0) return 'Overview';
+  return `${n} ${n === 1 ? 'brief' : 'briefs'}`;
+}
+
+/** Compact index of every sector for the hero. Desktop only: on phones the cards directly below do this job. */
+function SectorLedger() {
   return (
-    <div className="pt-20 bg-white">
-      {/* Hero Section */}
-      <section className="bg-gray-50 py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Industries We Serve
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Legacy has facilitated deals across a wide range of industries. Our diversified 
-              expertise allows us to understand the unique challenges and opportunities in each sector, 
-              providing specialized guidance for every transaction.
-            </p>
-          </div>
-
-          {/* Industries Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {industries.map((industry, index) => (
-              <Link
-                key={index}
-                to={`/industries/${industry.slug}`}
-                className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 group"
-              >
-                <div className={`w-16 h-16 rounded-lg flex items-center justify-center mb-4 ${industry.color} group-hover:scale-110 transition-transform`}>
-                  <industry.icon className="h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors">
-                  {industry.name}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {industry.description}
-                </p>
-              </Link>
-            ))}
-          </div>
+    <Card padding="md" className="hidden lg:ml-auto lg:block lg:max-w-sm">
+      <nav aria-label="Sector index">
+        <div className="flex items-baseline justify-between gap-4">
+          <Eyebrow tone="mute" as="p">
+            Sector index
+          </Eyebrow>
+          <span className="tabular text-[12px] text-mute-soft">{SECTORS.length} sectors</span>
         </div>
-      </section>
+        <ol className="mt-5 divide-y divide-line border-t border-line">
+          {SECTORS.map((s, i) => (
+            <li key={s.key}>
+              <Link
+                to={`/industries/${s.key}`}
+                className="group flex items-baseline gap-4 py-2.5 text-[14px] text-mute-strong transition-colors hover:text-ink"
+              >
+                <span className="tabular w-6 shrink-0 text-[12px] text-mute-soft">{String(i + 1).padStart(2, '0')}</span>
+                <span className="flex-1">{s.name}</span>
+                <span className="tabular shrink-0 text-[12px] text-mute transition-colors group-hover:text-ink">
+                  {briefCount(s.key)}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </Card>
+  );
+}
 
-      {/* Why Industry Expertise Matters */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold text-gray-900 mb-8">
-              Why Industry Expertise Matters
+export default function IndustriesOverview() {
+  return (
+    <>
+      <PageHero
+        tone="paper"
+        // The ledger aside is hidden below lg; drop the hero grid's row gap there so no empty row is left behind.
+        className="max-lg:[&_.grid]:gap-0"
+        eyebrow="Industries"
+        title="Sector fluency for every mandate."
+        lede="Legacy has facilitated deals across a wide range of industries. We know the value drivers, buyer universe, and diligence questions in each sector, so every company goes to market positioned around what acquirers actually pay for."
+        actions={
+          <>
+            <Button to="/contact?intent=sell" size="lg" arrow>
+              Request a valuation
+            </Button>
+            <Button to="/buy/listings" size="lg" variant="secondary">
+              View listings
+            </Button>
+          </>
+        }
+        aside={<SectorLedger />}
+      />
+
+      <Section tone="paper" aria-labelledby="sectors-heading" className="pt-12 md:pt-16">
+        <Container>
+          <div className="mb-10 flex items-end justify-between gap-6 border-b border-line pb-5 md:mb-12">
+            <h2 id="sectors-heading" className="eyebrow text-brass-deep">
+              Sectors we cover
             </h2>
-            <div className="grid md:grid-cols-2 gap-8 text-left">
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">For Sellers</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Understanding your industry's specific value drivers, market trends, and buyer 
-                  preferences allows us to position your business optimally and attract the right 
-                  acquirers who truly appreciate what you've built.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">For Buyers</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Our industry knowledge helps identify the key risks and opportunities in each 
-                  sector, ensuring you make informed acquisition decisions with a clear understanding 
-                  of market dynamics and growth potential.
-                </p>
-              </div>
+            <span className="tabular text-[13px] text-mute">{String(SECTORS.length).padStart(2, '0')} sectors</span>
+          </div>
+
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+            {SECTORS.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <Reveal as="li" key={s.key} delay={(i % 3) * 0.06} className="h-full">
+                  <Card hover to={`/industries/${s.key}`} padding="sm" className="flex h-full flex-col sm:p-6 md:p-7">
+                    <div className="flex items-start justify-between gap-4">
+                      <Eyebrow index={i + 1} tone="mute">
+                        {null}
+                      </Eyebrow>
+                      <Icon className="h-[18px] w-[18px] text-mute" strokeWidth={1.75} aria-hidden />
+                    </div>
+                    <h3 className="mt-6 font-display text-display-sm text-ink sm:mt-10">{s.name}</h3>
+                    <p className="mb-6 mt-2 text-[15px] leading-relaxed text-mute sm:mb-8">{s.description}</p>
+                    <div className="mt-auto flex items-center justify-between gap-4 border-t border-line pt-4 text-[13px]">
+                      <span className="text-mute">{briefLabel(s.key)}</span>
+                      <ArrowRight
+                        className="h-4 w-4 text-mute-soft transition-[transform,color] duration-200 group-hover:translate-x-0.5 group-hover:text-ink"
+                        aria-hidden
+                      />
+                    </div>
+                  </Card>
+                </Reveal>
+              );
+            })}
+            <Reveal as="li" delay={0.06} className="h-full sm:col-span-2">
+              <Card
+                tone="deep"
+                padding="sm"
+                className="flex h-full flex-col justify-between gap-6 sm:gap-8 sm:p-6 md:flex-row md:items-end md:p-7"
+              >
+                <div className="max-w-md">
+                  <Eyebrow tone="mute">Not listed</Eyebrow>
+                  <h3 className="mt-5 font-display text-display-sm text-ink">Your sector isn't here?</h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-mute">
+                    The list reflects where we see the most activity, not the limit of what we advise on. Tell us about the
+                    company and we'll say plainly whether we're the right fit.
+                  </p>
+                </div>
+                <div className="shrink-0">
+                  <TextLink to="/contact?intent=sell">Start a confidential conversation</TextLink>
+                </div>
+              </Card>
+            </Reveal>
+          </ul>
+        </Container>
+      </Section>
+
+      <Section tone="deep" aria-labelledby="why-heading">
+        <Container>
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+            <Reveal className="lg:col-span-4">
+              <Eyebrow>Why it matters</Eyebrow>
+              <h2 id="why-heading" className="mt-4 font-display text-display-lg text-ink">
+                Why sector expertise matters.
+              </h2>
+              <p className="mt-5 max-w-sm text-lede text-mute">
+                Buyers price a company against its peers. An advisor who knows those peers changes the conversation.
+              </p>
+            </Reveal>
+            <div className="grid gap-10 sm:grid-cols-2 lg:col-span-8 lg:gap-12">
+              {PERSPECTIVES.map((p, i) => (
+                <Reveal key={p.label} delay={i * 0.06} className="flex flex-col border-t border-line-strong pt-6">
+                  <Eyebrow index={i + 1} tone="mute">
+                    {p.label}
+                  </Eyebrow>
+                  <h3 className="mt-6 font-display text-display-sm text-ink">{p.title}</h3>
+                  <p className="mt-3 text-[15px] leading-relaxed text-mute-strong">{p.body}</p>
+                  <div className="mt-auto pt-6">
+                    <TextLink to={p.link.to}>{p.link.label}</TextLink>
+                  </div>
+                </Reveal>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
-    </div>
-  );
-};
+        </Container>
+      </Section>
 
-export default IndustriesOverview;
+      <CtaBand
+        title="Get a valuation from advisors who know your sector."
+        body="A confidential conversation about where your company sits against its peers, who the likely buyers are, and what they will ask in diligence."
+        actions={
+          <>
+            <Button to="/contact?intent=sell" size="lg" arrow>
+              Request a valuation
+            </Button>
+            <Button to="/buy/listings" size="lg" variant="secondary">
+              View listings
+            </Button>
+          </>
+        }
+      />
+    </>
+  );
+}

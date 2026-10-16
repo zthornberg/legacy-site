@@ -5,7 +5,7 @@ export const industries: Industry[] = [
     slug: "construction-homebuilding",
     title: "Construction & Homebuilding",
     intro:
-      "Lower middle-market construction firms trade on backlog visibility, margin discipline, and safety. Service/maintenance revenue and reliable field leadership matter more than one-off project peaks.",
+      "Lower-middle-market construction firms trade on backlog visibility, margin discipline, and safety. Service/maintenance revenue and reliable field leadership matter more than one-off project peaks.",
     insights: [
       "Backlog ≥6–9 months and accurate WIP (under/over-billing) drive buyer confidence.",
       "Service/maintenance mix and term programs lift stability—and multiples.",
@@ -13,7 +13,7 @@ export const industries: Industry[] = [
       "Lead-source concentration (1–2 GCs) suppresses value; diversify upstream."
     ],
     comps: [
-      "Illustrative 2025 LMM bands: EBITDA ~3.0–4.5× at $2–5M EV; ~4.0–6.0× at $5–30M EV (service-heavy with clean WIP tends higher).",
+      "Illustrative 2025 lower-middle-market bands: EBITDA ~3.0–4.5× at $2–5M EV; ~4.0–6.0× at $5–30M EV (service-heavy with clean WIP tends higher).",
       "Premiums: recurring programs, EMR ≤0.9, low change-order disputes."
     ],
     buyers: [
@@ -40,7 +40,7 @@ export const industries: Industry[] = [
       "On-time delivery ≥95% with low scrap improves credibility."
     ],
     comps: [
-      "Illustrative 2025 LMM bands: EBITDA ~3.5–5.5× at $2–5M EV; ~5.0–7.0× at $5–30M EV.",
+      "Illustrative 2025 lower-middle-market bands: EBITDA ~3.5–5.5× at $2–5M EV; ~5.0–7.0× at $5–30M EV.",
       "Premiums: proprietary SKUs, aftermarket >30%, sticky OEM relationships."
     ],
     buyers: [
@@ -66,7 +66,7 @@ export const industries: Industry[] = [
       "Private-label mix boosts margin and buyer appetite."
     ],
     comps: [
-      "Illustrative 2025 LMM bands: EBITDA ~3.5–5.5× at $2–5M EV; ~4.5–6.5× at $5–30M EV.",
+      "Illustrative 2025 lower-middle-market bands: EBITDA ~3.5–5.5× at $2–5M EV; ~4.5–6.5× at $5–30M EV.",
       "Premiums: recurring contractor programs, low returns, vendor incentives."
     ],
     buyers: [
@@ -92,7 +92,7 @@ export const industries: Industry[] = [
       "OEM support and parts logistics reduce downtime risk."
     ],
     comps: [
-      "Illustrative 2025 LMM bands: EBITDA ~3.0–4.5× at $2–5M EV; ~3.5–5.0× at $5–30M EV.",
+      "Illustrative 2025 lower-middle-market bands: EBITDA ~3.0–4.5× at $2–5M EV; ~3.5–5.0× at $5–30M EV.",
       "Premiums: multiyear MSAs, modern fleet, basin diversity, low TRIR."
     ],
     buyers: [
@@ -118,7 +118,7 @@ export const industries: Industry[] = [
       "Estimator/PM systems and close-rate KPIs matter."
     ],
     comps: [
-      "Illustrative 2025 LMM bands: EBITDA ~3.5–5.0× at $2–5M EV; ~4.5–6.0× at $5–30M EV.",
+      "Illustrative 2025 lower-middle-market bands: EBITDA ~3.5–5.0× at $2–5M EV; ~4.5–6.0× at $5–30M EV.",
       "Premiums: multi-site programs, EMR ≤0.9, low punch-list costs."
     ],
     buyers: [
@@ -196,7 +196,7 @@ export const industries: Industry[] = [
       "Compliance, coding, and documentation shortcuts diligence."
     ],
     comps: [
-      "Illustrative bands: EBITDA ~5.0–8.0× across lower-MM multi-site services; higher for scaled MSOs.",
+      "Illustrative bands: EBITDA ~5.0–8.0× across lower-middle-market multi-site services; higher for scaled MSOs.",
       "Premiums: recurring membership plans, strong clinical metrics, clean audits."
     ],
     buyers: [
@@ -248,7 +248,7 @@ export const industries: Industry[] = [
       "Vertical specialization and packaged SKUs improve pricing power."
     ],
     comps: [
-      "Illustrative bands: EBITDA ~5.0–8.0× for profitable MSPs in the LMM; some price partially on ARR multiples.",
+      "Illustrative bands: EBITDA ~5.0–8.0× for profitable MSPs in the lower middle market; some price partially on ARR multiples.",
       "Premiums: cyber-forward stack, low churn cohorts, high attach rates."
     ],
     buyers: [
@@ -300,7 +300,7 @@ export const industries: Industry[] = [
       "Security posture (SOC2/ISO) shortcuts buyer approvals."
     ],
     comps: [
-      "Illustrative bands: EBITDA ~6–10× for profitable; many price partially on ARR (~2–3×+) at small scale.",
+      "Illustrative bands: EBITDA ~6.0–10.0× for profitable companies; many price partially on ARR (~2–3×) at small scale.",
       "Premiums: low churn cohorts, strong expansion, defensible IP."
     ],
     buyers: [

@@ -1,132 +1,106 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Mail, Phone, Linkedin, Twitter } from 'lucide-react';
+import { Linkedin } from 'lucide-react';
+import Container from '../ui/Container';
+import { SITE_EMAIL } from '../../lib/site';
 
-const Footer: React.FC = () => {
-  const quickLinks = [
-    {
-      title: 'Buy',
-      links: [
-        { name: 'Business Listings', href: '/buy/listings' },
-        { name: 'Buyer Registration', href: '/buy/registration' }
-      ]
-    },
-    {
-      title: 'Sell',
-      links: [
-        { name: 'Brokerage Services', href: '/sell/brokerage' },
-        { name: 'M&A Services', href: '/sell/ma-services' },
-        { name: 'Case Studies', href: '/sell/case-studies' }
-      ]
-    },
-    {
-      title: 'Licensing',
-      links: [
-        { name: 'Program Summary', href: '/licensing/program' },
-        { name: 'Pricing', href: '/licensing/pricing' },
-        { name: 'Testimonials', href: '/licensing/testimonials' }
-      ]
-    },
-    {
-      title: 'Company',
-      links: [
-        { name: 'Our Team', href: '/company/team' },
-        { name: 'Blog', href: '/blog' },
-        { name: 'Industries', href: '/industries' }
-      ]
-    }
-  ];
+const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
+  {
+    title: 'Sell',
+    links: [
+      { label: 'Brokerage services', href: '/sell/brokerage' },
+      { label: 'M&A advisory', href: '/sell/ma-services' },
+      { label: 'Closed transactions', href: '/sell/case-studies' },
+      { label: 'Request a valuation', href: '/contact?intent=sell' },
+    ],
+  },
+  {
+    title: 'Buy',
+    links: [
+      { label: 'Current listings', href: '/buy/listings' },
+      { label: 'Buyer representation', href: '/buy/representation' },
+      { label: 'Register as a buyer', href: '/buy/registration' },
+    ],
+  },
+  {
+    title: 'Licensing',
+    links: [
+      { label: 'Program overview', href: '/licensing/program' },
+      { label: 'Pricing', href: '/licensing/pricing' },
+      { label: 'Broker stories', href: '/licensing/testimonials' },
+      { label: 'Broker login', href: '/portal/login' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'Our team', href: '/company/team' },
+      { label: 'Industries', href: '/industries' },
+      { label: 'Insights', href: '/company/blog' },
+      { label: 'Contact', href: '/contact' },
+    ],
+  },
+];
 
+export default function Footer() {
+  const year = new Date().getFullYear();
   return (
-    <footer className="bg-white border-t border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
-          {/* Company Info */}
-          <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center mb-4">
-              <span className="text-2xl font-bold text-purple-900">Legacy</span>
+    <footer className="bg-ink text-paper">
+      <Container className="pt-16 pb-10 md:pt-20">
+        <div className="grid gap-12 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <Link to="/" className="inline-flex" aria-label="Legacy Business Brokers — home">
+              <img src="/media/Horizontal Logo High Res.png" alt="Legacy Business Brokers" className="h-7 w-auto invert" draggable={false} />
             </Link>
-            <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-              Legacy combines cutting-edge AI analytics with seasoned M&A advisory to provide 
-              a modern, client-focused experience. We serve with humility and execute with 
-              relentless commitment to excellence.
+            <p className="mt-6 max-w-xs text-sm leading-relaxed text-paper/60">
+              Senior M&amp;A advisory for owners of lower-middle-market companies, and the platform behind a national network
+              of licensed brokers.
             </p>
-            
-            {/* Contact Info */}
-            <div className="space-y-3">
-              <div className="flex items-center text-gray-600 text-sm">
-                <Mail className="h-4 w-4 mr-3 text-purple-900" />
-                <a href="mailto:info@legacybrokers.com" className="hover:text-purple-900 transition-colors">
-                  info@legacybrokers.com
-                </a>
-              </div>
-              <div className="flex items-center text-gray-600 text-sm">
-                <Phone className="h-4 w-4 mr-3 text-purple-900" />
-                <a href="tel:+1-555-LEGACY" className="hover:text-purple-900 transition-colors">
-                  (555) LEGACY-1
-                </a>
-              </div>
-              <div className="flex items-center text-gray-600 text-sm">
-                <MapPin className="h-4 w-4 mr-3 text-purple-900" />
-                <span>Scottsdale, AZ</span>
-              </div>
+            <div className="mt-6 space-y-1.5 text-sm">
+              <a href={`mailto:${SITE_EMAIL}`} className="block text-paper/80 transition-colors hover:text-paper">
+                {SITE_EMAIL}
+              </a>
+              <p className="text-paper/50">Scottsdale, Arizona · Serving owners nationwide</p>
             </div>
           </div>
 
-          {/* Quick Links */}
-          {quickLinks.map((section) => (
-            <div key={section.title}>
-              <h3 className="text-gray-900 font-semibold mb-4">{section.title}</h3>
-              <ul className="space-y-3">
-                {section.links.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      to={link.href}
-                      className="text-gray-600 hover:text-purple-900 transition-colors text-sm"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-8">
+            {COLUMNS.map((col) => (
+              <div key={col.title}>
+                <h2 className="eyebrow text-brass-light">{col.title}</h2>
+                <ul className="mt-5 space-y-3">
+                  {col.links.map((l) => (
+                    <li key={l.href + l.label}>
+                      <Link to={l.href} className="text-sm text-paper/70 transition-colors hover:text-paper">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
         </div>
 
-        {/* Bottom Section */}
-        <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col lg:flex-row justify-between items-center">
-          <div className="flex items-center space-x-6 mb-4 lg:mb-0">
-            <a 
-              href="https://linkedin.com/company/legacy-brokers" 
-              className="text-gray-400 hover:text-purple-900 transition-colors"
+        <div className="mt-16 border-t border-line-inverse pt-8">
+          <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+            <p className="max-w-3xl text-xs leading-relaxed text-paper/40">
+              Legacy is a licensing program, not a franchise. Licensees operate independent businesses and are solely
+              responsible for their services. Transaction examples are illustrative, anonymized, and not a promise of future
+              results. Legacy does not disclose client financial statements.
+            </p>
+            <a
+              href="https://linkedin.com/company/legacy-brokers"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Legacy on LinkedIn"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-line-inverse text-paper/60 transition-colors hover:border-line-inverse-strong hover:text-paper"
             >
-              <Linkedin className="h-5 w-5" />
-            </a>
-            <a 
-              href="https://twitter.com/legacybrokers" 
-              className="text-gray-400 hover:text-purple-900 transition-colors"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Twitter className="h-5 w-5" />
+              <Linkedin className="h-4 w-4" />
             </a>
           </div>
-          
-          <div className="flex items-center space-x-6 text-sm text-gray-500">
-            <Link to="/terms" className="hover:text-purple-900 transition-colors">
-              Terms of Service
-            </Link>
-            <Link to="/privacy" className="hover:text-purple-900 transition-colors">
-              Privacy Policy
-            </Link>
-            <span>© 2025 Legacy Business Brokers. All rights reserved.</span>
-          </div>
+          <p className="mt-6 text-xs text-paper/40">© {year} Legacy Business Brokers. All rights reserved.</p>
         </div>
-      </div>
+      </Container>
     </footer>
   );
-};
-
-export default Footer;
+}

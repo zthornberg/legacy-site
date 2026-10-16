@@ -1,9 +1,20 @@
 export type TeamSection = { label: string; text: string };
+
+/**
+ * Art direction for a headshot so every portrait reads at the same scale in a 4:5 frame.
+ * `position` is the CSS object-position; `zoom` scales the image around `origin`
+ * (defaults to `position`). Source photos vary from tight studio crops to full-length shots.
+ */
+export type PortraitFocus = { position?: string; origin?: string; zoom?: number };
+
 export type TeamMember = {
   id: string;
   name: string;
   title: string;
+  /** One hand-written sentence for the team index card (keep it under ~90 characters). */
+  summary: string;
   headshot?: string;
+  portrait?: PortraitFocus;
   sections: TeamSection[];
 };
 
@@ -12,7 +23,9 @@ export const team: TeamMember[] = [
     id: "zackary-thornberg",
     name: "Zackary Thornberg",
     title: "Chief Executive Officer",
-    headshot: "/media/Zack_Thornberg_Feb2021-26859.jpeg",
+    summary: "Has led or supported $50M+ in transactions and coaches brokers on principled negotiation.",
+    headshot: "/media/Zack_Thornberg_Feb2021-26859.webp",
+    portrait: { position: "42% 50%" },
     sections: [
       {
         label: "About",
@@ -35,7 +48,9 @@ export const team: TeamMember[] = [
     id: "david-tucker",
     name: "David Tucker",
     title: "Chief Operations Officer",
-    headshot: "/media/David Tucker.png",
+    summary: "Systems builder who helped scale his family's textiles company to $5M+ in annual revenue.",
+    headshot: "/media/David Tucker.webp",
+    portrait: { position: "50% 0%" },
     sections: [
       {
         label: "About",
@@ -58,7 +73,9 @@ export const team: TeamMember[] = [
     id: "cameron-bloniarz",
     name: "Cameron Bloniarz",
     title: "Chief Marketing Officer",
-    headshot: "/media/Cameron Bloniarz.png",
+    summary: "Built Legacy's seller-lead engine, blending creative instinct with rigorous testing.",
+    headshot: "/media/Cameron Bloniarz.webp",
+    portrait: { position: "50% 0%", origin: "49% 20%", zoom: 1.4 },
     sections: [
       {
         label: "About",
@@ -81,7 +98,9 @@ export const team: TeamMember[] = [
     id: "gene-wright",
     name: "Gene Wright",
     title: "Senior Advisor / Mentor Broker",
-    headshot: "/media/Gene Headshot Full Sized copy.png",
+    summary: "Leads Northstar Business Advisories and co-developed state-approved broker education.",
+    headshot: "/media/Gene Headshot Full Sized copy.webp",
+    portrait: { position: "52% 0%", origin: "50% 0%", zoom: 1.15 },
     sections: [
       {
         label: "About",
@@ -104,7 +123,9 @@ export const team: TeamMember[] = [
     id: "brady-smith",
     name: "Brady Smith",
     title: "Senior Software Engineer / IT Support",
-    headshot: "/media/Brady Smith Headshot.png",
+    summary: "Owns the broker portal, secure integrations and the data plumbing advisors rely on.",
+    headshot: "/media/Brady Smith Headshot.webp",
+    portrait: { position: "47% 0%", origin: "50% 0%", zoom: 1.1 },
     sections: [
       {
         label: "About",

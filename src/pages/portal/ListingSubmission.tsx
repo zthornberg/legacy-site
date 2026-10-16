@@ -1,127 +1,116 @@
 import React, { useState } from 'react';
-import { Upload, Building, DollarSign, FileText, CheckCircle } from 'lucide-react';
+import { FileText, Upload } from 'lucide-react';
+import { Button, Card, Eyebrow } from '../../components/ui';
+import PortalShell from '../../components/portal/PortalShell';
+import { Field, FormCard, FormFooter, FormSection, SuccessPanel } from '../../components/portal/Form';
+import { cn } from '../../lib/utils';
+
+const emptyForm = {
+  businessName: '',
+  industry: '',
+  location: '',
+  revenue: '',
+  ebitda: '',
+  askingPrice: '',
+  description: '',
+  reasonForSelling: '',
+  files: [] as File[],
+};
+
+const industries = [
+  'Manufacturing & Distribution',
+  'Technology',
+  'Healthcare',
+  'Home Services',
+  'Construction',
+  'Retail & Consumer',
+  'Business Services',
+  'Energy & Sustainability',
+  'Hospitality',
+];
+
+const formatBytes = (bytes: number) =>
+  bytes >= 1024 * 1024 ? `${(bytes / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
 
 const ListingSubmission: React.FC = () => {
-  const [formData, setFormData] = useState({
-    businessName: '',
-    industry: '',
-    location: '',
-    revenue: '',
-    ebitda: '',
-    askingPrice: '',
-    description: '',
-    reasonForSelling: '',
-    files: [] as File[]
-  });
-
+  const [formData, setFormData] = useState(emptyForm);
   const [submitted, setSubmitted] = useState(false);
-
-  const industries = [
-    'Manufacturing & Distribution',
-    'Technology',
-    'Healthcare',
-    'Home Services',
-    'Construction',
-    'Retail & Consumer',
-    'Business Services',
-    'Energy & Sustainability',
-    'Hospitality'
-  ];
+  const [dragging, setDragging] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFormData(prev => ({
+  const setFiles = (list: FileList | null) => {
+    if (list) {
+      setFormData((prev) => ({
         ...prev,
-        files: Array.from(e.target.files || [])
+        files: Array.from(list),
       }));
     }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => setFiles(e.target.files);
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setDragging(false);
+    const accepted = /\.(pdf|docx?|xlsx?)$/i;
+    const dt = new DataTransfer();
+    Array.from(e.dataTransfer.files).filter((f) => accepted.test(f.name)).forEach((f) => dt.items.add(f));
+    setFiles(dt.files);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission
-    console.log('Listing submitted:', formData);
     setSubmitted(true);
   };
 
-  if (submitted) {
-    return (
-      <div className="bg-gray-50 min-h-screen">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="bg-white rounded-xl p-12 shadow-lg text-center">
-            <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-6" />
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Listing Submitted Successfully
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Thank you for submitting your listing. Our team will review it within 24 hours 
-              and contact you with next steps.
-            </p>
-            <button
-              onClick={() => setSubmitted(false)}
-              className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
-            >
-              Submit Another Listing
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const reset = () => {
+    setFormData(emptyForm);
+    setSubmitted(false);
+  };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Submit New Listing
-          </h1>
-          <p className="text-gray-600">
-            Submit a business listing for review and approval by the Legacy team
-          </p>
-        </div>
-
-        {/* Form */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Business Information */}
-            <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                <Building className="h-5 w-5 mr-2 text-purple-600" />
-                Business Information
-              </h2>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Business Name *
-                  </label>
+    <PortalShell
+      eyebrow="Listings"
+      title="Submit a listing"
+      description="Send a business to the Legacy team for review and approval before it goes to market."
+    >
+      <div className="grid gap-8 xl:grid-cols-12 xl:gap-10">
+        <div className="min-w-0 xl:col-span-8">
+          {submitted ? (
+            <SuccessPanel
+              eyebrow="Submitted for review"
+              title="Your listing is with the Legacy team"
+              body="Thank you for submitting your listing. Our team will review it within 24 hours and contact you with next steps."
+              resetLabel="Submit another listing"
+              onReset={reset}
+            />
+          ) : (
+            <FormCard onSubmit={handleSubmit}>
+              <FormSection index={1} title="Business information">
+                <Field id="ls-name" label="Business name">
                   <input
+                    id="ls-name"
                     type="text"
                     required
                     value={formData.businessName}
                     onChange={(e) => handleInputChange('businessName', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                    className="field"
                   />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Industry *
-                  </label>
+                </Field>
+                <Field id="ls-industry" label="Industry">
                   <select
+                    id="ls-industry"
                     required
                     value={formData.industry}
                     onChange={(e) => handleInputChange('industry', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                    className="field"
                   >
                     <option value="">Select industry</option>
                     {industries.map((industry) => (
@@ -130,105 +119,74 @@ const ListingSubmission: React.FC = () => {
                       </option>
                     ))}
                   </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Location *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="City, State"
-                  value={formData.location}
-                  onChange={(e) => handleInputChange('location', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
-                />
-              </div>
-            </section>
-
-            {/* Financial Information */}
-            <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                <DollarSign className="h-5 w-5 mr-2 text-green-600" />
-                Financial Information
-              </h2>
-              
-              <div className="grid md:grid-cols-3 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Annual Revenue *
-                  </label>
+                </Field>
+                <Field id="ls-location" label="Location" wide>
                   <input
+                    id="ls-location"
+                    type="text"
+                    required
+                    placeholder="City, State"
+                    autoComplete="address-level2"
+                    value={formData.location}
+                    onChange={(e) => handleInputChange('location', e.target.value)}
+                    className="field"
+                  />
+                </Field>
+              </FormSection>
+
+              <FormSection index={2} title="Financial information" description="Enter figures in US dollars." columns={3}>
+                <Field id="ls-revenue" label="Annual revenue">
+                  <input
+                    id="ls-revenue"
                     type="text"
                     required
                     placeholder="$1,200,000"
                     value={formData.revenue}
                     onChange={(e) => handleInputChange('revenue', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                    className="field tabular"
                   />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    EBITDA/SDE *
-                  </label>
+                </Field>
+                <Field id="ls-ebitda" label="EBITDA / SDE">
                   <input
+                    id="ls-ebitda"
                     type="text"
                     required
                     placeholder="$400,000"
                     value={formData.ebitda}
                     onChange={(e) => handleInputChange('ebitda', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                    className="field tabular"
                   />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Asking Price
-                  </label>
+                </Field>
+                <Field id="ls-asking" label="Asking price" optional>
                   <input
+                    id="ls-asking"
                     type="text"
                     placeholder="$1,600,000"
                     value={formData.askingPrice}
                     onChange={(e) => handleInputChange('askingPrice', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                    className="field tabular"
                   />
-                </div>
-              </div>
-            </section>
+                </Field>
+              </FormSection>
 
-            {/* Business Description */}
-            <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                <FileText className="h-5 w-5 mr-2 text-blue-600" />
-                Business Details
-              </h2>
-              
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Business Description *
-                  </label>
+              <FormSection index={3} title="Business details">
+                <Field id="ls-description" label="Business description" wide>
                   <textarea
+                    id="ls-description"
                     required
-                    rows={4}
+                    rows={5}
                     value={formData.description}
                     onChange={(e) => handleInputChange('description', e.target.value)}
-                    placeholder="Describe the business, its operations, competitive advantages, and key highlights..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                    placeholder="Describe the business, its operations, competitive advantages and key highlights."
+                    className="field"
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Reason for Selling
-                  </label>
+                </Field>
+                <Field id="ls-reason" label="Reason for selling" optional>
                   <select
+                    id="ls-reason"
                     value={formData.reasonForSelling}
                     onChange={(e) => handleInputChange('reasonForSelling', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                    className="field"
                   >
                     <option value="">Select reason</option>
                     <option value="retirement">Retirement</option>
@@ -238,65 +196,92 @@ const ListingSubmission: React.FC = () => {
                     <option value="partnership-dissolution">Partnership dissolution</option>
                     <option value="other">Other</option>
                   </select>
-                </div>
-              </div>
-            </section>
+                </Field>
+              </FormSection>
 
-            {/* File Upload */}
-            <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                <Upload className="h-5 w-5 mr-2 text-orange-600" />
-                Supporting Documents
-              </h2>
-              
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <label className="cursor-pointer">
-                  <span className="text-purple-600 hover:text-purple-700 font-medium">
-                    Click to upload files
-                  </span>
-                  <span className="text-gray-600"> or drag and drop</span>
-                  <input
-                    type="file"
-                    multiple
-                    onChange={handleFileUpload}
-                    className="hidden"
-                    accept=".pdf,.doc,.docx,.xls,.xlsx"
-                  />
-                </label>
-                <p className="text-gray-500 text-sm mt-2">
-                  Financial statements, offering memo, or other relevant documents
-                </p>
-              </div>
-
-              {formData.files.length > 0 && (
-                <div className="mt-4">
-                  <h4 className="font-medium text-gray-900 mb-2">Selected Files:</h4>
-                  <ul className="space-y-2">
-                    {formData.files.map((file, index) => (
-                      <li key={index} className="flex items-center text-sm text-gray-600">
-                        <FileText className="h-4 w-4 mr-2" />
-                        {file.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </section>
-
-            {/* Submit Button */}
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                className="bg-accent text-white px-8 py-3 rounded-xl hover:bg-accentAlt motion-safe font-semibold"
+              <FormSection
+                index={4}
+                title="Supporting documents"
+                description="Optional. Financial statements, offering memo, or other relevant documents."
               >
-                Submit for Review
-              </button>
-            </div>
-          </form>
+                <div className="sm:col-span-full">
+                  <label
+                    htmlFor="ls-files"
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setDragging(true);
+                    }}
+                    onDragLeave={() => setDragging(false)}
+                    onDrop={handleDrop}
+                    className={cn(
+                      'flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed px-6 py-10 text-center transition-colors duration-200 focus-within:border-ink focus-within:ring-2 focus-within:ring-ink/10',
+                      dragging ? 'border-brass bg-brass-tint' : 'border-line-strong bg-paper hover:border-ink/30'
+                    )}
+                  >
+                    <Upload size={20} strokeWidth={1.75} className="pointer-events-none text-mute" aria-hidden />
+                    <span className="pointer-events-none mt-3 text-sm">
+                      <span className="font-medium text-ink underline decoration-ink/30 underline-offset-4">Choose files</span>
+                      <span className="text-mute"> or drag and drop</span>
+                    </span>
+                    <span className="pointer-events-none mt-1.5 text-xs text-mute-soft">PDF, Word or Excel</span>
+                    <input
+                      id="ls-files"
+                      type="file"
+                      multiple
+                      onChange={handleFileUpload}
+                      className="sr-only"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx"
+                    />
+                  </label>
+
+                  {formData.files.length > 0 && (
+                    <div className="mt-4">
+                      <p className="label">Selected files</p>
+                      <ul className="divide-y divide-line rounded-lg border border-line">
+                        {formData.files.map((file, index) => (
+                          <li key={index} className="flex items-center gap-3 px-4 py-3 text-sm">
+                            <FileText size={16} strokeWidth={1.75} className="shrink-0 text-mute" aria-hidden />
+                            <span className="min-w-0 flex-1 truncate text-ink">{file.name}</span>
+                            <span className="tabular shrink-0 text-xs text-mute">{formatBytes(file.size)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </FormSection>
+
+              <FormFooter note="All fields are required unless marked optional.">
+                <Button type="submit" arrow>
+                  Submit for review
+                </Button>
+              </FormFooter>
+            </FormCard>
+          )}
         </div>
+
+        <aside className="xl:col-span-4">
+          <Card tone="deep" padding="sm" className="xl:sticky xl:top-24">
+            <Eyebrow as="p">What happens next</Eyebrow>
+            <ol className="mt-5 space-y-4">
+              {[
+                ['Submit', 'Send the business details and any supporting documents.'],
+                ['Review', 'The Legacy team reviews every submission within 24 hours.'],
+                ['Next steps', 'We contact you directly with next steps for the listing.'],
+              ].map(([title, body], i) => (
+                <li key={title} className="flex gap-4">
+                  <span className="tabular pt-0.5 text-xs text-mute-soft">{String(i + 1).padStart(2, '0')}</span>
+                  <div>
+                    <p className="text-sm font-medium text-ink">{title}</p>
+                    <p className="mt-0.5 text-[13px] leading-relaxed text-mute">{body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Card>
+        </aside>
       </div>
-    </div>
+    </PortalShell>
   );
 };
 
